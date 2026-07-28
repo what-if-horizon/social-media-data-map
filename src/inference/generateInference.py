@@ -5,15 +5,13 @@ import json
 
 
 def returnAgent():
-    manager = AgentManager(
-    model_config_path="configs/gpt_oss_20b.yaml",
-    model_dir="/gpfs/projects/bsc100/models")
+    manager = AgentManager()
     return manager
 
 manager = returnAgent()
 
 
-def generate_output(document_name, article_name, article, modification, template = prompt_fuse_articles(),  max_retries = 3):
+def generate_output(data_1, template,  max_retries = 3, data_2 = None, data_3 = None, data_4 = None):
     
     #Load the agent
     agent = next(iter(manager.agents.keys()))
@@ -25,7 +23,7 @@ def generate_output(document_name, article_name, article, modification, template
     
             # Do the inference
             
-            prompt = p.prepare_prompt(document_name, article_name, article, modification, template)
+            prompt = p.prepare_prompt(data_1, data_2, data_3, data_4, template)
             
             answer = model.generate(prompt)   
             
