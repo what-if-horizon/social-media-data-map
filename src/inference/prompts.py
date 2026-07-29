@@ -19,13 +19,13 @@ def prompt_classification():
         You are given a path consisting of a filepath and a JSON path and a list of IDs. Please choose the correct ID for the path
         
         path:
-        {data_field_1}
+        {data_1}
 
         List of IDs:
-        {data_field_2}
+        {data_2}
 
         Answer format:
-        [{{ 'summary': 'text of summary'}}]
+        [{{ 'estimated_id': 'text of summary'}}]
     
     """
 

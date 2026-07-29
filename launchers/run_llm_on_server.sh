@@ -10,7 +10,7 @@ mkdir -p "$LOG_DIR"
 #--------------------------------------------------
 
 # Name of the YAML file (e.g. gpt_oss_20b.yaml)
-MODEL_CONFIG=${MODEL_CONFIG:-gpt_oss_20b.yaml}
+MODEL_CONFIG=${MODEL_CONFIG}
 
 MODEL_YAML="$PWD/configs/$MODEL_CONFIG"
 MODEL_DIR="/gpfs/projects/bsc100/models"
@@ -30,8 +30,8 @@ export VLLM_USE_FLASHINFER_CUBIN=1
 export CUDA_HOME=/apps/ACC/CUDA/12.8
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
-export TIKTOKEN_ENCODINGS_BASE=${PWD}/src/RbLib/agents/tiktoken_encodings
-
+export TIKTOKEN_ENCODINGS_BASE=${PWD}/src/agents/tiktoken_encodings
+export PYTHONPATH=$PWD:$PYTHONPATH
 #--------------------------------------------------
 # Run inference
 #--------------------------------------------------

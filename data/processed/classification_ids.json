@@ -1,0 +1,1186 @@
+[
+  {
+    "path": "preferences/feed/snooze.json/media",
+    "true_id": "feed:snooze:media"
+  },
+  {
+    "path": "preferences/feed/snooze.json/fbid",
+    "true_id": "feed:snooze:fbid"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/your_video_consumption_summary.json/media",
+    "true_id": "other_activity:your_video_consumption_summary:media"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/your_video_consumption_summary.json/fbid",
+    "true_id": "other_activity:your_video_consumption_summary:fbid"
+  },
+  {
+    "path": "your_facebook_activity/posts/edits_you_made_to_posts.json/timestamp",
+    "true_id": "posts:edits_you_made_to_posts:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/posts/edits_you_made_to_posts.json/media",
+    "true_id": "posts:edits_you_made_to_posts:media"
+  },
+  {
+    "path": "your_facebook_activity/posts/edits_you_made_to_posts.json/fbid",
+    "true_id": "posts:edits_you_made_to_posts:fbid"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/timestamp",
+    "true_id": "other_activity:time_spent_on_facebook:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/media",
+    "true_id": "other_activity:time_spent_on_facebook:media"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/fbid",
+    "true_id": "other_activity:time_spent_on_facebook:fbid"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/your_comment_edits.json/timestamp",
+    "true_id": "comments_and_reactions:your_comment_edits:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/your_comment_edits.json/media",
+    "true_id": "comments_and_reactions:your_comment_edits:media"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/your_comment_edits.json/fbid",
+    "true_id": "comments_and_reactions:your_comment_edits:fbid"
+  },
+  {
+    "path": "logged_information/interactions/groups_you've_visited.json/timestamp",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:timestamp"
+  },
+  {
+    "path": "logged_information/interactions/groups_you've_visited.json/media",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:media"
+  },
+  {
+    "path": "logged_information/interactions/groups_you've_visited.json/fbid",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:fbid"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/likes_and_reactions_1.json/timestamp",
+    "true_id": "comments_and_reactions:likes_and_reactions_1:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/likes_and_reactions.json/timestamp",
+    "true_id": "comments_and_reactions:likes_and_reactions:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/likes_and_reactions.json/media",
+    "true_id": "comments_and_reactions:likes_and_reactions:media"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/likes_and_reactions.json/fbid",
+    "true_id": "comments_and_reactions:likes_and_reactions:fbid"
+  },
+  {
+    "path": "ads_information/advertisers_you've_interacted_with.json/history_v2/timestamp",
+    "true_id": "ads_information:advertisers_you_ve_interacted_with:timestamp"
+  },
+  {
+    "path": "preferences/feed/controls.json/controls/name",
+    "true_id": "feed:controls:controls:name"
+  },
+  {
+    "path": "preferences/feed/controls.json/controls/description",
+    "true_id": "feed:controls:description"
+  },
+  {
+    "path": "preferences/feed/snooze.json/label_values/label",
+    "true_id": "feed:snooze:label"
+  },
+  {
+    "path": "preferences/feed/snooze.json/label_values/value",
+    "true_id": "feed:snooze:value"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_videos.json/videos_v2/uri",
+    "true_id": "posts:your_videos:uri"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_videos.json/videos_v2/creation_timestamp",
+    "true_id": "posts:your_videos:creation_timestamp"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_videos.json/videos_v2/title",
+    "true_id": "posts:your_videos:title"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_videos.json/videos_v2/description",
+    "true_id": "posts:your_videos:description"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_videos.json/videos_v2/dubbing_info",
+    "true_id": "posts:your_videos:dubbing_info"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_videos.json/videos_v2/media_variants",
+    "true_id": "posts:your_videos:media_variants"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/your_video_consumption_summary.json/label_values/label",
+    "true_id": "other_activity:your_video_consumption_summary:label"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/comments.json/comments_v2/timestamp",
+    "true_id": "comments_and_reactions:comments:comments_v2:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/groups/your_comments_in_groups.json/group_comments_v2/timestamp",
+    "true_id": "groups:your_comments_in_groups:group_comments_v2:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/groups/your_group_membership_activity.json/groups_joined_v2/timestamp",
+    "true_id": "groups:your_group_membership_activity:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/groups/your_group_membership_activity.json/groups_joined_v2/title",
+    "true_id": "groups:your_group_membership_activity:title"
+  },
+  {
+    "path": "your_facebook_activity/saved_items_and_collections/your_saved_items.json/saves_v2/timestamp",
+    "true_id": "saved_items_and_collections:your_saved_items:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/saved_items_and_collections/your_saved_items.json/saves_v2/title",
+    "true_id": "saved_items_and_collections:your_saved_items:title"
+  },
+  {
+    "path": "your_facebook_activity/stories/story_reactions.json/stories_feedback_v2/title",
+    "true_id": "stories:story_reactions:title"
+  },
+  {
+    "path": "your_facebook_activity/pages/pages_you've_liked.json/page_likes_v2/name",
+    "true_id": "pages:pages_you've_liked:name"
+  },
+  {
+    "path": "your_facebook_activity/pages/pages_you've_liked.json/page_likes_v2/timestamp",
+    "true_id": "pages:pages_you've_liked:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/pages/pages_you've_liked.json/page_likes_v2/url",
+    "true_id": "pages:pages_you've_liked:url"
+  },
+  {
+    "path": "your_facebook_activity/pages/pages_and_profiles_you_follow.json/pages_followed_v2/timestamp",
+    "true_id": "pages:pages_and_profiles_you_follow:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/pages/pages_and_profiles_you_follow.json/pages_followed_v2/title",
+    "true_id": "pages:pages_and_profiles_you_follow:title"
+  },
+  {
+    "path": "your_facebook_activity/groups/group_posts_and_comments.json/group_posts_v2/timestamp",
+    "true_id": "groups:group_posts_and_comments:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/groups/group_posts_and_comments.json/group_posts_v2/title",
+    "true_id": "groups:group_posts_and_comments:group_posts_v2:title"
+  },
+  {
+    "path": "your_facebook_activity/posts/edits_you_made_to_posts.json/label_values/label",
+    "true_id": "posts:edits_you_made_to_posts:label"
+  },
+  {
+    "path": "your_facebook_activity/posts/edits_you_made_to_posts.json/label_values/value",
+    "true_id": "posts:edits_you_made_to_posts:value"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/label_values/label",
+    "true_id": "other_activity:time_spent_on_facebook:label_values:label"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/your_comment_edits.json/label_values/label",
+    "true_id": "comments_and_reactions:your_comment_edits:label"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/your_comment_edits.json/label_values/value",
+    "true_id": "comments_and_reactions:your_comment_edits:value"
+  },
+  {
+    "path": "your_facebook_activity/polls/your_poll_votes.json/label_values/label",
+    "true_id": "polls:your_poll_votes:label_values:label"
+  },
+  {
+    "path": "your_facebook_activity/polls/your_poll_votes.json/label_values/value",
+    "true_id": "polls:your_poll_votes:label_values:value"
+  },
+  {
+    "path": "logged_information/interactions/groups_you've_visited.json/label_values/label",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:label"
+  },
+  {
+    "path": "logged_information/interactions/groups_you've_visited.json/label_values/value",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:value"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/likes_and_reactions.json/label_values/label",
+    "true_id": "comments_and_reactions:likes_and_reactions:label_values:label"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/likes_and_reactions.json/label_values/value",
+    "true_id": "comments_and_reactions:likes_and_reactions:label_values:value"
+  },
+  {
+    "path": "your_facebook_activity/pages/pages_and_profiles_you_follow.json/pages_followed_v2/data/name",
+    "true_id": "pages:pages_and_profiles_you_follow:name"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/likes_and_reactions_1.json/data/reaction/reaction",
+    "true_id": "comments_and_reactions:likes_and_reactions_1:reaction"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/comments.json/comments_v2/data/comment/timestamp",
+    "true_id": "comments_and_reactions:comments:comment:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/comments.json/comments_v2/data/comment/comment",
+    "true_id": "comments_and_reactions:comments:comment"
+  },
+  {
+    "path": "your_facebook_activity/groups/your_comments_in_groups.json/group_comments_v2/data/comment/timestamp",
+    "true_id": "groups:your_comments_in_groups:comment:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/groups/your_comments_in_groups.json/group_comments_v2/data/comment/comment",
+    "true_id": "groups:your_comments_in_groups:comment"
+  },
+  {
+    "path": "your_facebook_activity/groups/your_comments_in_groups.json/group_comments_v2/data/comment/group",
+    "true_id": "groups:your_comments_in_groups:group"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/label_values/vec/dict/label",
+    "true_id": "other_activity:time_spent_on_facebook:vec:dict:label"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/label_values/vec/dict/timestamp_value",
+    "true_id": "other_activity:time_spent_on_facebook:dict:timestamp_value"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_videos.json/videos_v2/media_metadata/video_metadata/exif_data/upload_timestamp",
+    "true_id": "posts:your_videos:upload_timestamp"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/your_comment_active_days.json/media",
+    "true_id": "comments_and_reactions:your_comment_active_days:media"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/your_comment_active_days.json/fbid",
+    "true_id": "comments_and_reactions:your_comment_active_days:fbid"
+  },
+  {
+    "path": "ads_information/advertisers_you've_interacted_with.json/timestamp",
+    "true_id": "ads_information:advertisers_you_ve_interacted_with:timestamp"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/groups_you've_visited.json/timestamp",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:timestamp"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/groups_you've_visited.json/media",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:media"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/groups_you've_visited.json/fbid",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:fbid"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/your_comment_active_days.json/label_values/label",
+    "true_id": "comments_and_reactions:your_comment_active_days:label"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/your_comment_active_days.json/label_values/value",
+    "true_id": "comments_and_reactions:your_comment_active_days:value"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_visited.json/visited_things_v2/name",
+    "true_id": "interactions:recently_visited:visited_things_v2:name"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_visited.json/visited_things_v2/description",
+    "true_id": "interactions:recently_visited:description"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/name",
+    "true_id": "interactions:recently_viewed:recently_viewed:name"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/description",
+    "true_id": "interactions:recently_viewed:recently_viewed:description"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/groups_you've_visited.json/label_values/label",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:label"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/groups_you've_visited.json/label_values/value",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:value"
+  },
+  {
+    "path": "your_facebook_activity/groups/group_posts_and_comments.json/group_posts_v2/data/post",
+    "true_id": "groups:group_posts_and_comments:post"
+  },
+  {
+    "path": "your_facebook_activity/groups/your_group_membership_activity.json/groups_joined_v2/data/name",
+    "true_id": "groups:your_group_membership_activity:name"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_visited.json/visited_things_v2/entries/timestamp",
+    "true_id": "interactions:recently_visited:timestamp"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/entries/timestamp",
+    "true_id": "interactions:recently_viewed:recently_viewed:entries:timestamp"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_visited.json/visited_things_v2/entries/data/name",
+    "true_id": "interactions:recently_visited:data:name"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_visited.json/visited_things_v2/entries/data/uri",
+    "true_id": "interactions:recently_visited:uri"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/entries/data/name",
+    "true_id": "interactions:recently_viewed:recently_viewed:entries:data:name"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/entries/data/uri",
+    "true_id": "interactions:recently_viewed:recently_viewed:entries:data:uri"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/timestamp",
+    "true_id": "other_activity:time_spent_on_facebook:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/fbid",
+    "true_id": "other_activity:time_spent_on_facebook:fbid"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/media",
+    "true_id": "other_activity:time_spent_on_facebook:media"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/your_video_consumption_summary.json/media",
+    "true_id": "other_activity:your_video_consumption_summary:media"
+  },
+  {
+    "path": "your_facebook_activity/comments_and_reactions/likes_and_reactions.json/media",
+    "true_id": "comments_and_reactions:likes_and_reactions:media"
+  },
+  {
+    "path": "your_facebook_activity/pages/pages_you_ve_liked.json/page_likes_v2/name",
+    "true_id": "pages:pages_you've_liked:name"
+  },
+  {
+    "path": "your_facebook_activity/pages/pages_you_ve_liked.json/page_likes_v2/timestamp",
+    "true_id": "pages:pages_you've_liked:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/pages/pages_you_ve_liked.json/page_likes_v2/url",
+    "true_id": "pages:pages_you've_liked:url"
+  },
+  {
+    "path": "connections/followers/who_you_ve_followed.json/following_v3/name",
+    "true_id": "followers:who_you've_followed:name"
+  },
+  {
+    "path": "connections/followers/who_you_ve_followed.json/following_v3/timestamp",
+    "true_id": "followers:who_you've_followed:timestamp"
+  },
+  {
+    "path": "ads_information/advertisers_you_ve_interacted_with.json/history_v2/title",
+    "true_id": "ads_information:advertisers_you've_interacted_with:title"
+  },
+  {
+    "path": "ads_information/advertisers_you_ve_interacted_with.json/history_v2/action",
+    "true_id": "ads_information:advertisers_you've_interacted_with:action"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/children/name",
+    "true_id": "interactions:recently_viewed:children:name"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/children/description",
+    "true_id": "interactions:recently_viewed:children:description"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/children/entries/timestamp",
+    "true_id": "interactions:recently_viewed:children:entries:timestamp"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_visited.json/visited_things_v2/entries/data/value",
+    "true_id": "interactions:recently_visited:value"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/children/entries/data/value",
+    "true_id": "interactions:recently_viewed:value"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/children/entries/data/name",
+    "true_id": "interactions:recently_viewed:children:entries:data:name"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/children/entries/data/uri",
+    "true_id": "interactions:recently_viewed:children:entries:data:uri"
+  },
+  {
+    "path": "your_activity_across_facebook/other_activity/your_recently_followed_history.json/media",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:media"
+  },
+  {
+    "path": "your_activity_across_facebook/posts/your_posts__check_ins__photos_and_videos_1.json/timestamp",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/comments_and_reactions/likes_and_reactions_1.json/timestamp",
+    "true_id": "comments_and_reactions:likes_and_reactions_1:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/group_posts_and_comments.json/group_posts_v2/timestamp",
+    "true_id": "groups:group_posts_and_comments:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/group_posts_and_comments.json/group_posts_v2/title",
+    "true_id": "groups:group_posts_and_comments:group_posts_v2:title"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/your_group_membership_activity.json/groups_joined_v2/timestamp",
+    "true_id": "groups:your_group_membership_activity:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/your_group_membership_activity.json/groups_joined_v2/title",
+    "true_id": "groups:your_group_membership_activity:title"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/your_groups.json/groups_admined_v2/name",
+    "true_id": "your_facebook_activity:groups:your_groups:groups_admined_v2:name"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/your_groups.json/groups_admined_v2/timestamp",
+    "true_id": "your_facebook_activity:groups:your_groups:groups_admined_v2:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/pages/pages_and_profiles_you_follow.json/pages_followed_v2/timestamp",
+    "true_id": "pages:pages_and_profiles_you_follow:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/pages/pages_and_profiles_you_follow.json/pages_followed_v2/title",
+    "true_id": "pages:pages_and_profiles_you_follow:title"
+  },
+  {
+    "path": "your_activity_across_facebook/pages/pages_you've_liked.json/page_likes_v2/name",
+    "true_id": "pages:pages_you've_liked:name"
+  },
+  {
+    "path": "your_activity_across_facebook/pages/pages_you've_liked.json/page_likes_v2/timestamp",
+    "true_id": "pages:pages_you've_liked:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/pages/pages_you've_liked.json/page_likes_v2/url",
+    "true_id": "pages:pages_you've_liked:url"
+  },
+  {
+    "path": "your_activity_across_facebook/polls/polls_you_voted_on.json/poll_votes_v2/timestamp",
+    "true_id": "your_facebook_activity:polls:polls_you_voted_on:poll_votes_v2:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/polls/polls_you_voted_on.json/poll_votes_v2/title",
+    "true_id": "your_facebook_activity:polls:polls_you_voted_on:poll_votes_v2:title"
+  },
+  {
+    "path": "your_activity_across_facebook/other_activity/your_recently_followed_history.json/label_values/label",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:label_values:label"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/your_comments_in_groups.json/group_comments_v2/timestamp",
+    "true_id": "groups:your_comments_in_groups:group_comments_v2:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/comments_and_reactions/comments.json/comments_v2/timestamp",
+    "true_id": "comments_and_reactions:comments:comments_v2:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/posts/your_posts__check_ins__photos_and_videos_1.json/data/post",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:data:post"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/group_posts_and_comments.json/group_posts_v2/data/post",
+    "true_id": "groups:group_posts_and_comments:post"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/your_group_membership_activity.json/groups_joined_v2/data/name",
+    "true_id": "groups:your_group_membership_activity:name"
+  },
+  {
+    "path": "your_activity_across_facebook/pages/pages_and_profiles_you_follow.json/pages_followed_v2/data/name",
+    "true_id": "pages:pages_and_profiles_you_follow:name"
+  },
+  {
+    "path": "your_activity_across_facebook/comments_and_reactions/likes_and_reactions_1.json/data/reaction/reaction",
+    "true_id": "comments_and_reactions:likes_and_reactions_1:reaction"
+  },
+  {
+    "path": "your_activity_across_facebook/other_activity/your_recently_followed_history.json/label_values/vec/dict/label",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:label_values:vec:dict:label"
+  },
+  {
+    "path": "your_activity_across_facebook/other_activity/your_recently_followed_history.json/label_values/vec/dict/value",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:label_values:vec:dict:value"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/your_comments_in_groups.json/group_comments_v2/data/comment/timestamp",
+    "true_id": "groups:your_comments_in_groups:comment:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/your_comments_in_groups.json/group_comments_v2/data/comment/comment",
+    "true_id": "groups:your_comments_in_groups:comment"
+  },
+  {
+    "path": "your_activity_across_facebook/groups/your_comments_in_groups.json/group_comments_v2/data/comment/group",
+    "true_id": "groups:your_comments_in_groups:group"
+  },
+  {
+    "path": "your_activity_across_facebook/comments_and_reactions/comments.json/comments_v2/data/comment/timestamp",
+    "true_id": "comments_and_reactions:comments:comment:timestamp"
+  },
+  {
+    "path": "your_activity_across_facebook/comments_and_reactions/comments.json/comments_v2/data/comment/comment",
+    "true_id": "comments_and_reactions:comments:comment"
+  },
+  {
+    "path": "your_activity_across_facebook/posts/your_posts__check_ins__photos_and_videos_1.json/attachments/data/external_context/url",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:attachments:data:external_context:url"
+  },
+  {
+    "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/children/entries/data/watch_time",
+    "true_id": "interactions:recently_viewed:watch_time"
+  },
+  {
+    "path": "your_activity_across_facebook/polls/polls_you_voted_on.json/poll_votes_v2/attachments/data/poll/options/option",
+    "true_id": "your_facebook_activity:polls:polls_you_voted_on:attachments:data:poll:options:option"
+  },
+  {
+    "path": "your_activity_across_facebook/polls/polls_you_voted_on.json/poll_votes_v2/attachments/data/poll/options/voted",
+    "true_id": "your_facebook_activity:polls:polls_you_voted_on:attachments:data:poll:options:voted"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/privacy_settings.json/media",
+    "true_id": "preferences:preferences:privacy_settings:media"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/privacy_settings.json/fbid",
+    "true_id": "preferences:preferences:privacy_settings:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/your_story_highlights.json/media",
+    "true_id": "preferences:preferences:your_story_highlights:media"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/your_story_highlights.json/fbid",
+    "true_id": "preferences:preferences:your_story_highlights:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/reels_preferences.json/media",
+    "true_id": "preferences:preferences:reels_preferences:media"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/reels_preferences.json/fbid",
+    "true_id": "preferences:preferences:reels_preferences:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/your_watch_settings.json/media",
+    "true_id": "preferences:preferences:your_watch_settings:media"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/your_watch_settings.json/fbid",
+    "true_id": "preferences:preferences:your_watch_settings:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/feed/snooze.json/media",
+    "true_id": "feed:snooze:media"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/feed/snooze.json/fbid",
+    "true_id": "feed:snooze:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/your_recently_followed_history.json/media",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:media"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/your_recently_followed_history.json/fbid",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/your_information_download_requests.json/timestamp",
+    "true_id": "your_facebook_activity:other_activity:your_information_download_requests:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/your_video_consumption_summary.json/media",
+    "true_id": "other_activity:your_video_consumption_summary:media"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/your_video_consumption_summary.json/fbid",
+    "true_id": "other_activity:your_video_consumption_summary:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/your_comment_active_days.json/media",
+    "true_id": "comments_and_reactions:your_comment_active_days:media"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/your_comment_active_days.json/fbid",
+    "true_id": "comments_and_reactions:your_comment_active_days:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/timestamp",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/media",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:media"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/fbid",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/content_sharing_links_you_have_created.json/timestamp",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/content_sharing_links_you_have_created.json/media",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:media"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/content_sharing_links_you_have_created.json/fbid",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/time_spent_on_facebook.json/timestamp",
+    "true_id": "other_activity:time_spent_on_facebook:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/time_spent_on_facebook.json/media",
+    "true_id": "other_activity:time_spent_on_facebook:media"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/time_spent_on_facebook.json/fbid",
+    "true_id": "other_activity:time_spent_on_facebook:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/likes_and_reactions_1.json/timestamp",
+    "true_id": "comments_and_reactions:likes_and_reactions_1:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/your_comment_edits.json/timestamp",
+    "true_id": "comments_and_reactions:your_comment_edits:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/your_comment_edits.json/media",
+    "true_id": "comments_and_reactions:your_comment_edits:media"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/your_comment_edits.json/fbid",
+    "true_id": "comments_and_reactions:your_comment_edits:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/edits_you_made_to_posts.json/timestamp",
+    "true_id": "posts:edits_you_made_to_posts:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/edits_you_made_to_posts.json/media",
+    "true_id": "posts:edits_you_made_to_posts:media"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/edits_you_made_to_posts.json/fbid",
+    "true_id": "posts:edits_you_made_to_posts:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/likes_and_reactions.json/timestamp",
+    "true_id": "comments_and_reactions:likes_and_reactions:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/likes_and_reactions.json/media",
+    "true_id": "comments_and_reactions:likes_and_reactions:media"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/likes_and_reactions.json/fbid",
+    "true_id": "comments_and_reactions:likes_and_reactions:fbid"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_posts__check_ins__photos_and_videos_1.json/timestamp",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/privacy_settings.json/label_values/label",
+    "true_id": "preferences:preferences:privacy_settings:label_values:label"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/your_story_highlights.json/label_values/label",
+    "true_id": "preferences:preferences:your_story_highlights:label_values:label"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/your_story_highlights.json/label_values/value",
+    "true_id": "preferences:preferences:your_story_highlights:label_values:value"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/reels_preferences.json/label_values/label",
+    "true_id": "preferences:preferences:reels_preferences:label_values:label"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/reels_preferences.json/label_values/value",
+    "true_id": "preferences:preferences:reels_preferences:label_values:value"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/video.json/watch_videos_v2/video_title",
+    "true_id": "preferences:preferences:video:watch_videos_v2:video_title"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/video.json/watch_videos_v2/user_action",
+    "true_id": "preferences:preferences:video:watch_videos_v2:user_action"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/video.json/watch_videos_v2/action_time",
+    "true_id": "preferences:preferences:video:watch_videos_v2:action_time"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/video.json/watch_videos_v2/feedback_collection",
+    "true_id": "preferences:preferences:video:watch_videos_v2:feedback_collection"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/your_watch_settings.json/label_values/label",
+    "true_id": "preferences:preferences:your_watch_settings:label_values:label"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/your_watch_settings.json/label_values/value",
+    "true_id": "preferences:preferences:your_watch_settings:label_values:value"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/feed/controls.json/controls/name",
+    "true_id": "feed:controls:controls:name"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/feed/controls.json/controls/description",
+    "true_id": "feed:controls:description"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/feed/snooze.json/label_values/label",
+    "true_id": "feed:snooze:label"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/feed/snooze.json/label_values/value",
+    "true_id": "feed:snooze:value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_videos.json/videos_v2/uri",
+    "true_id": "posts:your_videos:uri"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_videos.json/videos_v2/creation_timestamp",
+    "true_id": "posts:your_videos:creation_timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_videos.json/videos_v2/title",
+    "true_id": "posts:your_videos:title"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_videos.json/videos_v2/description",
+    "true_id": "posts:your_videos:description"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_videos.json/videos_v2/dubbing_info",
+    "true_id": "posts:your_videos:dubbing_info"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_videos.json/videos_v2/media_variants",
+    "true_id": "posts:your_videos:media_variants"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/your_recently_followed_history.json/label_values/label",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:label_values:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/your_video_consumption_summary.json/label_values/label",
+    "true_id": "other_activity:your_video_consumption_summary:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/comments.json/comments_v2/timestamp",
+    "true_id": "comments_and_reactions:comments:comments_v2:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/your_comment_active_days.json/label_values/label",
+    "true_id": "comments_and_reactions:your_comment_active_days:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/your_comment_active_days.json/label_values/value",
+    "true_id": "comments_and_reactions:your_comment_active_days:value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/groups/your_comments_in_groups.json/group_comments_v2/timestamp",
+    "true_id": "groups:your_comments_in_groups:group_comments_v2:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/groups/your_group_membership_activity.json/groups_joined_v2/timestamp",
+    "true_id": "groups:your_group_membership_activity:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/groups/your_group_membership_activity.json/groups_joined_v2/title",
+    "true_id": "groups:your_group_membership_activity:title"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/saved_items_and_collections/your_saved_items.json/saves_v2/timestamp",
+    "true_id": "saved_items_and_collections:your_saved_items:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/saved_items_and_collections/your_saved_items.json/saves_v2/title",
+    "true_id": "saved_items_and_collections:your_saved_items:title"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/stories/story_reactions.json/stories_feedback_v2/title",
+    "true_id": "stories:story_reactions:title"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/pages/pages_you've_liked.json/page_likes_v2/name",
+    "true_id": "pages:pages_you've_liked:name"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/pages/pages_you've_liked.json/page_likes_v2/timestamp",
+    "true_id": "pages:pages_you've_liked:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/pages/pages_you've_liked.json/page_likes_v2/url",
+    "true_id": "pages:pages_you've_liked:url"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/pages/pages_and_profiles_you_follow.json/pages_followed_v2/timestamp",
+    "true_id": "pages:pages_and_profiles_you_follow:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/pages/pages_and_profiles_you_follow.json/pages_followed_v2/title",
+    "true_id": "pages:pages_and_profiles_you_follow:title"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/label_values/label",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:label_values:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/label_values/value",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:label_values:value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/content_sharing_links_you_have_created.json/label_values/label",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:label_values:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/content_sharing_links_you_have_created.json/label_values/value",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:label_values:value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/content_sharing_links_you_have_created.json/label_values/href",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:label_values:href"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/time_spent_on_facebook.json/label_values/label",
+    "true_id": "other_activity:time_spent_on_facebook:label_values:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/your_comment_edits.json/label_values/label",
+    "true_id": "comments_and_reactions:your_comment_edits:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/your_comment_edits.json/label_values/value",
+    "true_id": "comments_and_reactions:your_comment_edits:value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/edits_you_made_to_posts.json/label_values/label",
+    "true_id": "posts:edits_you_made_to_posts:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/edits_you_made_to_posts.json/label_values/value",
+    "true_id": "posts:edits_you_made_to_posts:value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/likes_and_reactions.json/label_values/label",
+    "true_id": "comments_and_reactions:likes_and_reactions:label_values:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/likes_and_reactions.json/label_values/value",
+    "true_id": "comments_and_reactions:likes_and_reactions:label_values:value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_posts__check_ins__photos_and_videos_1.json/data/update_timestamp",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:data:update_timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/privacy_settings.json/label_values/dict/label",
+    "true_id": "preferences:preferences:privacy_settings:label_values:dict:label"
+  },
+  {
+    "path": "personal_information/profile_information/preferences/preferences/privacy_settings.json/label_values/dict/value",
+    "true_id": "preferences:preferences:privacy_settings:label_values:dict:value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/groups/your_group_membership_activity.json/groups_joined_v2/data/name",
+    "true_id": "groups:your_group_membership_activity:name"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/pages/pages_and_profiles_you_follow.json/pages_followed_v2/data/name",
+    "true_id": "pages:pages_and_profiles_you_follow:name"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/likes_and_reactions_1.json/data/reaction/reaction",
+    "true_id": "comments_and_reactions:likes_and_reactions_1:reaction"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/your_recently_followed_history.json/label_values/vec/dict/label",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:label_values:vec:dict:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/your_recently_followed_history.json/label_values/vec/dict/value",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:label_values:vec:dict:value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/comments.json/comments_v2/data/comment/timestamp",
+    "true_id": "comments_and_reactions:comments:comment:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/comments.json/comments_v2/data/comment/comment",
+    "true_id": "comments_and_reactions:comments:comment"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/groups/your_comments_in_groups.json/group_comments_v2/data/comment/timestamp",
+    "true_id": "groups:your_comments_in_groups:comment:timestamp"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/groups/your_comments_in_groups.json/group_comments_v2/data/comment/comment",
+    "true_id": "groups:your_comments_in_groups:comment"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/groups/your_comments_in_groups.json/group_comments_v2/data/comment/group",
+    "true_id": "groups:your_comments_in_groups:group"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/time_spent_on_facebook.json/label_values/vec/dict/label",
+    "true_id": "other_activity:time_spent_on_facebook:vec:dict:label"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/other_activity/time_spent_on_facebook.json/label_values/vec/dict/timestamp_value",
+    "true_id": "other_activity:time_spent_on_facebook:dict:timestamp_value"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_posts__check_ins__photos_and_videos_1.json/attachments/data/external_context/url",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:attachments:data:external_context:url"
+  },
+  {
+    "path": "personal_information/profile_information/your_facebook_activity/posts/your_videos.json/videos_v2/media_metadata/video_metadata/exif_data/upload_timestamp",
+    "true_id": "posts:your_videos:upload_timestamp"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/your_recently_followed_history.json/fbid",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:fbid"
+  },
+  {
+    "path": "preferences/preferences/reels_preferences.json/fbid",
+    "true_id": "preferences:preferences:reels_preferences:fbid"
+  },
+  {
+    "path": "preferences/preferences/your_story_highlights.json/fbid",
+    "true_id": "preferences:preferences:your_story_highlights:fbid"
+  },
+  {
+    "path": "preferences/preferences/your_watch_settings.json/fbid",
+    "true_id": "preferences:preferences:your_watch_settings:fbid"
+  },
+  {
+    "path": "preferences/preferences/privacy_settings.json/fbid",
+    "true_id": "preferences:preferences:privacy_settings:fbid"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/your_recently_followed_history.json/media",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:media"
+  },
+  {
+    "path": "preferences/preferences/reels_preferences.json/media",
+    "true_id": "preferences:preferences:reels_preferences:media"
+  },
+  {
+    "path": "preferences/preferences/your_story_highlights.json/media",
+    "true_id": "preferences:preferences:your_story_highlights:media"
+  },
+  {
+    "path": "preferences/preferences/your_watch_settings.json/media",
+    "true_id": "preferences:preferences:your_watch_settings:media"
+  },
+  {
+    "path": "preferences/preferences/privacy_settings.json/media",
+    "true_id": "preferences:preferences:privacy_settings:media"
+  },
+  {
+    "path": "your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/timestamp",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/media",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:media"
+  },
+  {
+    "path": "your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/fbid",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:fbid"
+  },
+  {
+    "path": "your_facebook_activity/posts/content_sharing_links_you_have_created.json/timestamp",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/posts/content_sharing_links_you_have_created.json/media",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:media"
+  },
+  {
+    "path": "your_facebook_activity/posts/content_sharing_links_you_have_created.json/fbid",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:fbid"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_posts__check_ins__photos_and_videos_1.json/timestamp",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:timestamp"
+  },
+  {
+    "path": "logged_information/interactions/groups_you've_visited.json/media",
+    "true_id": "your_interactions_on_facebook:groups_you_ve_visited:media"
+  },
+  {
+    "path": "ads_information/advertisers_you've_interacted_with.json/history_v2/timestamp",
+    "true_id": "ads_information:advertisers_you_ve_interacted_with:timestamp"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/your_recently_followed_history.json/label_values/label",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:label_values:label"
+  },
+  {
+    "path": "preferences/preferences/video.json/watch_videos_v2/video_title",
+    "true_id": "preferences:preferences:video:watch_videos_v2:video_title"
+  },
+  {
+    "path": "preferences/preferences/video.json/watch_videos_v2/user_action",
+    "true_id": "preferences:preferences:video:watch_videos_v2:user_action"
+  },
+  {
+    "path": "preferences/preferences/video.json/watch_videos_v2/action_time",
+    "true_id": "preferences:preferences:video:watch_videos_v2:action_time"
+  },
+  {
+    "path": "preferences/preferences/video.json/watch_videos_v2/feedback_collection",
+    "true_id": "preferences:preferences:video:watch_videos_v2:feedback_collection"
+  },
+  {
+    "path": "preferences/preferences/reels_preferences.json/label_values/label",
+    "true_id": "preferences:preferences:reels_preferences:label_values:label"
+  },
+  {
+    "path": "preferences/preferences/reels_preferences.json/label_values/value",
+    "true_id": "preferences:preferences:reels_preferences:label_values:value"
+  },
+  {
+    "path": "preferences/preferences/your_story_highlights.json/label_values/label",
+    "true_id": "preferences:preferences:your_story_highlights:label_values:label"
+  },
+  {
+    "path": "preferences/preferences/your_story_highlights.json/label_values/value",
+    "true_id": "preferences:preferences:your_story_highlights:label_values:value"
+  },
+  {
+    "path": "preferences/preferences/your_watch_settings.json/label_values/label",
+    "true_id": "preferences:preferences:your_watch_settings:label_values:label"
+  },
+  {
+    "path": "preferences/preferences/your_watch_settings.json/label_values/value",
+    "true_id": "preferences:preferences:your_watch_settings:label_values:value"
+  },
+  {
+    "path": "preferences/preferences/privacy_settings.json/label_values/label",
+    "true_id": "preferences:preferences:privacy_settings:label_values:label"
+  },
+  {
+    "path": "your_facebook_activity/groups/your_actions_on_violating_content_in_your_groups.json/label_values/label",
+    "true_id": "groups:your_actions_on_violating_content_in_your_groups:label"
+  },
+  {
+    "path": "your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/label_values/label",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:label_values:label"
+  },
+  {
+    "path": "your_facebook_activity/posts/posts_on_other_pages_and_profiles.json/label_values/value",
+    "true_id": "your_facebook_activity:posts:posts_on_other_pages_and_profiles:label_values:value"
+  },
+  {
+    "path": "your_facebook_activity/posts/content_sharing_links_you_have_created.json/label_values/label",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:label_values:label"
+  },
+  {
+    "path": "your_facebook_activity/posts/content_sharing_links_you_have_created.json/label_values/value",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:label_values:value"
+  },
+  {
+    "path": "your_facebook_activity/posts/content_sharing_links_you_have_created.json/label_values/href",
+    "true_id": "your_facebook_activity:posts:content_sharing_links_you_have_created:label_values:href"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_posts__check_ins__photos_and_videos_1.json/data/update_timestamp",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:data:update_timestamp"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_posts__check_ins__photos_and_videos_1.json/data/post",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:data:post"
+  },
+  {
+    "path": "connections/friends/your_post_audiences.json/label_values/label",
+    "true_id": "friends:your_post_audiences:label"
+  },
+  {
+    "path": "connections/friends/your_post_audiences.json/label_values/value",
+    "true_id": "friends:your_post_audiences:value"
+  },
+  {
+    "path": "connections/friends/your_post_audiences.json/label_values/title",
+    "true_id": "friends:your_post_audiences:title"
+  },
+  {
+    "path": "preferences/preferences/privacy_settings.json/label_values/dict/label",
+    "true_id": "preferences:preferences:privacy_settings:label_values:dict:label"
+  },
+  {
+    "path": "preferences/preferences/privacy_settings.json/label_values/dict/value",
+    "true_id": "preferences:preferences:privacy_settings:label_values:dict:value"
+  },
+  {
+    "path": "ads_information/ad_preferences.json/label_values/dict/dict/label",
+    "true_id": "ads_information:ad_preferences:dict:label"
+  },
+  {
+    "path": "ads_information/ad_preferences.json/label_values/dict/dict/value",
+    "true_id": "ads_information:ad_preferences:dict:value"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/your_recently_followed_history.json/label_values/vec/dict/label",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:label_values:vec:dict:label"
+  },
+  {
+    "path": "your_facebook_activity/other_activity/your_recently_followed_history.json/label_values/vec/dict/value",
+    "true_id": "your_facebook_activity:other_activity:your_recently_followed_history:label_values:vec:dict:value"
+  },
+  {
+    "path": "your_facebook_activity/posts/your_posts__check_ins__photos_and_videos_1.json/attachments/data/external_context/url",
+    "true_id": "your_facebook_activity:posts:your_posts__check_ins__photos_and_videos_1:attachments:data:external_context:url"
+  },
+  {
+    "path": "your_facebook_activity/groups/group_invites_you've_received.json/label_values/label",
+    "true_id": "groups:group_invites_you've_received:label"
+  }
+]
