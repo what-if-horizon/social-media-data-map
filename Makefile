@@ -7,7 +7,7 @@
 
 #ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
 MODEL_CONFIG_CLASS=gpt-oss-20b.yaml
-PYTHON_SCRIPT_CLASS=scripts/2.01_rnv_run_classification.py
+PYTHON_SCRIPT_CLASS=scripts/3.01_rnv_run_classification.py
 
 classification:
 	MODEL_CONFIG=$(MODEL_CONFIG_CLASS) \

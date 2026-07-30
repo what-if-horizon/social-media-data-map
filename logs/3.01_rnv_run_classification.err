@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/gpfs/home/bsc/bsc093754/GIT/social-media-data-map/scripts/3.01_rnv_run_classification.py", line 16, in <module>
+    main()
+  File "/gpfs/home/bsc/bsc093754/GIT/social-media-data-map/scripts/3.01_rnv_run_classification.py", line 13, in main
+    c.run_classification(input_file, output_dir, platform)
+  File "/home/bsc/bsc093754/GIT/social-media-data-map/src/inference/classification.py", line 25, in run_classification
+    node.update(json.loads(output))
+                ^^^^^^^^^^^^^^^^^^
+  File "/home/bsc/bsc093754/miniforge3/envs/datamap_env/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bsc/bsc093754/miniforge3/envs/datamap_env/lib/python3.12/json/decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bsc/bsc093754/miniforge3/envs/datamap_env/lib/python3.12/json/decoder.py", line 354, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)

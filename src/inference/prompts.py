@@ -16,7 +16,8 @@ def prompt_context():
 def prompt_classification():
     
     return """
-        You are given a path consisting of a filepath and a JSON path and a list of IDs. Please choose the correct ID for the path
+        You are given a path consisting of a filepath and a JSON path and a list of IDs.
+        From the list of IDs, choose the ID that explains best the JSON path
         
         path:
         {data_1}
@@ -25,7 +26,29 @@ def prompt_classification():
         {data_2}
 
         Answer format:
-        [{{ 'estimated_id': 'text of summary'}}]
+        [{{ 'estimated_id': 'estimated id choosen from the list of IDs'}}]
     
     """
 
+#--------------------------------------------------------
+# prepare_prompt()                                 
+#--------------------------------------------------------
+def prepare_prompt(data_1, template,  data_2 = None, data_3 = None, data_4 = None):
+
+    
+    prompt = template.format(
+        data_1 = data_1,
+        data_2 = data_2,
+        data_3 = data_3,
+        data_4 = data_4
+    )
+
+    messages = [
+        {"role": "system", "content": (
+            "You are an expert on Spanish legal text.\n"
+            "Reasoning: low"
+        )},
+        {"role": "user", "content": prompt}
+    ]
+
+    return messages

@@ -23,11 +23,12 @@ def generate_output(data_1, template,  max_retries = 3, data_2 = None, data_3 = 
     
             # Do the inference
             
-            prompt = p.prepare_prompt(data_1, data_2, data_3, data_4, template)
-            
+            prompt = p.prepare_prompt(data_1, template, data_2, data_3, data_4)
+            print('PROMPT', prompt)
             answer = model.generate(prompt)   
             
             raw_text = answer[0]
+            print('RAW TEXT', raw_text)
             
     
             # Extract JSON

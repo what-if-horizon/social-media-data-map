@@ -11,16 +11,20 @@ from datetime import date
 def run_classification(input_file, output_dir, platform):
     df = pd.read_csv(input_file)
     df = df[df['platform'] == platform]
-    cats = df['keepID']
+    cats = str(df['keepID'].values.tolist())
+    print('CATS', cats)
 
     output_list = []
     for ix, row in df.iterrows():
 
-        output = gI.generate_output(data_1 = row['final_path'], data_2=cats, template = p.prompt_classification )
+        output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_classification(), data_2=cats)
+        #print('OUPUT', output)
         node = {"path": row['final_path'],
                 "true_id": row['keepID']}
-        node.update(output)
+        
+        node.update(json.loads(output))
         output_list.append(node)
+        #print(node)
 
     json_str = json.dumps(output_list, indent=2)
     with open(f'{output_dir}classification_ids.json', "w") as f:
