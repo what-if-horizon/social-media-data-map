@@ -8,7 +8,7 @@ def prompt_context():
     {data_field_1}
 
     Answer format:
-    [{{ 'summary': 'text of summary'}}]
+    [{{ "summary": "text of summary"}}]
    
 """
 
@@ -17,7 +17,9 @@ def prompt_classification():
     
     return """
         You are given a path consisting of a filepath and a JSON path and a list of IDs.
-        From the list of IDs, choose the ID that explains best the JSON path
+        From the list of IDs, choose the ID that explains best the JSON path. 
+        ONLY choose IDs from the list of IDs, do NOT invent them yourself. 
+        If you cannot find an appropriate ID in the list of IDs, return 'NA'
         
         path:
         {data_1}
@@ -26,7 +28,7 @@ def prompt_classification():
         {data_2}
 
         Answer format:
-        [{{ 'estimated_id': 'estimated id choosen from the list of IDs'}}]
+        [{{ "estimated_id": "estimated id choosen from the list of IDs"}}]
     
     """
 

@@ -14,15 +14,18 @@ def run_classification(input_file, output_dir, platform):
     cats = str(df['keepID'].values.tolist())
     print('CATS', cats)
 
+    df = df[:50]
     output_list = []
     for ix, row in df.iterrows():
 
         output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_classification(), data_2=cats)
-        #print('OUPUT', output)
+        print('OUTPUT', output)
+        output = json.loads(output)
+        #output = output[0]
         node = {"path": row['final_path'],
                 "true_id": row['keepID']}
         
-        node.update(json.loads(output))
+        node.update(output)
         output_list.append(node)
         #print(node)
 
