@@ -21,6 +21,7 @@ export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
 # Necessary when running gpt-oss-20b
 export TIKTOKEN_ENCODINGS_BASE=${PWD}/src/agents/tiktoken_encodings
+export PYTHONPATH=$PWD:$PYTHONPATH
 
 mkdir -p logs
 

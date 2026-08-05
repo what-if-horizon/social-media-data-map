@@ -14,7 +14,7 @@ classification_dev:
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS) \
 	bash launchers/run_llm_on_server.sh
 
-TIME_CLASS=04:00:00
+TIME_CLASS=02:00:00
 
 classification:
 	sbatch \

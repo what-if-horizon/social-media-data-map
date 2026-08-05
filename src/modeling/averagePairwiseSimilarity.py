@@ -74,6 +74,7 @@ def dice_coefficient(a, b):
 def avg_pair_sim(df, compare_column):
 
     js_total = 0
+    dc_total = 0
     total = len(df)-1
     for (i1, row1), (i2, row2) in combinations(df.iterrows(), 2):
         value1 = standardize_strings(json.loads(row1[compare_column]))
@@ -82,8 +83,13 @@ def avg_pair_sim(df, compare_column):
         js = jaccard_similarity(value1, value2)
         js_total = js_total + js
 
+        dc = dice_coefficient(value1, value2)
+        dc_total = dc_total + dc
+
     avg_js = js_total/total
-    return avg_js
+    avg_dc = dc_total/total
+    
+    return avg_js, avg_dc
     
 
     

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=bsc100
 #SBATCH --qos=acc_bsccssh
-#SBATCH --time=04:00:00
+#SBATCH --time=02:00:00
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:4
 #SBATCH --cpus-per-task=80
@@ -17,7 +17,7 @@
 #--------------------------------------------------
 
 # Name of the YAML file (e.g. gpt_oss_20b.yaml)
-MODEL_CONFIG=${MODEL_CONFIG:-gpt_oss_20b.yaml}
+MODEL_CONFIG=${MODEL_CONFIG:-gpt-oss-20b.yaml}
 
 MODEL_YAML="$PWD/configs/$MODEL_CONFIG"
 MODEL_DIR="/gpfs/projects/bsc100/models"
@@ -38,7 +38,8 @@ export VLLM_USE_FLASHINFER_CUBIN=1
 export CUDA_HOME=/apps/ACC/CUDA/12.8
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
-export TIKTOKEN_ENCODINGS_BASE=${PWD}/src/RbLib/agents/tiktoken_encodings
+export TIKTOKEN_ENCODINGS_BASE=${PWD}/src/agents/tiktoken_encodings
+export PYTHONPATH=$PWD:$PYTHONPATH
 
 export MODEL_YAML
 export MODEL_DIR
@@ -53,7 +54,7 @@ READY_FILE="logs/servers_ready"
 
 rm -f "$READY_FILE"
 
-python -u src/RbLib/agents/startServers.py \
+python -u src/agents/startServers.py \
     --config "$MODEL_YAML" &
 
 SERVER_PID=$!
