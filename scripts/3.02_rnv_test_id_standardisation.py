@@ -5,8 +5,8 @@ import pandas as pd
 
 
 project_root = '/home/bsc/bsc093754/GIT/social-media-data-map/'
-input_file = f'{project_root}data/processed/classification_ids.json'
-output_file = f'{project_root}data/processed/classification_test.json'
+input_file = f'{project_root}results/01_id_standardisation/standardised_ids.json'
+output_file = f'{project_root}results/01_id_standardisation/standardised_ids_test.json'
 df_cats = f'{project_root}data/processed/inference_sample.csv'
 
 
