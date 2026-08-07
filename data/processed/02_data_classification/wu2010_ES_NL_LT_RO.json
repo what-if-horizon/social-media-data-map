@@ -1,0 +1,137 @@
+{
+  "Twitter": [
+    {
+      "path": "d/a/t/a///n/i/-/d/e/v/i/c/e/s/./j/s",
+      "categorie": "Activity",
+      "rationale": "The path points to a JavaScript file under a 'devices' directory, indicating device-related data. This falls under Activity, as it records device usage logs and cookies, not user identity or content. It captures technical metadata about the user's device interactions with the platform, IP addresses, browser types, and operating systems."
+    },
+    {
+      "path": "data/direct-messages.js/dmConversation/messages/messageCreate/reactions",
+      "categorie": "Content",
+      "rationale": "The path points to reactions attached to a message within a direct\u2011message conversation, which are part of the user\u2019s participatory content on the platform. It records user interactions with posted content, not identity data, contact lists, or server\u2011side activity logs."
+    },
+    {
+      "path": "data/direct-message-group-headers.js/dmConversation/conversationId",
+      "categorie": "Content",
+      "rationale": "The path points to a conversation ID within a direct\u2011message group header, which is part of the user\u2019s actual messaging content. It identifies a specific conversation the user participates in, rather than personal identifiers, contact lists, or server\u2011side activity logs."
+    },
+    {
+      "path": "data/ads-revenue-sharing.js/adsRevenueSharing/payoutHistory",
+      "categorie": "Activity",
+      "rationale": "The payoutHistory records the financial outcomes of the user\u2019s interactions with the platform\u2019s advertising system. It reflects the user\u2019s activity (ad views, clicks, revenue generation) rather than personal identification, contact lists, or posted content. Thus it belongs to the Activity layer."
+    },
+    {
+      "path": "data/direct-messages.js/dmConversation/messages/messageCreate/urls",
+      "categorie": "Content",
+      "rationale": "The path points to URLs included in a message creation event within direct messages. This represents the actual content the user participates in\u2014text or media links shared in a conversation\u2014rather than registration details, contact lists, or activity logs. Hence it falls under the Content layer."
+    }
+  ],
+  "Facebook": [
+    {
+      "path": "connections/followers_and_following/follow_requests_you've_received.json/relationships_follow_requests_received/media_list_data",
+      "categorie": "Networking",
+      "rationale": "The path points to data about follow requests received, which is information the platform shares with other users to build a contact network. It does not contain personal registration details, user-generated content, or activity logs, but rather the social connections the user has requested."
+    },
+    {
+      "path": "preferences/preferences/your_fundraiser_settings.json/media",
+      "categorie": "Registration",
+      "rationale": "The file contains user\u2011specific settings that are part of the profile data used to identify and configure the account. While not a unique identifier itself, it is stored in the registration layer of the platform\u2019s data model, distinguishing it from networking, content, or activity logs."
+    },
+    {
+      "path": "your_activity_across_facebook/other_activity/your_recently_followed_history.json/media",
+      "categorie": "Networking",
+      "rationale": "The file records the user\u2019s recent follow actions, which reveal connections to other accounts or pages. This data is used by the platform to build the user\u2019s network graph and to share contact information with other users, fitting the definition of networking data."
+    },
+    {
+      "path": "your_activity_across_facebook/pages/pages_you've_liked.json/page_likes_v2/url",
+      "categorie": "Activity",
+      "rationale": "The entry records the URLs of Facebook pages the user has liked, which is a log of the user\u2019s interactions with the platform. It reflects a specific action taken by the user rather than identifying information, contact data, or posted content, fitting the Activity layer."
+    },
+    {
+      "path": "personal_information/profile_information/profile_information.json/profile_v2/profile_uri",
+      "categorie": "Registration",
+      "rationale": "The path points to a profile URI, a unique identifier used by the platform to distinguish one user from another. This is core registration data, essential for user identification and account management, fitting the definition of Registration data in the taxonomy."
+    }
+  ],
+  "Instagram": [
+    {
+      "path": "logged_information/past_instagram_insights/profiles_reached.json/organic_insights_reach/string_map_data/Non-Followers Delta/value",
+      "categorie": "Content",
+      "rationale": "The path points to Instagram insights on organic reach, specifically the change in reach among non\u2011followers. This reflects metrics tied to the user\u2019s posts and their performance, which falls under the Content layer\u2014data about the content the user actually participates in and its impact."
+    },
+    {
+      "path": "security_and_login_information/login_and_profile_creation/instagram_signup_details.json/account_history_registration_info/string_map_data/IP Address/href",
+      "categorie": "Registration",
+      "rationale": "The path points to an IP address captured during the Instagram signup process, which is part of the data required to create and verify a new user account. This information is used by the platform to uniquely identify and authenticate the user during registration, fitting the Registration category."
+    },
+    {
+      "path": "personal_information/personal_information/professional_information.json/profile_business/string_map_data/Business Connection Methods/timestamp",
+      "categorie": "Activity",
+      "rationale": "The path points to a timestamp associated with a business connection method, which records when a professional contact action occurred. This is a server\u2011side log of user activity rather than personal identifiers, contact lists, or user\u2011generated content, fitting the Activity layer of the taxonomy."
+    },
+    {
+      "path": "your_instagram_activity/threads/personal_information.json/text_post_app_text_post_app_profile/string_map_data/Username/timestamp",
+      "categorie": "Registration",
+      "rationale": "The path contains a username and a timestamp within a personal_information.json file, which are key identifiers used to uniquely recognize the user across the platform. This data is essential for account creation and authentication, fitting the Registration layer that stores unique user identifiers."
+    },
+    {
+      "path": "your_instagram_activity/$USERNAME/replies_1.json/replies/original_message_sender",
+      "categorie": "Content",
+      "rationale": "The path points to the original message sender within a reply thread, which is metadata about a specific message exchanged on Instagram. This information is part of the actual content of user interactions, not merely registration details, contact lists, or server logs."
+    }
+  ],
+  "Youtube": [
+    {
+      "path": "Takeout/Tareas/Tasks.json/items/title",
+      "categorie": "Content",
+      "rationale": "This entry lists the titles of tasks the user has created or is assigned to within the platform. Titles represent user-generated content, reflecting personal or collaborative work items. They are not identifiers, contact info, or logs, but actual content the user engages with in the context of project management activities."
+    },
+    {
+      "path": "Takeout/Conservar/2023-12-15T00_57_28.538+01_00.json/color",
+      "categorie": "Content",
+      "rationale": "The JSON path \"color\" refers to a user\u2011specific setting that is part of the personal data the user has provided to the platform. While not a unique identifier or contact list, it is a piece of user\u2011generated or user\u2011controlled data that falls under the broader content layer of the taxonomy."
+    },
+    {
+      "path": "Takeout/Chrome/Historial.json/Session/tab/navigation/navigation_forward_back",
+      "categorie": "Activity",
+      "rationale": "The path points to navigation events (forward/back) recorded during a browser session, which are logs of user actions. This aligns with the Activity layer, capturing server logs and cookie-derived data that track how the user interacts with the service, rather than personal identifiers, contacts, or posted content."
+    },
+    {
+      "path": "Takeout/Fit/Todos los datos/derived_com.google.heart_minutes_com.google.an(1).json/Data Points/originDataSourceId",
+      "categorie": "Activity",
+      "rationale": "The field originDataSourceId identifies the device or app that recorded the heart\u2011minute data. It is metadata about a specific health activity event, not user identity, contact network, or user\u2011generated content. Thus it belongs to the Activity layer of the taxonomy."
+    },
+    {
+      "path": "Takeout/Tareas/Tasks.json/items/kind",
+      "categorie": "Content",
+      "rationale": "The path points to a JSON file containing user\u2011generated tasks, specifically the 'kind' field that describes the type of each task. This represents the actual content the user creates or interacts with on the platform, fitting the definition of Content in the taxonomy."
+    }
+  ],
+  "Tiktok": [
+    {
+      "path": "Your Activity/Like List/ItemFavoriteList/link",
+      "categorie": "Activity",
+      "rationale": "The path points to a list of items the user has liked, which records their interactions with content. This is a log of user actions rather than personal identifiers, contact lists, or the content itself, fitting the definition of activity data that tracks engagement on the platform."
+    },
+    {
+      "path": "Your Activity/Activity Summary/ActivitySummaryMap/videosWatchedToTheEndSinceAccountRegistration",
+      "categorie": "Activity",
+      "rationale": "The path records a log of videos the user has watched to completion since creating the account. It reflects the user\u2019s interaction history with the platform, captured through server logs or analytics, fitting the definition of Activity data that tracks user behavior on the service."
+    },
+    {
+      "path": "TikTok Shop/Shopping Cart List/ShoppingCart",
+      "categorie": "Content",
+      "rationale": "The path points to a user\u2019s shopping cart list within TikTok Shop, which contains the items the user has selected to purchase. This is a direct record of the user\u2019s content interaction\u2014what they are actively engaging with\u2014rather than identification, contact network, or server\u2011side activity logs."
+    },
+    {
+      "path": "Your Activity/Following/Following",
+      "categorie": "Networking",
+      "rationale": "The path points to the user\u2019s list of followed accounts, which is used by the platform to build the user\u2019s social graph. This data is shared with other users to establish connections and is not personal content or activity logs, fitting the Networking layer."
+    },
+    {
+      "path": "Profile/Profile Info/ProfileMap/PlatformInfo/Platform",
+      "categorie": "Registration",
+      "rationale": "The path Profile/Profile Info/ProfileMap/PlatformInfo/Platform contains metadata that uniquely identifies the user within the social network, such as the platform or device used for registration. This information is essential for distinguishing the user from others and is therefore part of the Registration layer."
+    }
+  ]
+}

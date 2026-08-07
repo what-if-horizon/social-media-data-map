@@ -3,12 +3,12 @@
 #SBATCH --qos=acc_debug
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:2
 #SBATCH --cpus-per-task=80
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
 
-MODEL_YAML="$PWD/configs/gpt-oss-20b.yaml"
+MODEL_YAML="${MODEL_YAML:-$PWD/configs/gpt-oss-20b.yaml}"
 
 ENV=$(grep "^environment:" "$MODEL_YAML" | cut -d' ' -f2)
 
@@ -30,3 +30,4 @@ mkdir -p logs
 #--------------------------------------------------
 
 python src/agents/startServers.py --config "$MODEL_YAML"
+
