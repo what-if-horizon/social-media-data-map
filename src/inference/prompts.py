@@ -52,7 +52,48 @@ def prompt_std_ids():
     
     """
 
+def prompt_dt_schneider_2010():
+    return """
+    You are given five categories from a taxonomy of social networking data 
+    Use these categories to classify the data entry (path consisting of a filepath and a JSON path) from a social media takeout
+    Provide a rationale for choosing the categorie in 50 words
+    
+    Taxonomy of social networking data:
+    1. Service data are user-supplied data before it can access the service. These data are known as identifiable data, because they uniquely identify users on the system. 
+    2. Disclosed data are data that the user posts in his own page. These data are also known to form the user profile.
+    3. Entrusted data are the data that the user posts the page to other network members. It is similar to Disclosed data, but the difference is that in some cases, after posting the content the user has no control over the data. 
+    4. Incidental data are data that other network members post about you. It is also similar to Disclosed data, but the difference is that it was not you who originally created the data and in some cases you have no control over them. 
+    5. Behavioral data are data that the site collects about the user's activities during its use. 
+    6. Derived data are derived data from the data aforementioned. The derived data can be generated using various techniques, such as data mining.
 
+    Path to data entry:
+    {data_1}
+
+    Answer format:
+        [{{ "categorie": "1 chosen data categorie",
+            "rationale": "Reason for choosing the categorie in 50 words}}]
+    """
+
+def prompt_dt_wu_2010():
+    return """
+    You are given five categories from a taxonomy of social networking data 
+    Use these categories to classify the data entry (path consisting of a filepath and a JSON path) from a social media takeout
+    Provide a rationale for choosing the categorie in 50 words
+        
+    Taxonomy of social networking data:
+    1. Registration: This layer consists of the information required to identify the data provider uniquely among all the other users of the social network. 
+    2. Networking: This layer consists of the information solicited by the social network to be released to its other users, in order to construct a network of contacts for the data provider.
+    5. Content: This layer consists of the actual content with which the data provider actually participates in the social network.
+    6. Activity: This data consists of web server logs, information from cookies, as well as other means of gathering information about the data provider’s activities on the social networking service.
+   
+    Path to data entry:
+        {data_1}
+    
+    Answer format:
+        [{{ "categorie": "1 chosen data categorie",
+            "rationale": "Reason for choosing the categorie in 50 words}}]
+     
+    """
 
 
 # --------------------------------------------------------

@@ -102,7 +102,7 @@
   {
     "path": "ads_information/advertisers_you've_interacted_with.json/history_v2/timestamp",
     "true_id": "ads_information:advertisers_you_ve_interacted_with:timestamp",
-    "estimated_id": "ads_information:advertisers_you've_interacted_with:timestamp"
+    "estimated_id": "ads_information:advertisers_you_ve_interacted_with:timestamp"
   },
   {
     "path": "preferences/feed/controls.json/controls/name",
@@ -237,7 +237,7 @@
   {
     "path": "your_facebook_activity/posts/edits_you_made_to_posts.json/label_values/value",
     "true_id": "posts:edits_you_made_to_posts:value",
-    "estimated_id": "your_facebook_activity:posts:edits_you_made_to_posts:value"
+    "estimated_id": "posts:edits_you_made_to_posts:label_values:value"
   },
   {
     "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/label_values/label",

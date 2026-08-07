@@ -3,7 +3,7 @@
 #SBATCH --qos=acc_bsccssh
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:2
 #SBATCH --cpus-per-task=80
 #SBATCH --output=logs/%x.out
 #SBATCH --error=logs/%x.err

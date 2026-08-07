@@ -14,7 +14,7 @@ def run_id_std(input_file, output_dir, platform):
     cats = str(df['keepID'].values.tolist())
     print('CATS', cats)
 
-    df = df[:50]
+    #df = df[:50]
     output_list = []
     for ix, row in df.iterrows():
 

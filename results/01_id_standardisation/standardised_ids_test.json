@@ -146,8 +146,10 @@
   {
     "path": "preferences/feed/snooze.json/label_values/value",
     "true_id": "feed:snooze:value",
-    "estimated_id": "feed:snooze:value",
-    "result": "CORRECT"
+    "estimated_id": "preferences:preferences:label_values:value",
+    "result": "INCORRECT",
+    "sim_ratio": 0.4067796610169492,
+    "present_in_list": "False"
   },
   {
     "path": "your_facebook_activity/posts/your_videos.json/videos_v2/uri",
@@ -188,10 +190,8 @@
   {
     "path": "your_facebook_activity/other_activity/your_video_consumption_summary.json/label_values/label",
     "true_id": "other_activity:your_video_consumption_summary:label",
-    "estimated_id": "other_activity:your_video_consumption_summary:label_values:label",
-    "result": "INCORRECT",
-    "sim_ratio": 0.8869565217391304,
-    "present_in_list": "False"
+    "estimated_id": "other_activity:your_video_consumption_summary:label",
+    "result": "CORRECT"
   },
   {
     "path": "your_facebook_activity/comments_and_reactions/comments.json/comments_v2/timestamp",
@@ -300,9 +300,9 @@
   {
     "path": "your_facebook_activity/comments_and_reactions/your_comment_edits.json/label_values/label",
     "true_id": "comments_and_reactions:your_comment_edits:label",
-    "estimated_id": "comments_and_reactions:your_comment_edits:label_values:label",
+    "estimated_id": "NA",
     "result": "INCORRECT",
-    "sim_ratio": 0.8785046728971962,
+    "sim_ratio": 0.0,
     "present_in_list": "False"
   }
 ]

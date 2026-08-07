@@ -27,8 +27,8 @@ def standardize_strings(id_list):
         text = unicodedata.normalize("NFKD", text)
         text = "".join(c for c in text if not unicodedata.combining(c))
 
-        # Remove punctuation
-        text = re.sub(r"[^\w\s]", "", text)
+        # Remove punctuation except colon
+        text = re.sub(r"[^\w\s:]", "", text)
 
         # Normalize whitespace
         text = re.sub(r"\s+", " ", text).strip()
@@ -90,6 +90,36 @@ def avg_pair_sim(df, compare_column):
     avg_dc = dc_total/total
     
     return avg_js, avg_dc
+
+
+def avg_pairwise_sim(df):
+    results_list = []
+    
+    for platform in df["platform"].unique():
+
+        df_filtered = df[df["platform"] == platform]
+        participant_dict = group_by_participant(df_filtered)
+
+        n = len(participant_dict)
+
+        if n < 2:
+            print(f"{platform}: NOT ENOUGH CASES TO COMPARE")
+            continue
+
+        total = n * (n - 1) // 2
+
+        js_total = 0
+        dc_total = 0
+
+        for (_, ids1), (_, ids2) in combinations(participant_dict.items(), 2):
+            js_total += jaccard_similarity(ids1, ids2)
+            dc_total += dice_coefficient(ids1, ids2)
+
+        results_list.append({
+            "platform": platform,
+            "avg_js": js_total / total,
+            "avg_dc": dc_total / total
+        })
     
 
     

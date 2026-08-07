@@ -13,7 +13,7 @@ df_cats = f'{project_root}data/processed/inference_sample.csv'
 
 
 
-def test_classification(input_file, output_file, df_cats):
+def test_id_standardisation(input_file, output_file, df_cats):
     df = pd.read_csv(df_cats)
     cats = str(df['keepID'].values.tolist())            
 
@@ -50,7 +50,7 @@ def test_classification(input_file, output_file, df_cats):
 
 
 def main():
-    test_classification(input_file, output_file, df_cats)
+    test_id_standardisation(input_file, output_file, df_cats)
 
 if __name__ == "__main__":
     main()
