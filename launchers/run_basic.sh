@@ -15,6 +15,7 @@ source ~/miniforge3/etc/profile.d/conda.sh
 conda activate datamap_env
 
 export PROJECT_ROOT="$ROOT"
+export PYTHONPATH=$PWD:$PYTHONPATH
 
 echo "Running $PYTHON_SCRIPT"
 echo "PROJECT_ROOT=$PROJECT_ROOT"

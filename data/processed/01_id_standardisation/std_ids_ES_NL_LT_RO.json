@@ -1,0 +1,110 @@
+{
+  "Facebook": [
+    {
+      "path": "your_facebook_activity/groups/your_actions_on_violating_content_in_your_groups.json/label_values/label",
+      "true_id": "groups:your_actions_on_violating_content_in_your_groups:label",
+      "estimated_id": "groups:your_actions_on_violating_content_in_your_groups:label"
+    },
+    {
+      "path": "personal_information/profile_information/your_facebook_activity/comments_and_reactions/comments.json/comments_v2/data/comment/comment",
+      "true_id": "comments_and_reactions:comments:comment",
+      "estimated_id": "comments_and_reactions:comments:comment"
+    },
+    {
+      "path": "personal_information/profile_information/your_facebook_activity/groups/your_group_membership_activity.json/groups_joined_v2/title",
+      "true_id": "groups:your_group_membership_activity:title",
+      "estimated_id": "groups:your_group_membership_activity:title"
+    },
+    {
+      "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/fbid",
+      "true_id": "other_activity:time_spent_on_facebook:fbid",
+      "estimated_id": "other_activity:time_spent_on_facebook:fbid"
+    },
+    {
+      "path": "personal_information/profile_information/your_facebook_activity/stories/story_reactions.json/stories_feedback_v2/title",
+      "true_id": "stories:story_reactions:title",
+      "estimated_id": "stories:story_reactions:title"
+    }
+  ],
+  "Instagram": [
+    {
+      "path": "preferences/media_settings/consents.json/media",
+      "true_id": "settings:consents:media",
+      "estimated_id": "settings:consents:media"
+    },
+    {
+      "path": "preferences/media_settings/consents.json/fbid",
+      "true_id": "settings:consents:fbid",
+      "estimated_id": "settings:consents:fbid"
+    },
+    {
+      "path": "your_instagram_activity/media/reels.json/ig_reels_media/media/creation_timestamp",
+      "true_id": "media:reels:creation_timestamp",
+      "estimated_id": "media:reels:creation_timestamp"
+    },
+    {
+      "path": "preferences/media_settings/consents.json/ent_name",
+      "true_id": "settings:consents:ent_name",
+      "estimated_id": "settings:consents:ent_name"
+    },
+    {
+      "path": "your_instagram_activity/content/posts_1.json/media/creation_timestamp",
+      "true_id": "media:posts_1:media:creation_timestamp",
+      "estimated_id": "media:posts_1:media:creation_timestamp"
+    }
+  ],
+  "Youtube": [
+    {
+      "path": "geschiedenis/zoekgeschiedenis.json/title",
+      "true_id": "search-history:title",
+      "estimated_id": "search-history:title"
+    },
+    {
+      "path": "istorija/paie\u0161kos istorija.json/products",
+      "true_id": "search-history:products",
+      "estimated_id": "search-history:products"
+    },
+    {
+      "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de b\u00fasquedas.json/titleUrl",
+      "true_id": "search-history:titleUrl",
+      "estimated_id": "search-history:titleUrl"
+    },
+    {
+      "path": "istoric/istoricul-viziona\u0306rilor.json/time",
+      "true_id": "watch-history:time",
+      "estimated_id": "watch-history:time"
+    },
+    {
+      "path": "historial/historial-de-reproducciones.json/details/name",
+      "true_id": "watch-history:details:name",
+      "estimated_id": "watch-history:details:name"
+    }
+  ],
+  "Tiktok": [
+    {
+      "path": "Your Activity/Follower/FansList/Date",
+      "true_id": "Activity:Follower List:FansList:Date",
+      "estimated_id": "Activity:Follower List:FansList:Date"
+    },
+    {
+      "path": "Your Activity/Favorite Videos/FavoriteVideoList/Link",
+      "true_id": "Activity:Favorite Videos:FavoriteVideoList:Link",
+      "estimated_id": "Activity:Favorite Videos:FavoriteVideoList:Link"
+    },
+    {
+      "path": "Your Activity/Like List/ItemFavoriteList/date",
+      "true_id": "Activity:Like List:ItemFavoriteList:date",
+      "estimated_id": "Activity:Like List:ItemFavoriteList:date"
+    },
+    {
+      "path": "Profile/Profile Info/ProfileMap/likesReceived",
+      "true_id": "Profile:Profile Information:ProfileMap:likesReceived",
+      "estimated_id": "Profile:Profile Information:ProfileMap:likesReceived"
+    },
+    {
+      "path": "Your Activity/Searches/SearchList/SearchTerm",
+      "true_id": "Activity:Search History:SearchList:SearchTerm",
+      "estimated_id": "Activity:Search History:SearchList:SearchTerm"
+    }
+  ]
+}

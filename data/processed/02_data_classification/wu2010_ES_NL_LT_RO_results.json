@@ -1,0 +1,42 @@
+[
+  {
+    "platform": "Twitter",
+    "total_cases": 5,
+    "total_correct": 4,
+    "total_incorrect": 1,
+    "percentage_total_correct": "80.0%",
+    "percentage_total_incorrect": "20.0%"
+  },
+  {
+    "platform": "Facebook",
+    "total_cases": 5,
+    "total_correct": 3,
+    "total_incorrect": 2,
+    "percentage_total_correct": "60.0%",
+    "percentage_total_incorrect": "40.0%"
+  },
+  {
+    "platform": "Instagram",
+    "total_cases": 5,
+    "total_correct": 4,
+    "total_incorrect": 1,
+    "percentage_total_correct": "80.0%",
+    "percentage_total_incorrect": "20.0%"
+  },
+  {
+    "platform": "Youtube",
+    "total_cases": 5,
+    "total_correct": 4,
+    "total_incorrect": 1,
+    "percentage_total_correct": "80.0%",
+    "percentage_total_incorrect": "20.0%"
+  },
+  {
+    "platform": "Tiktok",
+    "total_cases": 5,
+    "total_correct": 4,
+    "total_incorrect": 1,
+    "percentage_total_correct": "80.0%",
+    "percentage_total_incorrect": "20.0%"
+  }
+]

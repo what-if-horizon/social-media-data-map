@@ -45,6 +45,19 @@ id_std_test:
 
 
 
+id_std_chain:
+	JOB_ID=$$(sbatch --parsable \
+		--time=$(TIME_STD) \
+		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
+		launchers/run_llm.sh); \
+	echo "Waiting for job $$JOB_ID..."; \
+	squeue --job $$JOB_ID --start; \
+	while squeue -h -j $$JOB_ID | grep -q $$JOB_ID; do sleep 10; done; \
+	echo "id_std finished"; \
+	bash launchers/run_basic.sh scripts/3.02_rnv_test_id_standardisation.py
+
+
+
 #----------------------------------------------------------------
 # DATA CLASSIFICATION
 #----------------------------------------------------------------
@@ -76,10 +89,24 @@ data_class_test_dev:
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
 	bash launchers/run_llm_on_server.sh
 
-TIME_CLASS=02:00:00
+TIME_CLASS_TEST=02:00:00
 
 data_class_test:
 	sbatch \
+		--time=$(TIME_CLASS_TEST) \
+		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS_TEST),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
+		launchers/run_llm.sh
+
+
+
+# To execute the test when the inference is finished
+data_class_chain:
+	JOB_ID=$$(sbatch --parsable \
+		--time=$(TIME_CLASS) \
+		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS) \
+		launchers/run_llm.sh); \
+	sbatch \
+		--dependency=afterok:$$JOB_ID \
 		--time=$(TIME_CLASS_TEST) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS_TEST),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
 		launchers/run_llm.sh

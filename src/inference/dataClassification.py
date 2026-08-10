@@ -6,6 +6,7 @@ import pandas as pd
 import json
 from datetime import date
 import random
+import tqdm
 
 
 
@@ -48,15 +49,16 @@ def run_classification(input_file, output_dir, data_tax, country_list):
         ################################################
         #JUST FOR TESTING!!!!!!!
         ################################################
-        random.seed(100)
-        df_filtered = df_filtered.sample(n=5)
+        #random.seed(100)
+        #df_filtered = df_filtered.sample(n=5)
         ################################################
         output_list = []
 
-        for _, row in df_filtered.iterrows():
+        print('PROCESSING PLATFORM:', platform)
+        for _, row in tqdm(df_filtered.iterrows(), total=len(df_filtered)):
     
             output = gI.generate_output(data_1 = row['final_path'], template = template)
-            print('OUTPUT', output)
+            #print('OUTPUT', output)
             output = json.loads(output)
             #output = output[0]
             node = {"path": row['final_path']}
@@ -95,14 +97,13 @@ def test_classification(input_file, output_dir_data, output_dir_results, country
         incorrect_total = 0
         total = len(results)
 
-        for r in results:
+        print('PROCESSING PLATFORM:', platform)
+        for r in tqdm(results, desc="Processing results"):
 
             input_result = json.dumps(r)
             output = gI.generate_output(data_1 = input_result, template = template)
-            print('OUTPUT:', output)
-            print('OUTPUT TYPE:', type(output))
+            #print('OUTPUT TYPE:', type(output))
             output = json.loads(output)
-            print('OUTPUT TYPE AFTER LOADS', type(output))
             r.update(output)
             
 
@@ -120,6 +121,7 @@ def test_classification(input_file, output_dir_data, output_dir_results, country
                 }
         
         result_list.append(node)
+        print(json.dumps(node, indent=2))
 
 
     json_str = json.dumps(data, indent=2)
@@ -127,7 +129,7 @@ def test_classification(input_file, output_dir_data, output_dir_results, country
         f.write(json_str)
 
     result_str = json.dumps(result_list, indent=2)
-    with open(f'{output_dir_data}/{output_file}_results.json', "w") as f:
+    with open(f'{output_dir_results}/{output_file}_results.json', "w") as f:
         f.write(result_str)
     
 
