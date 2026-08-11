@@ -5,7 +5,7 @@ import json
 from datetime import date
 import random
 from difflib import SequenceMatcher
-import tqdm
+from tqdm import tqdm
 
 
 

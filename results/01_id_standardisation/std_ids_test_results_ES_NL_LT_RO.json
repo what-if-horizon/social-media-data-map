@@ -1,32 +1,32 @@
 {
   "Facebook": {
     "platform": "Facebook",
-    "total_cases": 5,
-    "total_correct": 5,
-    "total_incorrect": 0,
-    "percentage_total_correct": "100.0%",
-    "percentage_total_incorrect": "0.0%"
+    "total_cases": 296,
+    "total_correct": 266,
+    "total_incorrect": 30,
+    "percentage_total_correct": "89.86486486486486%",
+    "percentage_total_incorrect": "10.135135135135135%"
   },
   "Instagram": {
     "platform": "Instagram",
-    "total_cases": 5,
-    "total_correct": 5,
-    "total_incorrect": 0,
-    "percentage_total_correct": "100.0%",
-    "percentage_total_incorrect": "0.0%"
+    "total_cases": 53,
+    "total_correct": 45,
+    "total_incorrect": 8,
+    "percentage_total_correct": "84.90566037735849%",
+    "percentage_total_incorrect": "15.09433962264151%"
   },
   "Youtube": {
     "platform": "Youtube",
-    "total_cases": 5,
-    "total_correct": 5,
-    "total_incorrect": 0,
-    "percentage_total_correct": "100.0%",
-    "percentage_total_incorrect": "0.0%"
+    "total_cases": 145,
+    "total_correct": 138,
+    "total_incorrect": 7,
+    "percentage_total_correct": "95.17241379310346%",
+    "percentage_total_incorrect": "4.827586206896552%"
   },
   "Tiktok": {
     "platform": "Tiktok",
-    "total_cases": 5,
-    "total_correct": 5,
+    "total_cases": 37,
+    "total_correct": 37,
     "total_incorrect": 0,
     "percentage_total_correct": "100.0%",
     "percentage_total_incorrect": "0.0%"

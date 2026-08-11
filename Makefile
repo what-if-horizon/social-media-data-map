@@ -71,7 +71,7 @@ data_class_dev:
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS) \
 	bash launchers/run_llm_on_server.sh
 
-TIME_CLASS=02:00:00
+TIME_CLASS=04:00:00
 
 data_class:
 	sbatch \
@@ -89,7 +89,7 @@ data_class_test_dev:
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
 	bash launchers/run_llm_on_server.sh
 
-TIME_CLASS_TEST=02:00:00
+TIME_CLASS_TEST=04:00:00
 
 data_class_test:
 	sbatch \

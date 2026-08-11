@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=bsc100
 #SBATCH --qos=acc_bsccssh
-#SBATCH --time=02:00:00
+#SBATCH --time=04:00:00
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:2
 #SBATCH --cpus-per-task=80

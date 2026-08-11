@@ -6,7 +6,7 @@ import pandas as pd
 import json
 from datetime import date
 import random
-import tqdm
+from tqdm import tqdm
 
 
 
@@ -98,7 +98,7 @@ def test_classification(input_file, output_dir_data, output_dir_results, country
         total = len(results)
 
         print('PROCESSING PLATFORM:', platform)
-        for r in tqdm(results, desc="Processing results"):
+        for r in tqdm(results, desc=f"Processing results for platform: {platform}"):
 
             input_result = json.dumps(r)
             output = gI.generate_output(data_1 = input_result, template = template)
