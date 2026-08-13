@@ -11,7 +11,8 @@ import datetime
 import warnings
 warnings.filterwarnings("ignore")
 
-import os, psutil, time
+import os
+import time
 
 
 
@@ -19,12 +20,10 @@ import os, psutil, time
 time = datetime.datetime.now()
 print(f'{time} START PROCESSING JSONS INSTAGRAM')
 
-main_path = Path.cwd()
-main_path = Path(f'{main_path}/structure_donations/Processed_structure_donations/Instagram') 
 
-input_directory = Path(f'{main_path}/Input_test') 
-output_directory = Path(f'{main_path}/Output')  
-final_directory = Path (f'{main_path}/Final')
+input_directory = Path('/projects/prjs2007/data_donation/ddd_processed/instagram') 
+output_directory =  Path(os.environ["TMPDIR"])
+final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/merged_structures')
 
 for file in output_directory.iterdir():
    if file.is_file():
@@ -482,19 +481,13 @@ def structure_donations(data, col_path, max_columns):
 
 
 
-
-
-
-
-
-
-
 ####################################################################################################
 # Execute 'structure_donations()': Transform data structures from JSON format to tabular format    #
 ####################################################################################################
 
 # Execute the 'structure_donations()' function for each file (data structure) in the input directory
 for file in input_directory.iterdir():  
+#for file in list(input_directory.iterdir())[:5]:
     if file.is_file():  
         print("--------------------------------------------------------------------------------------")
         time = datetime.datetime.now()

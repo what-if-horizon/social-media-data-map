@@ -9,6 +9,7 @@ import re
 import ast
 import datetime
 import warnings
+import os
 warnings.filterwarnings("ignore")
 
 
@@ -16,12 +17,9 @@ warnings.filterwarnings("ignore")
 time = datetime.datetime.now()
 print(f'{time} START PROCESSING JSONS TIKTOK')
 
-main_path = Path.cwd()
-main_path = Path(f'{main_path}/structure_donations/Processed_structure_donations/TikTok') 
-
-input_directory = Path(f'{main_path}/Input_test') 
-output_directory = Path(f'{main_path}/Output')  
-final_directory = Path (f'{main_path}/Final')
+input_directory = Path('/projects/prjs2007/data_donation/ddd_processed/tiktok') 
+output_directory =  Path(os.environ["TMPDIR"])
+final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/merged_structures')
 
 max_columns = 7
 

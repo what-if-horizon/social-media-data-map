@@ -25,6 +25,29 @@ start_servers:
 ingest_dd:
 	bash launchers/run_basic_snellius.sh scripts/1.01_rnv_ingest_dd_structures.py
 
+merge_dd_fb:
+	bash launchers/run_basic_snellius.sh src/ingest/FB_json_to_csv.py
+
+merge_dd_ig:
+	bash launchers/run_basic_snellius.sh src/ingest/IG_json_to_csv.py
+
+merge_dd_tt:
+	bash launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
+
+merge_dd_x:
+	bash launchers/run_basic_snellius.sh src/ingest/X_json_to_csv.py
+
+merge_dd_yt:
+	bash launchers/run_basic_snellius.sh src/ingest/YT_json_to_csv.py
+
+merge_dd:
+	sbatch launchers/run_basic_snellius.sh src/ingest/FB_json_to_csv.py
+	sbatch launchers/run_basic_snellius.sh src/ingest/IG_json_to_csv.py
+	sbatch launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
+	sbatch launchers/run_basic_snellius.sh src/ingest/X_json_to_csv.py
+	sbatch launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
+
+
 
 #----------------------------------------------------------------
 # ID STANDARDISATION

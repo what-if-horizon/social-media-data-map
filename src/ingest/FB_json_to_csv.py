@@ -9,6 +9,7 @@ import gc
 import datetime
 import warnings
 import re
+import os
 warnings.filterwarnings("ignore")
 
 
@@ -16,12 +17,10 @@ warnings.filterwarnings("ignore")
 time = datetime.datetime.now()
 print(f'{time} START PROCESSING JSONS FACEBOOK')
 
-main_path = Path.cwd()
-main_path = Path(f'{main_path}/structure_donations/Processed_structure_donations/Facebook') 
 
-input_directory = Path(f'{main_path}/Input_test') 
-output_directory = Path(f'{main_path}/Output')  
-final_directory = Path (f'{main_path}/Final')
+input_directory = Path('/projects/prjs2007/data_donation/ddd_processed/facebook') 
+output_directory =  Path(os.environ["TMPDIR"])
+final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/merged_structures')
 
 for file in output_directory.iterdir():
    if file.is_file():
@@ -34,9 +33,6 @@ for i in range(max_columns):
         col_path = [f"col_path_{i}" for i in range(1, max_columns)]
         col_path_values = [f"col_path_{i}_values" for i in range(1, max_columns)]
         col_path_list = [f"col_path_{i}_lIST" for i in range(1, max_columns)]
-
-
-
 
 
 ##################
@@ -69,24 +65,6 @@ def loading_data(data):
     df['json_name'] = df['json_name'].str.rsplit("/", n=1).str[-1]
     df['file_path'] = df.index
     df['file_path'] = df['file_path'].str.replace('^facebook-[^/]+/', '', regex=True)
-
-    #df['file_path'] = df['file_path'].str.replace(
-    #r'(.*/messages/[^/]+/)[^/]+(/message_1\.json)', 
-    #r'\1username\2',
-    #regex=True)
-
-
-
-
-    #Filter rows ending with 'message_1.json' and limit to 5 per group
-    #filtered = df[df['file_path'].str.endswith('message_1.json')]
-    #limited = filtered.groupby('file_path').head(5)
-    #unfiltered = df[~df['file_path'].str.endswith('message_1.json')]
-
-    # Combine both
-    #df = pd.concat([limited, unfiltered]).reset_index(drop=True)
-
-
 
 
     col = df.pop('json_name') 
@@ -339,11 +317,7 @@ def extract_path(df, max_columns):
 
                 path.append(str(val))
 
-
         df.at[ix, 'path'] = path
-
-
-
 
     return df
 
@@ -353,9 +327,6 @@ def extract_path(df, max_columns):
 ############### 
 # list_path() #
 ###############
-
-
-
 
 def list_path(df):
 
@@ -523,6 +494,7 @@ def structure_donations(data, max_columns):
 
 # Execute the 'structure_donations()' function for each file (data structure) in the input directory
 for file in input_directory.iterdir():  
+#for file in list(input_directory.iterdir())[:5]:
     if file.is_file():  
         print("--------------------------------------------------------------------------------------")
         time = datetime.datetime.now()

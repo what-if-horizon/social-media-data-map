@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# To execute this script: source launchers/snellius.env
+# To execute this script: source launchers/snellius_env.sh
 
 
 
