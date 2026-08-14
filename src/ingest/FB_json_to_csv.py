@@ -18,9 +18,9 @@ time = datetime.datetime.now()
 print(f'{time} START PROCESSING JSONS FACEBOOK')
 
 
-input_directory = Path('/projects/prjs2007/data_donation/ddd_processed/facebook') 
-output_directory =  Path(os.environ["TMPDIR"])
-final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/merged_structures')
+input_directory = Path('/projects/prjs2007/data_donation/ddd_processed/00_ingest/001_json_structures/facebook') 
+output_directory =  Path('/projects/prjs2007/data_donation/ddd_processed/00_ingest/002_individual_flattened_structures')
+final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/00_ingest/003_merged_structures')
 
 for file in output_directory.iterdir():
    if file.is_file():
@@ -443,7 +443,7 @@ def clean_and_store(df, df_no_data, file_name):
     df = df.drop_duplicates()
 
     # Save the DataFrame 
-    df.to_csv(f"{output_directory}/Output_" + file_name + '.csv', index=False)
+    df.to_csv(f"{output_directory}/facebook/{file_name}.csv", index=False)
 
     return df
 
@@ -480,6 +480,8 @@ def structure_donations(data, max_columns):
 
     del df,df_no_data, data
 
+   
+
 
 
 
@@ -501,14 +503,13 @@ for file in input_directory.iterdir():
         print(f"{time} START PROCESSING:", file.name)
         
         try:
-            result = structure_donations(file, max_columns)
+            n_rows = structure_donations(file, max_columns)
         except Exception as e:
             print(f"Error in processing {file}: {e}")
             continue
 
         print(f"{time} FINISH PROCESSING:", file.name)
         print("--------------------------------------------------------------------------------------")
-        del result
         gc.collect()
 
 

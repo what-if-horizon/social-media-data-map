@@ -1,11 +1,11 @@
-model_dir: /gpfs/projects/bsc100/models
+model_dir: /projects/prjs2007/models
 max_model_len: auto
 gpu_memory_utilization: 0.90
-environment: datamap_env
+environment: /venvs/social-media-data-map/bin/activate
 
 models:
 
-  - name: gpt-oss-20b
+  - name: openai/gpt-oss-20b
     gpus: [0, 1]
     tensor_parallel: 2
     port: 8001

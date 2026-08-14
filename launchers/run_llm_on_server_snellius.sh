@@ -13,7 +13,7 @@ mkdir -p "$LOG_DIR"
 MODEL_CONFIG=${MODEL_CONFIG}
 
 MODEL_YAML="$PWD/configs/$MODEL_CONFIG"
-MODEL_DIR="/gpfs/projects/bsc100/models"
+MODEL_DIR="/projects/prjs2007/models"
 export MODEL_YAML
 export MODEL_DIR
 
@@ -23,12 +23,11 @@ export MODEL_DIR
 
 ENV=$(grep "^environment:" "$MODEL_YAML" | cut -d' ' -f2)
 
-source ~/miniforge3/etc/profile.d/conda.sh
-conda activate "$ENV"
+source "$HOME/$ENV"
 
 export VLLM_USE_FLASHINFER_CUBIN=1
 export CUDA_HOME=/apps/ACC/CUDA/12.8
-export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+
 
 export TIKTOKEN_ENCODINGS_BASE=${PWD}/src/agents/tiktoken_encodings
 export PYTHONPATH=$PWD:$PYTHONPATH

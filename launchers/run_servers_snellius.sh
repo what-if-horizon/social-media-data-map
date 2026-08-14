@@ -8,16 +8,16 @@
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
 
+# To ask for an interactive node srun --partition=gpu_h100 --gpus=2 --time=01:00:00 --pty bash
 MODEL_YAML="${MODEL_YAML:-$PWD/configs/gpt-oss-20b.yaml}"
 
 ENV=$(grep "^environment:" "$MODEL_YAML" | cut -d' ' -f2)
 
-source ~/miniforge3/etc/profile.d/conda.sh
-conda activate "$ENV"
+source "$HOME/$ENV"
 
 export VLLM_USE_FLASHINFER_CUBIN=1
 export CUDA_HOME=/apps/ACC/CUDA/12.8
-export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+
 
 # Necessary when running gpt-oss-20b
 export TIKTOKEN_ENCODINGS_BASE=${PWD}/src/agents/tiktoken_encodings

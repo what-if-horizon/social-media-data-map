@@ -7,8 +7,10 @@ MODEL ?= gpt-oss-20b
 
 .PHONY: start_servers
 
+#To ask for an interative node srun --partition=gpu_h100 --gpus=2 --time=01:00:00 --pty bash
+
 start_servers:
-	MODEL_YAML=$(PWD)/configs/$(MODEL).yaml bash launchers/run_servers.sh
+	MODEL_YAML=$(PWD)/configs/$(MODEL).yaml bash launchers/run_servers_snellius.sh
 
 
 # Uses the default model  (gpt-oss-20b)
@@ -55,12 +57,12 @@ merge_dd:
 
 #ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
 MODEL_CONFIG_STD=gpt-oss-20b.yaml
-PYTHON_SCRIPT_STD=scripts/3.01_rnv_run_id_standardisation.py
+PYTHON_SCRIPT_STD=scripts/3.01_rnv_test_id_standardisation.py
 
-id std_dev:
+id_std_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_STD) \
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
-	bash launchers/run_llm_on_server.sh
+	bash launchers/run_llm_on_server_snellius.sh
 
 TIME_STD=02:00:00
 
@@ -68,24 +70,7 @@ id_std:
 	sbatch \
 		--time=$(TIME_STD) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
-		launchers/run_llm.sh
-
-id_std_test:
-	bash launchers/run_basic.sh scripts/3.02_rnv_test_id_standardisation.py
-
-
-
-id_std_chain:
-	JOB_ID=$$(sbatch --parsable \
-		--time=$(TIME_STD) \
-		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
-		launchers/run_llm.sh); \
-	echo "Waiting for job $$JOB_ID..."; \
-	squeue --job $$JOB_ID --start; \
-	while squeue -h -j $$JOB_ID | grep -q $$JOB_ID; do sleep 10; done; \
-	echo "id_std finished"; \
-	bash launchers/run_basic.sh scripts/3.02_rnv_test_id_standardisation.py
-
+		launchers/run_llm_snellius.sh
 
 
 #----------------------------------------------------------------
@@ -99,7 +84,7 @@ PYTHON_SCRIPT_CLASS=scripts/3.03_rnv_run_data_classification.py
 data_class_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_CLASS) \
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS) \
-	bash launchers/run_llm_on_server.sh
+	bash launchers/run_llm_on_server_snellius.sh
 
 TIME_CLASS=04:00:00
 
@@ -107,7 +92,7 @@ data_class:
 	sbatch \
 		--time=$(TIME_CLASS) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS) \
-		launchers/run_llm.sh
+		launchers/run_llm_snellius.sh
 
 
 
@@ -117,7 +102,7 @@ PYTHON_SCRIPT_CLASS_TEST=scripts/3.04_rnv_test_data_classification.py
 data_class_test_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_CLASS_TEST) \
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
-	bash launchers/run_llm_on_server.sh
+	bash launchers/run_llm_on_server_snellius.sh
 
 TIME_CLASS_TEST=04:00:00
 
@@ -125,7 +110,7 @@ data_class_test:
 	sbatch \
 		--time=$(TIME_CLASS_TEST) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS_TEST),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
-		launchers/run_llm.sh
+		launchers/run_llm_snellius.sh
 
 
 
@@ -134,9 +119,9 @@ data_class_chain:
 	JOB_ID=$$(sbatch --parsable \
 		--time=$(TIME_CLASS) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS) \
-		launchers/run_llm.sh); \
+		launchers/run_llm_snellius.sh); \
 	sbatch \
 		--dependency=afterok:$$JOB_ID \
 		--time=$(TIME_CLASS_TEST) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS_TEST),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
-		launchers/run_llm.sh
+		launchers/run_llm_snellius.sh

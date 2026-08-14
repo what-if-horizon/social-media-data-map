@@ -19,7 +19,7 @@ print(f'{time} START PROCESSING JSONS TIKTOK')
 
 input_directory = Path('/projects/prjs2007/data_donation/ddd_processed/tiktok') 
 output_directory =  Path(os.environ["TMPDIR"])
-final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/merged_structures')
+final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/00_ingest/002_merged_structures')
 
 max_columns = 7
 

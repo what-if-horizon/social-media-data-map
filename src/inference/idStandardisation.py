@@ -6,10 +6,12 @@ from datetime import date
 import random
 from difflib import SequenceMatcher
 from tqdm import tqdm
+import os
+import re
 
 
 
-def run_id_std(input_file, output_dir, country_list):
+def run_id_std_for_testing(input_file, output_dir, country_list):
 
     from src.inference import generateInference as gI
     from src.inference import prompts as p
@@ -130,3 +132,53 @@ def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_
 
     
 
+def run_id_std(input_dir, output_dir, id_dir, country_list):
+
+    from src.inference import generateInference as gI
+    from src.inference import prompts as p
+
+    country_str = '_'.join(country_list)
+
+    for file in input_dir.iterdirs():
+        file_name = os.path.basename(file)
+        match = re.match(r"^([^_]+)", file_name)
+        platform = match.group(1)
+
+        output_file = f'{platform}_std_ids_{country_str}'
+
+        for f in id_dir.iterdirs():
+            f_n = os.path.basename(f)
+            match = re.match(r"^([^_]+)", f_n)
+            if platform == match.group(1):
+                df_ids = pd.read_csv(f)
+                cats = str(df_ids['id'].values.tolist())
+
+        df = pd.read_csv(file)
+        print('CATS', cats)
+
+        ################################################
+        #JUST FOR TESTING!!!!!!!
+        ###############################################
+        #random.seed(100)
+        #df = df.sample(n=5)
+        ################################################
+
+  
+        output_list = []
+        print('PROCESSING PLATFORM:', platform)
+        for _, row in tqdm(df.iterrows(), total=len(df)):
+
+            output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids(), data_2=cats)
+            print('OUTPUT', output)
+            output = json.loads(output)
+            #output = output[0]
+            node = {"path": row['final_path']}
+            
+            node.update(output)
+            output_list.append(node)
+            #print(node)
+
+        json_str = json.dumps(output_list, indent=2)
+        with open(f'{output_dir}/{output_file}.json', "w") as f:
+            f.write(json_str)
+        

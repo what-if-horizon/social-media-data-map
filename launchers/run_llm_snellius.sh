@@ -20,7 +20,7 @@
 MODEL_CONFIG=${MODEL_CONFIG:-gpt-oss-20b.yaml}
 
 MODEL_YAML="$PWD/configs/$MODEL_CONFIG"
-MODEL_DIR="/gpfs/projects/bsc100/models"
+MODEL_DIR="/projects/prjs2007/models"
 
 LOG_DIR="$PWD/logs"
 
