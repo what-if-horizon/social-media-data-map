@@ -44,6 +44,10 @@ def run_id_std_for_testing(input_file, output_dir, country_list):
             print('OUTPUT', output)
             output = json.loads(output)
             #output = output[0]
+            if output["estimated_id"] not in cats:
+                output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids_retry(), data_2=cats, data_3=output["estimated_id"])
+
+
             node = {"path": row['final_path'],
                     "true_id": row['keepID']}
             

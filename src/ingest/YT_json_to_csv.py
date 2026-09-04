@@ -9,6 +9,7 @@ import gc
 import datetime
 import warnings
 import os
+from tqdm import tqdm
 warnings.filterwarnings("ignore")
 
 
@@ -17,9 +18,9 @@ warnings.filterwarnings("ignore")
 time = datetime.datetime.now()
 print(f'{time} START PROCESSING JSONS fACEBOOK')
 
-input_directory = Path('/projects/prjs2007/data_donation/ddd_processed/youtube') 
-output_directory =  Path(os.environ["TMPDIR"])
-final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/00_ingest/002_merged_structures')
+input_directory = Path('/projects/prjs2007/data_donation/ddd_processed/00_ingest/001_json_structures/youtube') 
+output_directory =  Path('/projects/prjs2007/data_donation/ddd_processed/00_ingest/002_individual_flattened_structures/youtube')
+final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/00_ingest/003_merged_structures')
 
 
 
@@ -432,7 +433,8 @@ def clean_and_store(df, df_no_data, file_name):
     df = df.drop_duplicates()
 
    # Save the DataFrame 
-    df.to_csv(f"{output_directory}/Output_" + file_name + '.csv', index=False)
+    #df.to_csv(f"{output_directory}/Output_" + file_name + '.csv', index=False)
+    df.to_csv(f"{output_directory}/{file_name}.csv", index=False)
 
 
     return df
@@ -456,19 +458,19 @@ def structure_donations(data, col_path, max_columns):
     file_name = Path(data).stem 
 
     df, df_no_data = loading_data(data)
-    print('FINISH: loading_data()')
+    #print('FINISH: loading_data()')
     df = flatten_json(df)
-    print('FINISH: flatten_json()')
+    #print('FINISH: flatten_json()')
     df = process_col_path(df, col_path_values, data_types)
-    print('FINISH: process_col_path()')
+    #print('FINISH: process_col_path()')
     df = remove_intermediate_rows(df)
-    print('FINISH: remove_intermediate_rows()')
+    #print('FINISH: remove_intermediate_rows()')
     df = extract_path(df, max_columns)
-    print('FINISH: extract_path()')
+    #print('FINISH: extract_path()')
     df = list_path(df)
-    print('FINISH: list_path()')
+    #print('FINISH: list_path()')
     df = clean_and_store(df, df_no_data, file_name)
-    print('FINISH: clean_and_store()')
+    #print('FINISH: clean_and_store()')
 
     del df,df_no_data, data
 
@@ -485,10 +487,12 @@ def structure_donations(data, col_path, max_columns):
 
 
 # Execute the 'structure_donations()' function for each file (data structure) in the input directory
-for file in input_directory.iterdir(): 
+files = list(input_directory.iterdir())
+
+for file in tqdm(files, desc="Processing files"): 
 #for file in list(input_directory.iterdir())[:5]: 
     if file.is_file():  
-        print("--------------------------------------------------------------------------------------")
+        
         time = datetime.datetime.now()
         print(f"{time} START PROCESSING:", file.name)
 
@@ -505,7 +509,7 @@ for file in input_directory.iterdir():
         gc.collect()
 
 
-
+"""
 ############################################################ 
 # Merge all data structures into one merged_structure.csv  #
 ############################################################
@@ -659,4 +663,5 @@ print(f'{time}: YT_Merged_structures.csv saved')
 time = datetime.datetime.now()
 print(f'{time}: FINISHED PROCESSING YOUTUBE (JSON)')
 
+"""
 

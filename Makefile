@@ -25,39 +25,57 @@ start_servers:
 # DATA INGEST
 #----------------------------------------------------------------------------------
 ingest_dd:
-	bash launchers/run_basic_snellius.sh scripts/1.01_rnv_ingest_dd_structures.py
+	bash launchers/run_basic_snellius.sh scripts/0.00_rnv_ingest_dd_structures.py
 
-merge_dd_fb:
+flatten_dd_fb:
 	bash launchers/run_basic_snellius.sh src/ingest/FB_json_to_csv.py
 
-merge_dd_ig:
+flatten_dd_ig:
 	bash launchers/run_basic_snellius.sh src/ingest/IG_json_to_csv.py
 
-merge_dd_tt:
+flatten_dd_tt:
 	bash launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
 
-merge_dd_x:
+flatten_dd_x:
 	bash launchers/run_basic_snellius.sh src/ingest/X_json_to_csv.py
 
-merge_dd_yt:
+flatten_dd_yt:
 	bash launchers/run_basic_snellius.sh src/ingest/YT_json_to_csv.py
 
-merge_dd:
-	sbatch launchers/run_basic_snellius.sh src/ingest/FB_json_to_csv.py
-	sbatch launchers/run_basic_snellius.sh src/ingest/IG_json_to_csv.py
-	sbatch launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
-	sbatch launchers/run_basic_snellius.sh src/ingest/X_json_to_csv.py
-	sbatch launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
+flatten_dd:
+	bash launchers/run_basic_snellius.sh src/ingest/FB_json_to_csv.py
+	bash launchers/run_basic_snellius.sh src/ingest/IG_json_to_csv.py
+	bash launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
+	bash launchers/run_basic_snellius.sh src/ingest/X_json_to_csv.py
+	bash launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
+
+
+
+get_unqiue_paths: 
+	bash launchers/run_basic_snellius.sh scripts/0.01_rnv_get_unique_paths.py
+
+find_largest_donation:
+	bash launchers/run_basic_snellius.sh scripts/0.02_rnv_find_largest_donation.py
+
+merge_csv:
+	bash launchers/run_basic_snellius.sh scripts/0.03_rnv_merge_structures.py
+
+
+
 
 
 
 #----------------------------------------------------------------
 # ID STANDARDISATION
 #----------------------------------------------------------------
+find_largest_donation:
+	bash launchers/run_basic_snellius.sh scripts/0.02_rnv_find_largest_donation.py
+
+
 
 #ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
 MODEL_CONFIG_STD=gpt-oss-20b.yaml
-PYTHON_SCRIPT_STD=scripts/3.01_rnv_test_id_standardisation.py
+PYTHON_SCRIPT_STD=scripts/1.01_rnv_test_id_standardisation.py
 
 id_std_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_STD) \
@@ -79,7 +97,7 @@ id_std:
 
 #ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
 MODEL_CONFIG_CLASS=gpt-oss-20b.yaml
-PYTHON_SCRIPT_CLASS=scripts/3.03_rnv_run_data_classification.py
+PYTHON_SCRIPT_CLASS=scripts/2.01_rnv_run_data_classification.py
 
 data_class_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_CLASS) \
@@ -97,7 +115,7 @@ data_class:
 
 
 MODEL_CONFIG_CLASS_TEST=Qwen3-30B-A3B.yaml
-PYTHON_SCRIPT_CLASS_TEST=scripts/3.04_rnv_test_data_classification.py
+PYTHON_SCRIPT_CLASS_TEST=scripts/2.02_rnv_test_data_classification.py
 
 data_class_test_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_CLASS_TEST) \

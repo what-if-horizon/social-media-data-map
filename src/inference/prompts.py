@@ -13,7 +13,7 @@ def prompt_context():
 """
 
 
-def prompt_std_ids():
+def prompt_std_ids_test():
     
     return """
         You are given a path consisting of a filepath and a JSON path and a list of IDs.
@@ -32,11 +32,11 @@ def prompt_std_ids():
     
     """
 
-
-def prompt_std_ids():
+def prompt_std_ids_retry_test():
     
     return """
         You are given a path consisting of a filepath and a JSON path and a list of IDs.
+        You are also given the wrong answer by the previous LLM as it choose an ID that was not in the list of IDs.
         From the list of IDs, choose the ID that explains best the JSON path. 
         ONLY choose IDs from the list of IDs, do NOT invent them yourself. 
         If you cannot find an appropriate ID in the list of IDs, return 'NA'
@@ -47,8 +47,54 @@ def prompt_std_ids():
         List of IDs:
         {data_2}
 
+        Wrong answer by previous LLM:
+        {data_3}
+
         Answer format:
         [{{ "estimated_id": "estimated id choosen from the list of IDs"}}]
+    
+    """
+
+def prompt_std_ids():
+    
+    return """
+        You are given a path consisting of a filepath and a JSON path and a catalogue of paths.
+        From the catalogue of paths, choose the path that explains best the given path. 
+        ONLY choose paths from the catalogue of paths, do NOT invent them yourself. 
+        If you cannot find an appropriate path in the catalogue of paths, return 'NA'
+        
+        path:
+        {data_1}
+
+        Catalogue of paths:
+        {data_2}
+
+        Answer format:
+        [{{ "estimated_path": "estimated path choosen from the cataloque of paths"}}]
+    
+    """
+
+
+def prompt_std_ids_retry():
+    
+    return """
+        You are given a path consisting of a filepath and a JSON path and a catalogue of paths.
+        You are also given the wrong answer by the previous LLM as it choose a path that was not in the catalogue of paths.
+        From the list of IDs, choose the ID that explains best the JSON path. 
+        ONLY choose paths from the catalogue of paths, do NOT invent them yourself. 
+        If you cannot find an appropriate path in the catalogue of paths, return 'NA'
+        
+        path:
+        {data_1}
+
+        Catalogue of paths:
+        {data_2}
+
+        Wrong answer by previous LLM:
+        {data_3}
+
+        Answer format:
+        [{{ "estimated_id": "estimated path choosen from the catalogue of paths"}}]
     
     """
 
