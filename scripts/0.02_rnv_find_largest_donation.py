@@ -20,17 +20,22 @@ output_dir = '/projects/prjs2007/data_donation/ddd_processed/00_ingest/004_large
 def largest_donation(input_dir, output_dir):
 
     input_dir = Path(input_dir)
+    output_dir = Path(output_dir)
+    print('INPUT DIR', input_dir)
+    print('OUTPUT DIR', output_dir)
+
     for platform_dir in input_dir.iterdir():
+
 
         csv_files = list(platform_dir.glob("*.csv"))
         max_rows = -1
         largest_file = None
 
         platform = platform_dir.name
-        print('CSV', csv_files)
+        #print('CSV', csv_files)
                
         for file in tqdm(csv_files, desc=f"Processing {platform}"):
-            print(file)
+            #print(file)
             path = os.path.join(platform_dir, file)
             df = pd.read_csv(path)
 
@@ -45,9 +50,12 @@ def largest_donation(input_dir, output_dir):
         source = os.path.join(platform_dir, largest_file)
         destination = output_dir / platform_dir.name
 
+        print('SOURCE', source)
+        print('DESTINATION', destination)
+
         destination.mkdir(parents=True, exist_ok=True)
 
-        shutil.copy2(source, destination / largest_file)
+        shutil.copy2(source, destination / largest_file.name)
 
 
 

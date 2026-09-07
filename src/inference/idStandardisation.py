@@ -8,6 +8,7 @@ from difflib import SequenceMatcher
 from tqdm import tqdm
 import os
 import re
+from pathlib import Path
 
 
 
@@ -130,13 +131,54 @@ def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_
     with open(f'{output_dir_results}/{output_file_results}.json', "w") as f:
         f.write(results_dict)
 
-    
-
-
-
-    
-
 def run_id_std(input_dir, output_dir, id_dir, country_list):
+
+    from src.inference import generateInference as gI
+    from src.inference import prompts as p
+    input_dir = Path(input_dir)
+
+    country_str = '_'.join(country_list)
+    for platform_dir in input_dir.iterdir(): 
+        platform = platform_dir.name
+        output_file = f'{platform}_std_ids_{country_str}'
+
+        id_platform_dir = Path(f'{id_dir/platform}')
+        all_paths = next(platform_dir.iterdir())
+        reference_paths = next(id_platform_dir.iterdir())
+
+        df_all_paths = pd.read_csv(all_paths)
+        df_reference_paths = pd.read_csv(reference_paths)
+        refs= str(df_reference_paths['final_path'].values.tolist())
+
+        output_list = []
+        print('PROCESSING PLATFORM:', platform)
+        ################################################
+        #JUST FOR TESTING!!!!!!!
+        ###############################################
+        random.seed(100)
+        df_all_paths = df_all_paths.sample(n=5)
+        ################################################
+        for _, row in tqdm(df_all_paths.iterrows(), total=len(df_all_paths)):
+
+            output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids(), data_2=refs)
+            print('OUTPUT', output)
+            output = json.loads(output)
+            #output = output[0]
+            node = {"path": row['final_path']}
+            
+            node.update(output)
+            output_list.append(node)
+            #print(node)
+
+        json_str = json.dumps(output_list, indent=2)
+        with open(f'{output_dir}/{output_file}.json', "w") as f:
+            f.write(json_str)
+
+
+
+    
+
+def run_id_std_old(input_dir, output_dir, id_dir, country_list):
 
     from src.inference import generateInference as gI
     from src.inference import prompts as p
@@ -155,7 +197,7 @@ def run_id_std(input_dir, output_dir, id_dir, country_list):
             match = re.match(r"^([^_]+)", f_n)
             if platform == match.group(1):
                 df_ids = pd.read_csv(f)
-                cats = str(df_ids['id'].values.tolist())
+                cats = str(df_ids['final_path'].values.tolist())
 
         df = pd.read_csv(file)
         print('CATS', cats)

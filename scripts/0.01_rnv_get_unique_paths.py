@@ -32,12 +32,15 @@ def combine_list(df, platform):
     df['final_path'] = None
 
     for ix, row in df.iterrows():
-        if platform == 'Tiktok':
+        if platform == 'tiktok':
             final_path =  row['path']
             
             if isinstance(final_path, str):
                 final_path = ast.literal_eval(final_path)
-               
+
+            final_path = '/'.join(final_path)
+
+           
             
         else:
             file_list = row['file_path'].split('/')
@@ -45,6 +48,7 @@ def combine_list(df, platform):
         
             if pd.isna(path_list):
                 final_path = row['file_path']
+               
             else:
                 if isinstance(path_list, str):
                     path_list = ast.literal_eval(path_list)
@@ -54,17 +58,40 @@ def combine_list(df, platform):
                     path = '/'.join(path_list)
                     df.at[ix, 'path'] = path
 
-        #print(final_path)
-        final_path = '/'.join(final_path)
+                final_path = '/'.join(final_path)
         df.at[ix, 'final_path'] = final_path 
               
     
     return df
 
+
+def clean_paths(df, platform):
+    df["final_path"] = df["final_path"].str.replace(r'/\d{5,}(?=/)', '/$NUMBER', regex=True)
+
+    if platform == 'facebook':
+       df["final_path"] = df["final_path"].str.replace(r'(?<=/group_badges_v2/).*','$GROUPNAME',regex=True)
+
+    if platform == 'tiktok':
+        df["final_path"] = df["final_path"].str.replace(
+                r'(?<=ChatHistory/Chat History with ).*?(?=:)',
+                '$USERNAME',
+                regex=True)
+        
+    if platform == 'youtube':
+        #df = df[~df["final_path"].str.contains("/Google Photos/", case=False, na=False)]
+        #df = df[~df["final_path"].str.contains("/Google Foto_s/", case=False, na=False)]
+        df = df[df["final_path"].str.contains("Takeout/YouTube", case=False, na=False)]
+        df["final_path"] = df["final_path"].str.replace(r'(?<=/kids/)[^/]+','$USERNAME',case=False, regex=True)
+
+    return df
+
+
+           
+    
+
 def unique_paths(df):
     df = df['final_path'].drop_duplicates()
     return df
-
 
 
 def get_unique_ids(input_dir, output_dir):
@@ -84,15 +111,16 @@ def get_unique_ids(input_dir, output_dir):
                 df = pd.read_csv(path)
 
                 df = combine_list(df, platform)
-                print(f'{datetime.now()} FINISH COMBINE LIST')
+                #print(f'{datetime.now()} FINISH COMBINE LIST')
 
                 
                 df = ensure_columns(df)
-                print(f'{datetime.now()} FINISH ENSURE COLUMNS')
+                #print(f'{datetime.now()} FINISH ENSURE COLUMNS')
                 
+                df = clean_paths(df, platform)
 
                 df = unique_paths(df)
-                print(f'{datetime.now()} FINISH UNIQUE PATHS')
+                #print(f'{datetime.now()} FINISH UNIQUE PATHS')
             
                 df.to_csv(f'{output_dir}/{platform}/{file.stem}.csv')
 

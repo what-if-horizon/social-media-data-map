@@ -51,7 +51,7 @@ flatten_dd:
 
 
 
-get_unqiue_paths: 
+get_unique_paths: 
 	bash launchers/run_basic_snellius.sh scripts/0.01_rnv_get_unique_paths.py
 
 find_largest_donation:
@@ -68,9 +68,6 @@ merge_csv:
 #----------------------------------------------------------------
 # ID STANDARDISATION
 #----------------------------------------------------------------
-find_largest_donation:
-	bash launchers/run_basic_snellius.sh scripts/0.02_rnv_find_largest_donation.py
-
 
 
 #ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
@@ -85,6 +82,23 @@ id_std_dev:
 TIME_STD=02:00:00
 
 id_std:
+	sbatch \
+		--time=$(TIME_STD) \
+		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
+		launchers/run_llm_snellius.sh
+
+
+MODEL_CONFIG_STD=gpt-oss-20b.yaml
+PYTHON_SCRIPT_STD=scripts/1.02_rnv_run_path_standardisation.py
+
+path_std_dev:
+	MODEL_CONFIG=$(MODEL_CONFIG_STD) \
+	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
+	bash launchers/run_llm_on_server_snellius.sh
+	
+TIME_STD=02:00:00
+
+path_std:
 	sbatch \
 		--time=$(TIME_STD) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
