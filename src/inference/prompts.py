@@ -60,6 +60,7 @@ def prompt_std_ids():
     return """
         You are given a path consisting of a filepath and a JSON path and a catalogue of paths.
         From the catalogue of paths, choose the path that explains best the given path. 
+        The goal is to match paths that actually hold the same data but that are constructed or named differently. 
         ONLY choose paths from the catalogue of paths, do NOT invent them yourself. 
         If you cannot find an appropriate path in the catalogue of paths, return 'NA'
         

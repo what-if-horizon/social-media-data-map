@@ -6,8 +6,9 @@ environment: /venvs/social-media-data-map/bin/activate
 models:
 
   - name: openai/gpt-oss-20b
-    gpus: [0, 1]
-    tensor_parallel: 2
+    model_num: 0
+    gpus: [0]
+    tensor_parallel: 1
     port: 8001
     temperature: 0.0
     presence_penalty: 0.1

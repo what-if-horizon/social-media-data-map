@@ -5,12 +5,12 @@ environment: /venvs/social-media-data-map/bin/activate
 
 models:
 
-  - name: Qwen/Qwen3-30B-A3B
+  - name: openai/gpt-oss-120b
     model_num: 0
-    gpus: [0]
-    tensor_parallel: 1
+    gpus: [0,1,2,3]
+    tensor_parallel: 4
     port: 8001
     temperature: 0.0
     presence_penalty: 0.1
-    max_tokens: 30000
+    max_tokens: 6000
     top_p: 0.8

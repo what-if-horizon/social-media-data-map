@@ -11,10 +11,20 @@ def returnAgent():
 manager = returnAgent()
 
 
-def generate_output(data_1, template,  max_retries = 3, data_2 = None, data_3 = None, data_4 = None):
+def generate_output(data_1, template,  max_retries = 3, data_2 = None, data_3 = None, data_4 = None, agent_no = None):
     
     #Load the agent
-    agent = next(iter(manager.agents.keys()))
+    #agent = next(iter(manager.agents.keys()))
+    #model = manager.get(agent)
+
+    keys = list(manager.agents.keys())
+    if len(keys) == 1:
+        gpu = 0  # 0 = first, 1 = second, 2 = third
+
+    print('AGENT', agent_no)
+   
+    agent = keys[agent_no]
+    print('AGENT', agent_no)
     model = manager.get(agent)
 
 

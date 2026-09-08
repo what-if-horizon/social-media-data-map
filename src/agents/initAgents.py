@@ -194,6 +194,8 @@ class AgentManager:
             # Model name from YAML
             model_name = entry["name"]
 
+            model_num = entry["model_num"]
+
             temperature = entry['temperature']
 
             presence_penalty = entry['presence_penalty']
@@ -212,7 +214,7 @@ class AgentManager:
             # Create and store agent
             #--------------------------------------------------------
 
-            self.agents[model_name] = init_models_api(
+            self.agents[model_num] = init_models_api(
 
                 # Root model directory
                 self.model_dir,
@@ -236,7 +238,7 @@ class AgentManager:
     # get()
     #--------------------------------------------------------
 
-    def get(self, agent_name):
+    def get(self, model_num):
 
         # Return initialized agent by name
-        return self.agents[agent_name]
+        return self.agents[model_num]

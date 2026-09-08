@@ -88,7 +88,7 @@ id_std:
 		launchers/run_llm_snellius.sh
 
 
-MODEL_CONFIG_STD=gpt-oss-20b.yaml
+MODEL_CONFIG_STD=gpt-oss-20b_4gpu.yaml
 PYTHON_SCRIPT_STD=scripts/1.02_rnv_run_path_standardisation.py
 
 path_std_dev:
