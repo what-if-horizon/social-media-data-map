@@ -1,9 +1,7 @@
 #!/bin/bash
-#SBATCH --account=bsc100
-#SBATCH --qos=acc_debug
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:4
 #SBATCH --cpus-per-task=80
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err

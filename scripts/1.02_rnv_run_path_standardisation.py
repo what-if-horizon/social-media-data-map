@@ -1,7 +1,6 @@
-import pandas as pd
+
 from src.inference import idStandardisation as iS
-from datetime import datetime
-import os
+
 
 #project_root = '/home/bsc/bsc093754/GIT/social-media-data-map/'
 #project_root =  os.environ["PWD"]

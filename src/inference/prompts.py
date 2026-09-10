@@ -81,6 +81,32 @@ def prompt_std_ids_retry():
     return """
         You are given a path consisting of a filepath and a JSON path and a catalogue of paths.
         You are also given the wrong answer by the previous LLM as it choose a path that was not in the catalogue of paths.
+        From the catalogue of paths, choose the path that explains best the given path. 
+        ONLY choose paths from the catalogue of paths, do NOT invent them yourself. 
+        If you cannot find an appropriate path in the catalogue of paths, return 'NA'
+        
+        path:
+        {data_1}
+
+        Answer of LLM 1:
+        {data_2}
+
+        Answer of LLM 1:
+        {data_3}
+
+        Catalogue of paths:
+        {data_4}
+
+        Answer format:
+        [{{ "estimated_id": "estimated path choosen from the catalogue of paths"}}]
+    
+    """
+
+def prompt_std_ids_resolve():
+    
+    return """
+        You are given a path consisting of a filepath and a JSON path and a catalogue of paths.
+        You are also given two answers by the previous LLMs that did not agree on the correct path.
         From the list of IDs, choose the ID that explains best the JSON path. 
         ONLY choose paths from the catalogue of paths, do NOT invent them yourself. 
         If you cannot find an appropriate path in the catalogue of paths, return 'NA'

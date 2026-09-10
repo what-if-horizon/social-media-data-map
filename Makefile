@@ -1,5 +1,4 @@
 
-
 #----------------------------------------------------------------------------------
 # RUN SERVERS FOR DEVELOPMENT
 #----------------------------------------------------------------------------------
@@ -88,7 +87,7 @@ id_std:
 		launchers/run_llm_snellius.sh
 
 
-MODEL_CONFIG_STD=gpt-oss-20b_4gpu.yaml
+MODEL_CONFIG_STD=gpt-oss-20b_4agent.yaml
 PYTHON_SCRIPT_STD=scripts/1.02_rnv_run_path_standardisation.py
 
 path_std_dev:
@@ -96,7 +95,8 @@ path_std_dev:
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
 	bash launchers/run_llm_on_server_snellius.sh
 	
-TIME_STD=02:00:00
+TIME_STD=00:10:00
+
 
 path_std:
 	sbatch \

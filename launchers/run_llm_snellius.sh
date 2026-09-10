@@ -1,10 +1,8 @@
 #!/bin/bash
-#SBATCH --account=bsc100
-#SBATCH --qos=acc_bsccssh
-#SBATCH --time=04:00:00
+#SBATCH --partition=gpu_h100
+#SBATCH --time=00:10:00
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:2
-#SBATCH --cpus-per-task=80
+#SBATCH --gres=gpu:4
 #SBATCH --output=logs/%x.out
 #SBATCH --error=logs/%x.err
 
@@ -31,8 +29,7 @@ mkdir -p "$LOG_DIR"
 
 ENV=$(grep "^environment:" "$MODEL_YAML" | cut -d' ' -f2)
 
-source ~/miniforge3/etc/profile.d/conda.sh
-conda activate "$ENV"
+source "$HOME/$ENV""
 
 export VLLM_USE_FLASHINFER_CUBIN=1
 export CUDA_HOME=/apps/ACC/CUDA/12.8

@@ -287,7 +287,7 @@ def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents):
 
         # Save combined output
         with open(
-            output_dir / output_file,"w") as f:
+            output_dir / platform / output_file,"w") as f:
 
             json.dump(output_list, f, indent=2)
 
@@ -299,68 +299,140 @@ def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents):
 #-------------------------------------------------------------
 # Find disagreements between LLMs
 #-------------------------------------------------------------
-def get_disagreements(results_1, results_2, output_dir):
+def get_disagreements(input_files, agreements_dir, disagreements_dir, platform, country_str):
+    dataframes = []
 
-    model_1 = results_1.name
-    model_2 = results_2.name
+    for results in input_files:
+        results = Path(results)
+        model = results.stem
 
-    with open(results_1) as f:
-        data1 = json.load(f)
+        with open(results) as f:
+            data = json.load(f)
 
-    with open(results_2) as f:
-        data2 = json.load(f)
+        df = pd.DataFrame(data).rename(
+            columns={"estimated_path": f"estimated_path_{model}"}
+        )
 
-    df1 = pd.DataFrame(data1).rename(columns={"estimated_path": f"estimated_path_{model_1}"})
-    df2 = pd.DataFrame(data2).rename(columns={"estimated_path": f"estimated_path_{model_2}"})
+        dataframes.append(df)
 
-    merged = df1.merge(
-        df2,
-        on="path",
-        how="inner"
-    )
+    # Merge all JSONs on path
+    merged = dataframes[0]
 
-    result = merged[
-    merged[f"estimated_path_{model_1}"] != merged[f"estimated_path_{model_2}"]][["path", f"estimated_path_{model_1}", f"estimated_path_{model_1}"]]
+    for df in dataframes[1:]:
+        merged = merged.merge(df, on="path", how="inner")
 
-    result.to_json(f"{output_dir}/id_std_disagreements.json", orient="records", indent=4)
+    # Get estimated_path columns
+    estimated_cols = [
+        col for col in merged.columns
+        if col.startswith("estimated_path_")
+    ]
+
+    # Keep rows where not all models agree
+    disagreements = merged[
+        merged[estimated_cols].nunique(axis=1) > 1
+    ][["path"] + estimated_cols]
+
+    # Rows where all models agree
+    agreements = merged[
+        merged[estimated_cols].nunique(axis=1) == 1
+    ][["path"] + estimated_cols]
+
+    disagreements_dir = Path(f'{disagreements_dir}/{platform}')
+    disagreements_dir.mkdir(parents=True, exist_ok=True)
+
+    agreements_dir = Path(f'{disagreements_dir}/{platform}')
+    agreements_dir.mkdir(parents=True, exist_ok=True)
+
+    disagreements.to_json(
+        disagreements_dir / f"{platform}_id_std_disagreements_{country_str}.json",
+        orient="records",
+        indent=4)
+
+    agreements.to_json(
+            agreements_dir / f"{platform}_id_std_agreements_{country_str}.json",
+            orient="records",
+            indent=4)
 
 
-def resolve_disagreements(df, refs, platform):
+
+def resolve_disagreements(disagreements_dir, refs, platform, resolved_dir, country_str):
+
+    import json
+    from pathlib import Path
+    from tqdm import tqdm
 
     from src.inference import generateInference as gI
     from src.inference import prompts as p
-    
+
+    output_dir = Path(output_dir) / platform
+    disagreements_dir = Path(disagreements_dir) / platform
+    disagreement_json = next(disagreements_dir.iterdir())
+
+    # Load JSON
+    with open(disagreement_json, "r") as f:
+        data = json.load(f)
 
     output_list = []
-    for _, row in tqdm(df(), total=len(df), desc=f"Processing {platform}"):
-    
-        output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids(), data_2=refs)
-        print('OUTPUT', output)
+
+    for row in tqdm(data, total=len(data), desc=f"Processing {platform}"):
+
+        output = gI.generate_output(
+            data_1=row["path"],
+            template=p.prompt_std_ids(),
+            data_2=row[list(row.keys())[1]],
+            data_3 = row[list(row.keys())[2]],
+            data_4 = refs
+        )
+
+        print("OUTPUT", output)
+
         output = json.loads(output)
-        #output = output[0]
-        node = {"path": row['final_path']}
-        
+
+        node = row.copy()
+
         node.update(output)
         output_list.append(node)
-        #print(node)
 
     json_str = json.dumps(output_list, indent=2)
-    with open(f'{output_dir}/{output_file}.json', "w") as f:
+
+    output_file = f"{platform}_id_std_disagreements_resolved_{country_str}.json"
+    with open(f"{resolved_dir}/{output_file}", "w") as f:
         f.write(json_str)
 
-def process_disagreements(id_dir, input_dir):
+def final_path(agreements_dir, resolve_dir, final_dir, platform, country_str):
+    agreements_dir = Path(agreements_dir) / platform
+    resolve_dir = Path(resolve_dir) / platform
+
+    agreements = next(agreements_dir.iterdir())
+    resolved = next(resolve_dir.iterdir())
+
+    with open(agreements, "r") as f:
+        agreement = json.load(f)
+
+    with open(resolved, "r") as f:
+        resolve = json.load(f)
+
+    combined = agreement + resolve
+
+    with open(f"{final_dir}/{platform}/{platform}_final_estimated_paths_{country_str}.json", "w") as f:
+        json.dump(combined, f, indent=2)
+
+
+def process_disagreements(id_dir, input_dir, disagreements_dir, agreements_dir, resolve_dir, final_dir, country_list):
     for platform_dir in id_dir.iterdir(): 
 
         platform = platform_dir.name
-        output_file = f'{platform}_std_ids_{country_str}'
-        
-        all_paths = next(input_dir.glob(f"{platform}*"))
-        reference_paths = next(platform_dir.iterdir())
+        country_str = "_".join(country_list)
+       
 
-        df_all_paths = pd.read_csv(all_paths)
+    
+        input_files = list(Path(f'{input_dir}/{platform}').glob("*.json"))
+        reference_paths = next(platform_dir.iterdir())
         df_reference_paths = pd.read_csv(reference_paths)
         refs= str(df_reference_paths['final_path'].values.tolist())
 
 
+        get_disagreements(input_files, agreements_dir, disagreements_dir, platform, country_str)
+        resolve_disagreements(disagreements_dir, refs, platform, resolve_dir, country_str)
+        final_path(agreements_dir, resolve_dir, final_dir, platform, country_str)
         
-        resolve_disagreements(df_all_paths, refs, platform)
