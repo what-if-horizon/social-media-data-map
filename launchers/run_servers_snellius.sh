@@ -1,10 +1,15 @@
 #!/bin/bash
-#SBATCH --time=02:00:00
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:4
 #SBATCH --cpus-per-task=80
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
+
+echo "=========================================="
+echo "Job started at: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "Hostname: $(hostname)"
+echo "Job ID: $SLURM_JOB_ID"
+echo "=========================================="
 
 # To ask for an interactive node srun --partition=gpu_h100 --gpus=2 --time=01:00:00 --pty bash
 MODEL_YAML="${MODEL_YAML:-$PWD/configs/gpt-oss-20b.yaml}"
@@ -27,5 +32,6 @@ mkdir -p logs
 # Inject compute-node hostname into YAML
 #--------------------------------------------------
 
-python src/agents/startServers.py --config "$MODEL_YAML"
+python -u src/agents/startServers.py --config "$MODEL_YAML"
 
+echo "Job finished at: $(date '+%Y-%m-%d %H:%M:%S')"

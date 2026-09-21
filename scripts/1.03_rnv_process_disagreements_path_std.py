@@ -11,7 +11,7 @@ agreements_dir = f'{root}/013_agreements'
 resolved_dir = f'{root}/014_resolved'
 final_dir = f'{root}/015_final_classified_paths'
 
-id_dir = f'{root}/00_ingest/004_largest_donation'
+id_dir = '/projects/prjs2007/data_donation/ddd_processed/00_ingest/004_largest_donation'
 
 country_list =  ['ES', 'NL']
 
@@ -20,7 +20,7 @@ country_list =  ['ES', 'NL']
 #print('START ', datetime.now())
 
 def main():
-    iS.process_disagreements(id_dir, input_dir, disagreements_dir, agreements_dir, resolved_dir, final_dir, country_list)
+    iS.process_disagreements(id_dir, input_dir, disagreements_dir, agreements_dir, resolved_dir, non_class_dir, final_dir, country_list)
 
 if __name__ == "__main__":
     main()

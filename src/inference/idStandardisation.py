@@ -12,6 +12,7 @@ import random
 import numpy as np
 from multiprocessing import get_context
 from datetime import datetime
+import traceback
 
 ###############################################################
 # TESTING
@@ -44,20 +45,25 @@ def run_id_std_for_testing(input_file, output_dir, country_list):
         output_list = []
         print('PROCESSING PLATFORM:', platform)
         for _, row in tqdm(df_filtered.iterrows(), total=len(df_filtered)):
+            if row['id'] == row['keepID']:
+                continue
 
-            output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids(), data_2=cats)
-            print('OUTPUT', output)
-            output = json.loads(output)
-            #output = output[0]
-            if output["estimated_id"] not in cats:
-                output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids_retry(), data_2=cats, data_3=output["estimated_id"])
+            try:
+                output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids_test(), data_2=cats)
+                print('OUTPUT', output)
+                output = json.loads(output)
+                #output = output[0]
+                if output["estimated_id"] not in cats:
+                    output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids_retry(), data_2=cats, data_3=output["estimated_id"])
 
 
-            node = {"path": row['final_path'],
-                    "true_id": row['keepID']}
-            
-            node.update(output)
-            output_list.append(node)
+                node = {"path": row['final_path'],
+                        "true_id": row['keepID']}
+                
+                node.update(output)
+                output_list.append(node)
+            except Exception as e:
+                print(f'ERROR {e} for {row['final_path']}') 
             #print(node)
 
 
@@ -165,8 +171,8 @@ def run_id_std_solo(input_dir, output_dir, id_dir, country_list):
         ################################################
         #JUST FOR TESTING!!!!!!!
         ###############################################
-        random.seed(100)
-        df_all_paths = df_all_paths.sample(n=5)
+        #random.seed(100)
+        #df_all_paths = df_all_paths.sample(n=5)
         ################################################
         for _, row in tqdm(df_all_paths.iterrows(), total=len(df_all_paths), desc=f"Processing {platform}"):
 
@@ -200,13 +206,29 @@ def process_chunk(chunk, refs, agent, platform, output_dir, output_file):
         total=len(chunk),
         desc=f"{platform} - AGENT {agent} - TIME {datetime.now()}"):
 
-        output = gI.generate_output(
-            data_1=row["final_path"],
-            template=p.prompt_std_ids(),
-            data_2=refs,
-            agent_no=agent)
+        try:
+            print(f"[{datetime.now()}] "
+                    f"WORKING agent={agent}, row={row['final_path']}",
+                    flush=True)
+            
+            output = gI.generate_output(
+                data_1=row["final_path"],
+                template=p.prompt_std_ids(),
+                data_2=refs,
+                agent_no=agent)
+            
+            print(f"[{datetime.now()}] "
+                    f"WORKING agent={agent}, output={output}",
+                    flush=True)
 
-        print(f"AGENT {agent} OUTPUT:", output)
+        except Exception as e:
+            print(
+                f"[{datetime.now()}] "
+                f"ERROR agent={agent}, row={row['final_path']}: {e}",
+                flush=True)
+            traceback.print_exc()
+            continue
+                #print(f"AGENT {agent} OUTPUT:", output)
 
         try:
             output = json.loads(output)
@@ -234,9 +256,18 @@ def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents):
 
     for platform_dir in id_dir.iterdir():
 
+        
+
         platform = platform_dir.name
+        
+        print(
+        f"\n{'='*80}\n"
+        f"[{datetime.now()}] START PLATFORM: {platform}\n"
+        f"{'='*80}",
+        flush=True)
 
         output_file = f"{platform}_std_ids_{country_str}_{model}.json"
+        non_class_file = f"{platform}_std_ids_non_class_{country_str}.json"
 
         all_paths = next(
             input_dir.glob(f"{platform}*"))
@@ -246,17 +277,17 @@ def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents):
         df_all_paths = pd.read_csv(all_paths)
         df_reference_paths = pd.read_csv(reference_paths)
 
-        print(f'LENGTH DF BEFORE EXCLUSION: {len(df_all_paths)}')
+       
         df_all_paths = df_all_paths[~df_all_paths["final_path"].isin(df_reference_paths["final_path"])]
-        print(f'LENGTH DF AFTER EXCLUSION: {len(df_all_paths)}')
+       
 
         refs = str(df_reference_paths["final_path"].values.tolist())
 
-        print(f"PROCESSING PLATFORM: {platform}")
+        
 
         # JUST FOR TESTING
-        random.seed(100)
-        df_all_paths = df_all_paths.sample(n=10)
+        #random.seed(100)
+        #df_all_paths = df_all_paths.sample(n=20)
 
         # Split dataframe into 4 equal chunks
         chunks = np.array_split(df_all_paths, num_agents)
@@ -275,9 +306,15 @@ def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents):
         # Spawn 4 processes
         ctx = get_context("spawn")
 
+        print(f"[{datetime.now()}] Starting {num_agents} agents "
+            f"for {platform}",
+            flush=True)
+        
         with ctx.Pool(processes=num_agents) as pool:
 
             results = pool.starmap(process_chunk, jobs)
+
+        print(f"[{datetime.now()}] All agents finished for {platform}",flush=True)
 
         # Combine results from all GPUs
         output_list = []
@@ -290,6 +327,7 @@ def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents):
             output_dir / platform / output_file,"w") as f:
 
             json.dump(output_list, f, indent=2)
+
 
         print(
             f"Finished {platform}: "
@@ -337,19 +375,17 @@ def get_disagreements(input_files, agreements_dir, disagreements_dir, platform, 
         merged[estimated_cols].nunique(axis=1) == 1
     ][["path"] + estimated_cols]
 
-    disagreements_dir = Path(f'{disagreements_dir}/{platform}')
-    disagreements_dir.mkdir(parents=True, exist_ok=True)
-
-    agreements_dir = Path(f'{disagreements_dir}/{platform}')
-    agreements_dir.mkdir(parents=True, exist_ok=True)
+    disagreement_dir = Path(f'{disagreements_dir}/{platform}')
+    agreement_dir = Path(f'{agreements_dir}/{platform}')
+  
 
     disagreements.to_json(
-        disagreements_dir / f"{platform}_id_std_disagreements_{country_str}.json",
+        disagreement_dir / f"{platform}_id_std_disagreements_{country_str}.json",
         orient="records",
         indent=4)
 
     agreements.to_json(
-            agreements_dir / f"{platform}_id_std_agreements_{country_str}.json",
+            agreement_dir / f"{platform}_id_std_agreements_{country_str}.json",
             orient="records",
             indent=4)
 
@@ -364,9 +400,11 @@ def resolve_disagreements(disagreements_dir, refs, platform, resolved_dir, count
     from src.inference import generateInference as gI
     from src.inference import prompts as p
 
-    output_dir = Path(output_dir) / platform
-    disagreements_dir = Path(disagreements_dir) / platform
-    disagreement_json = next(disagreements_dir.iterdir())
+    
+    disagreement_dir = Path(disagreements_dir) / platform
+    print('disagreement dir', disagreement_dir)
+    disagreement_json = next(disagreement_dir.iterdir())
+    print('diagreement json', disagreement_json)
 
     # Load JSON
     with open(disagreement_json, "r") as f:
@@ -378,7 +416,7 @@ def resolve_disagreements(disagreements_dir, refs, platform, resolved_dir, count
 
         output = gI.generate_output(
             data_1=row["path"],
-            template=p.prompt_std_ids(),
+            template=p.prompt_std_ids_resolve(),
             data_2=row[list(row.keys())[1]],
             data_3 = row[list(row.keys())[2]],
             data_4 = refs
@@ -396,7 +434,7 @@ def resolve_disagreements(disagreements_dir, refs, platform, resolved_dir, count
     json_str = json.dumps(output_list, indent=2)
 
     output_file = f"{platform}_id_std_disagreements_resolved_{country_str}.json"
-    with open(f"{resolved_dir}/{output_file}", "w") as f:
+    with open(f"{resolved_dir}/{platform}/{output_file}", "w") as f:
         f.write(json_str)
 
 def final_path(agreements_dir, resolve_dir, final_dir, platform, country_str):
@@ -419,6 +457,7 @@ def final_path(agreements_dir, resolve_dir, final_dir, platform, country_str):
 
 
 def process_disagreements(id_dir, input_dir, disagreements_dir, agreements_dir, resolve_dir, final_dir, country_list):
+    id_dir = Path(id_dir)
     for platform_dir in id_dir.iterdir(): 
 
         platform = platform_dir.name
@@ -435,4 +474,38 @@ def process_disagreements(id_dir, input_dir, disagreements_dir, agreements_dir, 
         get_disagreements(input_files, agreements_dir, disagreements_dir, platform, country_str)
         resolve_disagreements(disagreements_dir, refs, platform, resolve_dir, country_str)
         final_path(agreements_dir, resolve_dir, final_dir, platform, country_str)
+
+        
+
+def combine_user_std_paths(user_data_dir, std_path_1_dir, std_path_2_dir):
+    user_data_dir = Path(user_data_dir)
+    for platform_dir in user_data_dir.iterdir(): 
+
+        platform = platform_dir.name
+        std_1_dir = Path(std_path_1_dir)/platform
+        std_2_dir = Path(std_path_2_dir)/platform
+        std_1 = next(std_1_dir.iterdir())
+        std_2 = next(std_2_dir.iterdir())
+
+        std_1_df = pd.read_csv(std_1)
+        std_1_df['std_path'] = std_1_df['final_path']
+
+        with open(std_2, "r") as f:
+            std_2_json = json.load(f)
+        std_2_df = pd.DataFrame(std_2_json)
+        std_2_df = std_2_df.rename(columns={
+                        "path": "final_path",
+                        "estimated_path": "std_path"})
+
+        std_df = pd.concat([std_1_df, std_2_df], ignore_index=True)
+        dfs = []
+
+        for csv_file in user_data_dir.glob("*.csv"):
+            df = pd.read_csv(csv_file)
+            df["source_file"] = csv_file.stem
+            dfs.append(df)
+
+        combined = pd.concat(dfs, ignore_index=True)
+
+        df_final = combined.merge(std_df, on="final_path", how="left") 
         

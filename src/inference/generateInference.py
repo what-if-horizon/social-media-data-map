@@ -2,6 +2,7 @@ from src.inference import prompts as p
 from src.agents.initAgents import AgentManager
 import re
 import json
+from datetime import datetime
 
 
 def returnAgent():
@@ -33,12 +34,24 @@ def generate_output(data_1, template,  max_retries = 3, data_2 = None, data_3 = 
             
             prompt = p.prepare_prompt(data_1, template, data_2, data_3, data_4)
             #print('PROMPT', prompt)
-            answer = model.generate(prompt)   
+            #print(
+                #f"[{datetime.now()}] AGENT {agent_no} "
+                #f"START GENERATION: {data_1}",
+                #flush=True)
+
+            answer = model.generate(prompt)
+
+            #print(
+                #f"[{datetime.now()}] AGENT {agent_no} "
+                #f"FINISHED GENERATION",
+                #flush=True)  
             
             raw_text = answer[0]
             #print('RAW TEXT', raw_text)
+        except Exception as e:
+            print(f"Attempt model generate {attempt + 1} failed: {e}")
             
-    
+        try:
             # Extract JSON
             
             parts = raw_text.split("</think>", 1)
@@ -60,6 +73,6 @@ def generate_output(data_1, template,  max_retries = 3, data_2 = None, data_3 = 
 
         except Exception as e:
 
-            print(f"Attempt {attempt + 1} failed: {e}")
+            print(f"Attempt extracting json {attempt + 1} failed: {e}")
 
     return []

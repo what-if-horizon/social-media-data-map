@@ -23,7 +23,8 @@ class VLLMAgent:
         # OpenAI-compatible client pointing to local vLLM server
         self.client = OpenAI(
             base_url=base_url,
-            api_key="x"                   # vLLM ignores API key by default
+            api_key="x",
+            timeout=120.0             # vLLM ignores API key by default
         )
 
         # Name exposed by the vLLM server

@@ -42,3 +42,4 @@ python -u "$PYTHON_SCRIPT" \
     2> "$LOG_DIR/${SCRIPT_NAME}.err"
 
 echo "Inference completed"
+

@@ -55,12 +55,13 @@ def prompt_std_ids_retry_test():
     
     """
 
-def prompt_std_ids():
+def prompt_std_ids_old():
     
     return """
         You are given a path consisting of a filepath and a JSON path and a catalogue of paths.
         From the catalogue of paths, choose the path that explains best the given path. 
         The goal is to match paths that actually hold the same data but that are constructed or named differently. 
+        In other words, the paths do NOT need to be identical.
         ONLY choose paths from the catalogue of paths, do NOT invent them yourself. 
         If you cannot find an appropriate path in the catalogue of paths, return 'NA'
         
@@ -74,6 +75,49 @@ def prompt_std_ids():
         [{{ "estimated_path": "estimated path choosen from the cataloque of paths"}}]
     
     """
+
+def prompt_std_ids():
+
+    return """
+        You are matching a given data path to a path from a catalogue of known data paths.
+
+        Your task is to identify which catalogue path refers to the SAME UNDERLYING DATA as the given path, even when the two paths are constructed, organised, or named differently.
+
+        IMPORTANT:
+        - You may ONLY select a path that appears exactly in the Catalogue of paths.
+        - NEVER invent, modify, reconstruct, or combine catalogue paths.
+        - The paths do NOT need to be textually identical.
+        - Differences in directory structure, filenames, naming conventions, prefixes, suffixes, or JSON-path notation do not necessarily mean that the underlying data is different.
+        - Focus on the identity of the data represented by the path rather than superficial string similarity.
+        - Use all available information in the path, including directory names, filenames, file structure, and JSON paths.
+        - Prefer a catalogue path when there is strong evidence that it represents the same underlying data.
+        - If multiple catalogue paths appear plausible, choose the one that provides the strongest evidence of referring to the same underlying data.
+        - If there is insufficient evidence to determine that a catalogue path represents the same underlying data, return "NA".
+        - Do NOT make a guess merely because one catalogue path looks similar.
+        - Return exactly ONE match or "NA".
+
+        Given path:
+        {data_1}
+
+        Catalogue of paths:
+        {data_2}
+
+        Return your answer as valid JSON using exactly this format:
+
+        [
+        {{"estimated_path": "EXACT catalogue path"}}
+        ]
+
+        If there is no appropriate match, return:
+
+        [
+        {{"estimated_path": "NA"}}
+        ]
+
+        The value of "estimated_path" must either be:
+        1. an exact path copied from the Catalogue of paths, or
+        2. "NA".
+        """
 
 
 def prompt_std_ids_retry():
@@ -163,7 +207,32 @@ def prompt_dt_wu_2010():
         {data_1}
     
     Answer format:
-        [{{ "categorie": "Name of the chosen data category",
+        [{{ "category": "Name of the chosen data category",
+            "rationale": "Reason for choosing the categorie in 50 words}}]
+     
+    """
+
+def prompt_dt_verduyn_2020():
+    return """
+    You are given two categories from a taxonomy of social media use: active and passive usage 
+    Use these categories to classify the data entry (path consisting of a filepath and a JSON path) from a social media takeout
+    Provide a rationale for choosing the categorie in 50 words
+        
+    Taxonomy of social media usage:
+    1. Active:
+        - Definition: activities that facilitate direct exchanges with others including:
+            -  targeted one-on-one exchanges (e.g. sending a private message on Facebook)
+            -  broadcasting (e.g. posting a status update on Facebook)
+        - Usage information is mainly produced
+
+    2. Passive = monitoring the online life ofother users without engaging in direct exchanges with them (e.g. scrolling through newsfeeds or looking at other users’ profiles).
+        - Usage information is mainly consumed
+
+    Path to data entry:
+        {data_1}
+    
+    Answer format:
+        [{{ "category": "Name of the chosen data category (passive or active)",
             "rationale": "Reason for choosing the categorie in 50 words}}]
      
     """
@@ -180,8 +249,12 @@ def prompt_judge_dt_schneider_2010():
         5. Behavioral data: Data that the site collects about the user's activities during its use. 
         6. Derived data: derived data from the data aforementioned. The derived data can be generated using various techniques, such as data mining.
     
-    Answer from previous LLM:
+    
+    Path to data entry:
     {data_1}
+
+    Answer from previous LLM:
+    {data_2}
     
     Answer format when incorrect:
     [{{ "judgement": "CORRECT"}}]
@@ -195,7 +268,7 @@ def prompt_judge_dt_schneider_2010():
 
 def prompt_judge_dt_wu_2010():
     return"""
-    Read the description of the taxonmy of social media networking data, the data entry (path consisting of a filepath and a JSON path) from a social media takeout, the classification and rationale done by another LLM and judge whether this LLM generated teh correct answer
+    Read the description of the taxonmy of social media networking data, the data entry (path consisting of a filepath and a JSON path) from a social media takeout, the classification and rationale done by another LLM and judge whether this LLM generated the correct answer
     
     Taxonomy of social networking data:
         1. Registration: This layer consists of the information required to identify the data provider uniquely among all the other users of the social network. 
@@ -203,8 +276,11 @@ def prompt_judge_dt_wu_2010():
         3. Content: This layer consists of the actual content with which the data provider actually participates in the social network.
         4. Activity: This data consists of web server logs, information from cookies, as well as other means of gathering information about the data provider’s activities on the social networking service.
        
-    Answer from previous LLM:
+    Path to data entry:
     {data_1}
+    
+    Answer from previous LLM:
+    {data_2}
     
     Answer format when incorrect:
     {{"judgement": "CORRECT"}}
@@ -214,6 +290,39 @@ def prompt_judge_dt_wu_2010():
     "rationale": "Reason why answer is judged as incorrect}}
 
     """
+
+
+def prompt_judge_dt_verduyn_2020():
+    return"""
+    Read the description of the taxonmy of social media usage data, the data entry (path consisting of a filepath and a JSON path) from a social media takeout, the classification and rationale done by another LLM and judge whether this LLM generated the correct answer
+    
+    Taxonomy of social media usage:
+        1. Active:
+            - Definition: activities that facilitate direct exchanges with others including:
+                -  targeted one-on-one exchanges (e.g. sending a private message on Facebook)
+                -  broadcasting (e.g. posting a status update on Facebook)
+            - Usage information is mainly produced
+    
+        2. Passive = monitoring the online life ofother users without engaging in direct exchanges with them (e.g. scrolling through newsfeeds or looking at other users’ profiles).
+            - Usage information is mainly consumed
+    
+    Path to data entry:
+    {data_1}
+    
+    Answer from previous LLM:
+    {data_2}
+    
+    Answer format when incorrect:
+    {{"judgement": "CORRECT"}}
+
+    Answer format when incorrect:
+    {{"judgement": "INCORRECT",
+    "rationale": "Reason why answer is judged as incorrect}}
+
+    """
+
+
+
 
 
 # --------------------------------------------------------
@@ -231,7 +340,7 @@ def prepare_prompt(data_1, template,  data_2 = None, data_3 = None, data_4 = Non
 
     messages = [
         {"role": "system", "content": (
-            "You are an expert on Spanish legal text.\n"
+            "You are an expert on social media data.\n"
             "Reasoning: low"
         )},
         {"role": "user", "content": prompt}

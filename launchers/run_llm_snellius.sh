@@ -1,6 +1,5 @@
 #!/bin/bash
 #SBATCH --partition=gpu_h100
-#SBATCH --time=00:10:00
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:4
 #SBATCH --output=logs/%x.out
@@ -10,12 +9,17 @@
 
 #mkdir -p logs
 
+echo "=========================================="
+echo "Job started at: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "Hostname: $(hostname)"
+echo "Job ID: $SLURM_JOB_ID"
+echo "=========================================="
 #--------------------------------------------------
 # Config
 #--------------------------------------------------
 
 # Name of the YAML file (e.g. gpt_oss_20b.yaml)
-MODEL_CONFIG=${MODEL_CONFIG:-gpt-oss-20b.yaml}
+#MODEL_CONFIG=${MODEL_CONFIG:-gpt-oss-20b.yaml}
 
 MODEL_YAML="$PWD/configs/$MODEL_CONFIG"
 MODEL_DIR="/projects/prjs2007/models"
@@ -29,7 +33,7 @@ mkdir -p "$LOG_DIR"
 
 ENV=$(grep "^environment:" "$MODEL_YAML" | cut -d' ' -f2)
 
-source "$HOME/$ENV""
+source "$HOME/$ENV"
 
 export VLLM_USE_FLASHINFER_CUBIN=1
 export CUDA_HOME=/apps/ACC/CUDA/12.8
@@ -79,4 +83,5 @@ python -u "$PYTHON_SCRIPT" \
     > "$LOG_DIR/${SCRIPT_NAME}.out" \
     2> "$LOG_DIR/${SCRIPT_NAME}.err"
 
-echo "Inference completed"
+
+echo "Job finished at: $(date '+%Y-%m-%d %H:%M:%S')"

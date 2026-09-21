@@ -35,7 +35,8 @@ def run_classification(input_file, output_dir, data_tax, country_list):
     results_dict = {}
 
     templates = {'schneider2010': p.prompt_dt_schneider_2010(),
-                 'wu2010': p.prompt_dt_wu_2010()}
+                 'wu2010': p.prompt_dt_wu_2010(),
+                 'verduyn2020':p.prompt_dt_verduyn_2020()}
     
     template = templates[data_tax]
 
@@ -84,6 +85,10 @@ def test_classification(input_file, output_dir_data, output_dir_results, country
     if 'wu2010' in input_file:
         template = p.prompt_judge_dt_wu_2010()
         file_name = 'wu2010'
+
+    if 'verduyn2020' in input_file:
+        template = p.prompt_dt_verduyn_2020()
+        file_name = 'verduyn2020'
 
     country_str = '_'.join(country_list)
     output_file = f'{file_name}_{country_str}'

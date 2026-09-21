@@ -2,7 +2,7 @@
 #----------------------------------------------------------------------------------
 # RUN SERVERS FOR DEVELOPMENT
 #----------------------------------------------------------------------------------
-MODEL ?= gpt-oss-20b
+MODEL ?= gpt-oss-20b_2agent
 
 .PHONY: start_servers
 
@@ -70,20 +70,20 @@ merge_csv:
 
 
 #ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
-MODEL_CONFIG_STD=gpt-oss-20b.yaml
-PYTHON_SCRIPT_STD=scripts/1.01_rnv_test_id_standardisation.py
+MODEL_CONFIG_STD_ID=gpt-oss-20b.yaml
+PYTHON_SCRIPT_STD_ID=scripts/1.01_rnv_test_id_standardisation.py
 
 id_std_dev:
-	MODEL_CONFIG=$(MODEL_CONFIG_STD) \
-	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
+	MODEL_CONFIG=$(MODEL_CONFIG_STD_ID) \
+	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_ID) \
 	bash launchers/run_llm_on_server_snellius.sh
 
-TIME_STD=02:00:00
+TIME_STD_ID=02:00:00
 
 id_std:
 	sbatch \
-		--time=$(TIME_STD) \
-		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
+		--time=$(TIME_STD_ID) \
+		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD_ID),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_ID) \
 		launchers/run_llm_snellius.sh
 
 
@@ -95,13 +95,32 @@ path_std_dev:
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
 	bash launchers/run_llm_on_server_snellius.sh
 	
-TIME_STD=00:10:00
+TIME_STD=04:30:00
 
 
 path_std:
 	sbatch \
 		--time=$(TIME_STD) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
+		launchers/run_llm_snellius.sh
+
+
+
+MODEL_CONFIG_STD_DIS=gpt-oss-120b.yaml
+PYTHON_SCRIPT_STD_DIS=scripts/1.03_rnv_process_disagreements_path_std.py
+
+path_std_disgreements_dev:
+	MODEL_CONFIG=$(MODEL_CONFIG_STD_DIS) \
+	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_DIS) \
+	bash launchers/run_llm_on_server_snellius.sh
+	
+TIME_STD_DIS=02:00:00
+
+
+path_std_disgreements:
+	sbatch \
+		--time=$(TIME_STD_DIS) \
+		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD_DIS),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_DIS) \
 		launchers/run_llm_snellius.sh
 
 
