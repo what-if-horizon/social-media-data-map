@@ -1,0 +1,262 @@
+[
+  {
+    "path": "your_instagram_activity/story_sticker_interactions/story_likes.json/story_activities_story_likes/title",
+    "true_id": "story_interactions:story_likes:title",
+    "estimated_id": "story_interactions:story_likes:title"
+  },
+  {
+    "path": "your_instagram_activity/story_sticker_interactions/story_likes.json/story_activities_story_likes/string_list_data/timestamp",
+    "true_id": "story_interactions:story_likes:timestamp",
+    "estimated_id": "story_interactions:story_likes:timestamp"
+  },
+  {
+    "path": "security_and_login_information/login_and_profile_creation/instagram_signup_details.json/account_history_registration_info/string_map_data/Time/timestamp",
+    "true_id": "login_and_profile_creation:signup_details:Time:timestamp",
+    "estimated_id": "login_and_profile_creation:signup_details:Time:timestamp"
+  },
+  {
+    "path": "preferences/media_settings/consents.json/timestamp",
+    "true_id": "settings:consents:timestamp",
+    "estimated_id": "settings:consents:timestamp"
+  },
+  {
+    "path": "preferences/media_settings/consents.json/media",
+    "true_id": "settings:consents:media",
+    "estimated_id": "settings:consents:media"
+  },
+  {
+    "path": "preferences/media_settings/consents.json/fbid",
+    "true_id": "settings:consents:fbid",
+    "estimated_id": "settings:consents:fbid"
+  },
+  {
+    "path": "preferences/media_settings/consents.json/ent_name",
+    "true_id": "settings:consents:ent_name",
+    "estimated_id": "settings:consents:ent_name"
+  },
+  {
+    "path": "preferences/media_settings/consents.json/label_values/ent_field_name",
+    "true_id": "settings:consents:ent_field_name",
+    "estimated_id": "settings:consents:ent_field_name"
+  },
+  {
+    "path": "preferences/media_settings/consents.json/label_values/label",
+    "true_id": "settings:consents:label",
+    "estimated_id": "settings:consents:label"
+  },
+  {
+    "path": "preferences/media_settings/consents.json/label_values/timestamp_value",
+    "true_id": "settings:consents:timestamp_value",
+    "estimated_id": "settings:consents:timestamp_value"
+  },
+  {
+    "path": "preferences/media_settings/comments_allowed_from.json/settings_allow_comments_from/title",
+    "true_id": "settings:comments_allowed_from:title",
+    "estimated_id": "settings:comments_allowed_from:title"
+  },
+  {
+    "path": "preferences/media_settings/comments_allowed_from.json/settings_allow_comments_from/string_map_data/Comments Allowed From/href",
+    "true_id": "settings:comments_allowed_from:href",
+    "estimated_id": "settings:comments_allowed_from:href"
+  },
+  {
+    "path": "preferences/media_settings/comments_allowed_from.json/settings_allow_comments_from/string_map_data/Comments Allowed From/value",
+    "true_id": "settings:comments_allowed_from:value",
+    "estimated_id": "settings:comments_allowed_from:value"
+  },
+  {
+    "path": "preferences/media_settings/comments_allowed_from.json/settings_allow_comments_from/string_map_data/Comments Allowed From/timestamp",
+    "true_id": "settings:comments_allowed_from:timestamp",
+    "estimated_id": "settings:comments_allowed_from:timestamp"
+  },
+  {
+    "path": "your_instagram_activity/media/posts_1.json/title",
+    "true_id": "content:posts_1:title",
+    "estimated_id": "content:posts_1:title"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/uri",
+    "true_id": "content:stories:uri",
+    "estimated_id": "content:stories:uri"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/creation_timestamp",
+    "true_id": "content:stories:creation_timestamp",
+    "estimated_id": "content:stories:creation_timestamp"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/title",
+    "true_id": "content:stories:title",
+    "estimated_id": "content:stories:title"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/dubbing_info",
+    "true_id": "content:stories:dubbing_info",
+    "estimated_id": "content:stories:dubbing_info"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_variants",
+    "true_id": "content:stories:media_variants",
+    "estimated_id": "content:stories:media_variants"
+  },
+  {
+    "path": "your_instagram_activity/media/posts_1.json/media/uri",
+    "true_id": "content:posts_1:uri",
+    "estimated_id": "content:posts_1:uri"
+  },
+  {
+    "path": "your_instagram_activity/media/posts_1.json/media/title",
+    "true_id": "content:posts_1:media:title",
+    "estimated_id": "content:posts_1:media:title"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/cross_post_source/source_app",
+    "true_id": "content:stories:source_app",
+    "estimated_id": "content:stories:source_app"
+  },
+  {
+    "path": "your_instagram_activity/media/posts_1.json/media/cross_post_source/source_app",
+    "true_id": "content:posts_1:source_app",
+    "estimated_id": "content:posts_1:source_app"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/video_metadata/exif_data/date_time_digitized",
+    "true_id": "content:stories:video_metadata:exif_data:date_time_digitized",
+    "estimated_id": "content:stories:video_metadata:exif_data:date_time_digitized"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/video_metadata/exif_data/date_time_original",
+    "true_id": "content:stories:video_metadata:exif_data:date_time_original",
+    "estimated_id": "content:stories:video_metadata:exif_data:date_time_original"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/video_metadata/exif_data/source_type",
+    "true_id": "content:stories:video_metadata:exif_data:source_type",
+    "estimated_id": "content:stories:video_metadata:exif_data:source_type"
+  },
+  {
+    "path": "your_instagram_activity/content/posts_1.json/creation_timestamp",
+    "true_id": "media:posts_1:creation_timestamp",
+    "estimated_id": "media:posts_1:creation_timestamp"
+  },
+  {
+    "path": "your_instagram_activity/content/posts_1.json/media/creation_timestamp",
+    "true_id": "media:posts_1:media:creation_timestamp",
+    "estimated_id": "media:posts_1:media:creation_timestamp"
+  },
+  {
+    "path": "your_instagram_activity/story_sticker_interactions/polls.json/story_activities_polls/title",
+    "true_id": "story_interactions:polls:title",
+    "estimated_id": "story_interactions:polls:title"
+  },
+  {
+    "path": "your_instagram_activity/story_sticker_interactions/polls.json/story_activities_polls/string_list_data/value",
+    "true_id": "story_interactions:polls:value",
+    "estimated_id": "story_interactions:polls:value"
+  },
+  {
+    "path": "your_instagram_activity/story_sticker_interactions/polls.json/story_activities_polls/string_list_data/timestamp",
+    "true_id": "story_interactions:polls:timestamp",
+    "estimated_id": "story_interactions:polls:timestamp"
+  },
+  {
+    "path": "logged_information/link_history/your_link_history_settings.json/media",
+    "true_id": "new",
+    "estimated_id": "settings:consents:media"
+  },
+  {
+    "path": "logged_information/link_history/your_link_history_settings.json/fbid",
+    "true_id": "new",
+    "estimated_id": "settings:consents:fbid"
+  },
+  {
+    "path": "your_instagram_activity/story_interactions/emoji_sliders.json/story_activities_emoji_sliders/title",
+    "true_id": "story_sticker_interactions:emoji_sliders:title",
+    "estimated_id": "story_sticker_interactions:emoji_sliders:title"
+  },
+  {
+    "path": "your_instagram_activity/story_interactions/quizzes.json/story_activities_quizzes/title",
+    "true_id": "story_sticker_interactions:quizzes:title",
+    "estimated_id": "NA"
+  },
+  {
+    "path": "logged_information/link_history/your_link_history_settings.json/label_values/label",
+    "true_id": "new",
+    "estimated_id": "settings:consents:label"
+  },
+  {
+    "path": "logged_information/link_history/your_link_history_settings.json/label_values/timestamp_value",
+    "true_id": "new",
+    "estimated_id": "settings:consents:timestamp_value"
+  },
+  {
+    "path": "your_instagram_activity/media/posts_1.json/media/uri",
+    "true_id": "content:posts_1:uri",
+    "estimated_id": "content:posts_1:uri"
+  },
+  {
+    "path": "your_instagram_activity/story_interactions/emoji_sliders.json/story_activities_emoji_sliders/string_list_data/value",
+    "true_id": "story_sticker_interactions:emoji_sliders:value",
+    "estimated_id": "story_sticker_interactions:emoji_sliders:value"
+  },
+  {
+    "path": "your_instagram_activity/story_interactions/emoji_sliders.json/story_activities_emoji_sliders/string_list_data/timestamp",
+    "true_id": "story_sticker_interactions:emoji_sliders:timestamp",
+    "estimated_id": "story_sticker_interactions:emoji_sliders:timestamp"
+  },
+  {
+    "path": "your_instagram_activity/story_interactions/quizzes.json/story_activities_quizzes/string_list_data/value",
+    "true_id": "story_sticker_interactions:quizzes:value",
+    "estimated_id": "story_sticker_interactions:quizzes:value"
+  },
+  {
+    "path": "your_instagram_activity/story_interactions/quizzes.json/story_activities_quizzes/string_list_data/timestamp",
+    "true_id": "story_sticker_interactions:quizzes:timestamp",
+    "estimated_id": "story_sticker_interactions:quizzes:timestamp"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/video_metadata/music_genre",
+    "true_id": "content:stories:music_genre",
+    "estimated_id": "content:stories:music_genre"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/video_metadata/exif_data/source_type",
+    "true_id": "content:stories:video_metadata:exif_data:source_type",
+    "estimated_id": "content:stories:video_metadata:exif_data:source_type"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/video_metadata/exif_data/date_time_original",
+    "true_id": "content:stories:video_metadata:exif_data:date_time_original",
+    "estimated_id": "content:stories:video_metadata:exif_data:date_time_original"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/video_metadata/exif_data/date_time_digitized",
+    "true_id": "content:stories:video_metadata:exif_data:date_time_digitized",
+    "estimated_id": "content:stories:video_metadata:exif_data:date_time_digitized"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/photo_metadata/exif_data/source_type",
+    "true_id": "content:stories:photo_metadata:exif_data:source_type",
+    "estimated_id": "content:stories:photo_metadata:exif_data:source_type"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/photo_metadata/exif_data/date_time_original",
+    "true_id": "content:stories:photo_metadata:exif_data:date_time_original",
+    "estimated_id": "content:stories:photo_metadata:exif_data:date_time_original"
+  },
+  {
+    "path": "your_instagram_activity/media/stories.json/ig_stories/media_metadata/photo_metadata/exif_data/date_time_digitized",
+    "true_id": "content:stories:photo_metadata:exif_data:date_time_digitized",
+    "estimated_id": "content:stories:photo_metadata:exif_data:date_time_digitized"
+  },
+  {
+    "path": "your_instagram_activity/media/reels.json/ig_reels_media/media/uri",
+    "true_id": "media:reels:uri",
+    "estimated_id": "media:reels:uri"
+  },
+  {
+    "path": "your_instagram_activity/media/reels.json/ig_reels_media/media/creation_timestamp",
+    "true_id": "media:reels:creation_timestamp",
+    "estimated_id": "media:reels:creation_timestamp"
+  }
+]

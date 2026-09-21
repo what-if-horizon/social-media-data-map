@@ -22,7 +22,7 @@ print('START ', datetime.now())
 
 def main():
     iS.run_id_std_for_testing(input_file, output_dir, country_list)
-    iS.test_id_standardisation(input_test_file, output_dir_data, output_dir_results, df_cats, country_list)
+    #iS.test_id_standardisation(input_test_file, output_dir_data, output_dir_results, df_cats, country_list)
 
 if __name__ == "__main__":
     main()
