@@ -17,7 +17,7 @@ import traceback
 ###############################################################
 # TESTING
 ###############################################################
-def run_id_std_for_testing(input_file, output_dir, country_list):
+def run_id_std_for_testing_old(input_file, output_dir, country_list):
 
     from src.inference import generateInference as gI
     from src.inference import prompts as p
@@ -75,6 +75,71 @@ def run_id_std_for_testing(input_file, output_dir, country_list):
     with open(f'{output_dir}/{output_file}.json', "w") as f:
         f.write(json_str)
         
+
+def run_id_std_for_testing(input_file, output_dir, country_list):
+
+    from src.inference import generateInference as gI
+    from src.inference import prompts as p
+
+    df = pd.read_csv(input_file)
+
+    country_str = '_'.join(country_list)
+
+    for platform in df["platform"].unique():
+
+        df_filtered = df[df["platform"] == platform]
+        cats = str(df_filtered["keepID"].values.tolist())
+
+        print("CATS", cats)
+        print("PROCESSING PLATFORM:", platform)
+
+        output_list = []
+
+        for _, row in tqdm(
+            df_filtered.iterrows(),
+            total=len(df_filtered),
+            desc=platform
+        ):
+            if row["id"] == row["keepID"]:
+                continue
+
+            try:
+                output = gI.generate_output(
+                    data_1=row["final_path"],
+                    template=p.prompt_std_ids_test(),
+                    data_2=cats
+                )
+
+                print("OUTPUT", output)
+                output = json.loads(output)
+
+                if output["estimated_id"] not in cats:
+                    output = gI.generate_output(
+                        data_1=row["final_path"],
+                        template=p.prompt_std_ids_retry(),
+                        data_2=cats,
+                        data_3=output["estimated_id"]
+                    )
+                    output = json.loads(output)
+
+                node = {
+                    "path": row["final_path"],
+                    "true_id": row["keepID"]
+                }
+
+                node.update(output)
+                output_list.append(node)
+
+            except Exception as e:
+                print(f"ERROR {e} for {row['final_path']}")
+
+        # Save one file per platform
+        output_file = f"{output_dir}/std_ids_{country_str}_{platform}.json"
+
+        with open(output_file, "w") as f:
+            json.dump(output_list, f, indent=2)
+
+        print(f"SAVED: {output_file}")
 
 
 def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_cats, country_list):
@@ -147,192 +212,242 @@ def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_
 #-------------------------------------------------------------
 # Run inference not distributed
 #-------------------------------------------------------------
-def run_id_std_solo(input_dir, output_dir, id_dir, country_list):
+def run_id_std_solo(input_dir, output_dir, id_dir, country_list, model):
 
     from src.inference import generateInference as gI
     from src.inference import prompts as p
-    input_dir = Path(input_dir)
-    id_dir = Path(id_dir)
-
-    country_str = '_'.join(country_list)
-    for platform_dir in id_dir.iterdir(): 
-        platform = platform_dir.name
-        output_file = f'{platform}_std_ids_{country_str}'
-
-        all_paths = next(input_dir.glob(f"{platform}*"))
-        reference_paths = next(platform_dir.iterdir())
-
-        df_all_paths = pd.read_csv(all_paths)
-        df_reference_paths = pd.read_csv(reference_paths)
-        refs= str(df_reference_paths['final_path'].values.tolist())
-
-        output_list = []
-        print('PROCESSING PLATFORM:', platform)
-        ################################################
-        #JUST FOR TESTING!!!!!!!
-        ###############################################
-        #random.seed(100)
-        #df_all_paths = df_all_paths.sample(n=5)
-        ################################################
-        for _, row in tqdm(df_all_paths.iterrows(), total=len(df_all_paths), desc=f"Processing {platform}"):
-
-            output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids(), data_2=refs)
-            print('OUTPUT', output)
-            output = json.loads(output)
-            #output = output[0]
-            node = {"path": row['final_path']}
-            
-            node.update(output)
-            output_list.append(node)
-            #print(node)
-
-        json_str = json.dumps(output_list, indent=2)
-        with open(f'{output_dir}/{output_file}.json', "w") as f:
-            f.write(json_str)
-
-
-#-------------------------------------------------------------
-# Run inference distributed
-#-------------------------------------------------------------
-def process_chunk(chunk, refs, agent, platform, output_dir, output_file):
-
-    from src.inference import generateInference as gI
-    from src.inference import prompts as p
-
-    output_list = []
-
-    for _, row in tqdm(
-        chunk.iterrows(),
-        total=len(chunk),
-        desc=f"{platform} - AGENT {agent} - TIME {datetime.now()}"):
-
-        try:
-            print(f"[{datetime.now()}] "
-                    f"WORKING agent={agent}, row={row['final_path']}",
-                    flush=True)
-            
-            output = gI.generate_output(
-                data_1=row["final_path"],
-                template=p.prompt_std_ids(),
-                data_2=refs,
-                agent_no=agent)
-            
-            print(f"[{datetime.now()}] "
-                    f"WORKING agent={agent}, output={output}",
-                    flush=True)
-
-        except Exception as e:
-            print(
-                f"[{datetime.now()}] "
-                f"ERROR agent={agent}, row={row['final_path']}: {e}",
-                flush=True)
-            traceback.print_exc()
-            continue
-                #print(f"AGENT {agent} OUTPUT:", output)
-
-        try:
-            output = json.loads(output)
-        except Exception as e:
-            print(f"JSON error on AGENT {agent}: {e}")
-            continue
-
-        node = {"path": row["final_path"]}
-
-        node.update(output)
-        output_list.append(node)
-
-    return output_list
-
-
-def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents):
 
     input_dir = Path(input_dir)
     id_dir = Path(id_dir)
     output_dir = Path(output_dir)
 
-    from src.inference import prompts as p
-
     country_str = "_".join(country_list)
 
     for platform_dir in id_dir.iterdir():
 
-        
-
         platform = platform_dir.name
-        
+
         print(
-        f"\n{'='*80}\n"
-        f"[{datetime.now()}] START PLATFORM: {platform}\n"
-        f"{'='*80}",
-        flush=True)
+            f"\n{'='*80}\n"
+            f"[{datetime.now()}] START PLATFORM: {platform}\n"
+            f"{'='*80}",
+            flush=True
+        )
 
         output_file = f"{platform}_std_ids_{country_str}_{model}.json"
-        non_class_file = f"{platform}_std_ids_non_class_{country_str}.json"
 
         all_paths = next(
-            input_dir.glob(f"{platform}*"))
+            input_dir.glob(f"{platform}*")
+        )
 
-        reference_paths = next(platform_dir.iterdir())
+        reference_paths = next(
+            platform_dir.iterdir()
+        )
 
         df_all_paths = pd.read_csv(all_paths)
         df_reference_paths = pd.read_csv(reference_paths)
 
-       
-        df_all_paths = df_all_paths[~df_all_paths["final_path"].isin(df_reference_paths["final_path"])]
-       
+        # Remove paths that are already reference/classified paths
+        df_all_paths = df_all_paths[
+            ~df_all_paths["final_path"].isin(
+                df_reference_paths["final_path"]
+            )
+        ]
 
-        refs = str(df_reference_paths["final_path"].values.tolist())
-
-        
+        refs = str(
+            df_reference_paths["final_path"].values.tolist()
+        )
 
         # JUST FOR TESTING
         #random.seed(100)
         #df_all_paths = df_all_paths.sample(n=20)
 
-        # Split dataframe into 4 equal chunks
-        chunks = np.array_split(df_all_paths, num_agents)
-
-        jobs = []
-
-        for agent, chunk in enumerate(chunks):
-
-            jobs.append((chunk,
-                        refs,
-                        agent,
-                        platform,
-                        output_dir,
-                        output_file))
-
-        # Spawn 4 processes
-        ctx = get_context("spawn")
-
-        print(f"[{datetime.now()}] Starting {num_agents} agents "
-            f"for {platform}",
-            flush=True)
-        
-        with ctx.Pool(processes=num_agents) as pool:
-
-            results = pool.starmap(process_chunk, jobs)
-
-        print(f"[{datetime.now()}] All agents finished for {platform}",flush=True)
-
-        # Combine results from all GPUs
         output_list = []
 
-        for result in results:
-            output_list.extend(result)
+        print(
+            f"[{datetime.now()}] Processing {len(df_all_paths)} "
+            f"rows for {platform}",
+            flush=True
+        )
+
+        for _, row in tqdm(
+            df_all_paths.iterrows(),
+            total=len(df_all_paths),
+            desc=f"Processing {platform}"
+        ):
+
+            try:
+                print(
+                    f"[{datetime.now()}] "
+                    f"WORKING row={row['final_path']}",
+                    flush=True
+                )
+
+                output = gI.generate_output(
+                    data_1=row["final_path"],
+                    template=p.prompt_std_ids(),
+                    data_2=refs
+                )
+
+                print(
+                    f"[{datetime.now()}] "
+                    f"OUTPUT row={row['final_path']}: {output}",
+                    flush=True
+                )
+
+            except Exception as e:
+                print(
+                    f"[{datetime.now()}] "
+                    f"ERROR row={row['final_path']}: {e}",
+                    flush=True
+                )
+                traceback.print_exc()
+                continue
+
+            try:
+                output = json.loads(output)
+
+            except Exception as e:
+                print(
+                    f"[{datetime.now()}] "
+                    f"JSON error for row={row['final_path']}: {e}",
+                    flush=True
+                )
+                continue
+
+            node = {
+                "path": row["final_path"]
+            }
+
+            node.update(output)
+            output_list.append(node)
+
+        # Make sure platform output directory exists
+        platform_output_dir = output_dir / platform
+        platform_output_dir.mkdir(
+            parents=True,
+            exist_ok=True
+        )
 
         # Save combined output
-        with open(
-            output_dir / platform / output_file,"w") as f:
+        output_path = platform_output_dir / output_file
 
+        with open(output_path, "w") as f:
             json.dump(output_list, f, indent=2)
 
+        print(
+            f"[{datetime.now()}] "
+            f"FINISHED {platform}: "
+            f"{len(output_list)} results",
+            flush=True
+        )
 
         print(
-            f"Finished {platform}: "
-            f"{len(output_list)} results")
+            f"[{datetime.now()}] "
+            f"SAVED: {output_path}",
+            flush=True
+        )
 
+#-------------------------------------------------------------
+# Run inference distributed
+#-------------------------------------------------------------
+import json, re, traceback
+from datetime import datetime
+from multiprocessing import get_context
+from pathlib import Path
+
+import pandas as pd
+from tqdm import tqdm
+
+
+def parse_json(raw):
+    """Accept dicts, plain JSON, or JSON wrapped in ```json fences."""
+    if isinstance(raw, dict):
+        return raw
+    text = re.sub(r"^```(?:json)?\s*|\s*```$", "", str(raw).strip())
+    return json.loads(text)
+
+
+def process_chunk(chunk, refs, agent, platform, model, tmp_file):
+    # If agent maps to a GPU, set CUDA_VISIBLE_DEVICES here, before imports.
+    from src.inference import generateInference as gI
+    from src.inference import prompts as p
+
+    template = p.prompt_std_ids()          # build once, not per row
+    results, failures = [], []
+
+    with open(tmp_file, "a", encoding="utf-8") as f:
+        for _, row in tqdm(chunk.iterrows(), total=len(chunk),
+                           desc=f"{platform} agent {agent}", position=agent):
+            path = row["final_path"]
+            raw = None
+            try:
+                raw = gI.generate_output(
+                    data_1=path, template=template,
+                    data_2=refs, agent_no=agent,   # add model=model if supported
+                )
+                parsed = parse_json(raw)
+                if not isinstance(parsed, dict):
+                    raise ValueError(f"Expected dict, got {type(parsed).__name__}")
+            except Exception as e:
+                print(f"[{datetime.now()}] ERROR agent={agent}, {path}: {e}", flush=True)
+                traceback.print_exc()
+                failures.append({"path": path, "error": str(e), "raw": str(raw)})
+                continue
+
+            node = {"path": path, **parsed}
+            results.append(node)
+            f.write(json.dumps(node, ensure_ascii=False) + "\n")   # checkpoint
+            f.flush()
+
+    return results, failures
+
+
+def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents):
+    input_dir, id_dir, output_dir = Path(input_dir), Path(id_dir), Path(output_dir)
+    country_str = "_".join(country_list)
+
+    for platform_dir in sorted(d for d in id_dir.iterdir() if d.is_dir()):
+        platform = platform_dir.name
+        print(f"\n{'=' * 80}\n[{datetime.now()}] START PLATFORM: {platform}\n{'=' * 80}", flush=True)
+
+        out_dir = output_dir / platform
+        out_dir.mkdir(parents=True, exist_ok=True)
+        output_file = out_dir / f"{platform}_std_ids_{country_str}_{model}.json"
+        failed_file = out_dir / f"{platform}_std_ids_failed_{country_str}.json"
+
+        all_matches = sorted(input_dir.glob(f"{platform}*.csv"))
+        ref_matches = sorted(platform_dir.glob("*.csv"))
+        if len(all_matches) != 1 or len(ref_matches) != 1:
+            print(f"Skipping {platform}: found {all_matches} / {ref_matches}")
+            continue
+
+        df_all = pd.read_csv(all_matches[0])
+        df_ref = pd.read_csv(ref_matches[0])
+
+        ref_set = set(df_ref["final_path"])
+        df_all = df_all[~df_all["final_path"].isin(ref_set)].drop_duplicates("final_path")
+        df_all = df_all.sample(n = 20)
+        refs = str(df_ref["final_path"].tolist())
+
+        chunks = [df_all.iloc[i::num_agents] for i in range(num_agents)]
+        jobs = [(chunk, refs, agent, platform, model, out_dir / f"agent_{agent}.jsonl")
+                for agent, chunk in enumerate(chunks)]
+
+        with get_context("spawn").Pool(processes=num_agents) as pool:
+            results = pool.starmap(process_chunk, jobs, chunksize=1)
+
+        output_list = [r for res, _ in results for r in res]
+        failures = [x for _, fail in results for x in fail]
+
+        output_file.write_text(json.dumps(output_list, indent=2, ensure_ascii=False), encoding="utf-8")
+        failed_file.write_text(json.dumps(failures, indent=2, ensure_ascii=False), encoding="utf-8")
+
+        # Final files are safely on disk, so the agent checkpoints are no longer needed
+        for _, _, _, _, _, tmp_file in jobs:
+            tmp_file.unlink(missing_ok=True)
+
+        print(f"Finished {platform}: {len(output_list)} ok, {len(failures)} failed", flush=True)
 
 #-------------------------------------------------------------
 # Find disagreements between LLMs
