@@ -121,7 +121,7 @@ path_std_seq:
 		launchers/run_llm_snellius.sh
 
 
-MODEL_CONFIG_STD_20=gpt-oss-20b.yaml
+MODEL_CONFIG_STD_20=Qwen3.8-27B.yaml
 PYTHON_SCRIPT_STD_20=scripts/1.02.03_rnv_run_path_standardisation_20rows.py
 
 path_std_20_dev:
@@ -180,6 +180,22 @@ data_class:
 		launchers/run_llm_snellius.sh
 
 
+MODEL_CONFIG_CLASS_20=gpt-oss-20b.yaml
+PYTHON_SCRIPT_CLASS_20=scripts/2.01.01_rnv_run_data_classification_20rows.py
+
+data_class_dev_20:
+	MODEL_CONFIG=$(MODEL_CONFIG_CLASS_20) \
+	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_20) \
+	bash launchers/run_llm_on_server_snellius.sh
+
+
+TIME_CLASS_20=02:00:00
+
+data_class_dev_20:
+	sbatch \
+		--time=$(TIME_CLASS_20) \
+		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS_20),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_20) \
+		launchers/run_llm_snellius.sh
 
 MODEL_CONFIG_CLASS_TEST=Qwen3-30B-A3B.yaml
 PYTHON_SCRIPT_CLASS_TEST=scripts/2.02_rnv_test_data_classification.py
