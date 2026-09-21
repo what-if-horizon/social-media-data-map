@@ -45,11 +45,6 @@
     "estimated_id": "other_activity:time_spent_on_facebook:media"
   },
   {
-    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/fbid",
-    "true_id": "other_activity:time_spent_on_facebook:fbid",
-    "estimated_id": "other_activity:time_spent_on_facebook:fbid"
-  },
-  {
     "path": "your_facebook_activity/comments_and_reactions/your_comment_edits.json/timestamp",
     "true_id": "comments_and_reactions:your_comment_edits:timestamp",
     "estimated_id": "comments_and_reactions:your_comment_edits:timestamp"
@@ -330,11 +325,6 @@
     "estimated_id": "comments_and_reactions:your_comment_active_days:fbid"
   },
   {
-    "path": "ads_information/advertisers_you've_interacted_with.json/timestamp",
-    "true_id": "ads_information:advertisers_you_ve_interacted_with:timestamp",
-    "estimated_id": "ads_information:advertisers_you_ve_interacted_with:timestamp"
-  },
-  {
     "path": "logged_information/your_interactions_on_facebook/groups_you've_visited.json/timestamp",
     "true_id": "your_interactions_on_facebook:groups_you_ve_visited:timestamp",
     "estimated_id": "your_interactions_on_facebook:groups_you_ve_visited:timestamp"
@@ -415,11 +405,6 @@
     "estimated_id": "interactions:recently_visited:visited_things_v2:name"
   },
   {
-    "path": "logged_information/your_interactions_on_facebook/recently_visited.json/visited_things_v2/entries/data/uri",
-    "true_id": "interactions:recently_visited:uri",
-    "estimated_id": "NA"
-  },
-  {
     "path": "logged_information/your_interactions_on_facebook/recently_viewed.json/recently_viewed/entries/data/name",
     "true_id": "interactions:recently_viewed:recently_viewed:entries:data:name",
     "estimated_id": "interactions:recently_viewed:recently_viewed:entries:data:name"
@@ -433,11 +418,6 @@
     "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/timestamp",
     "true_id": "other_activity:time_spent_on_facebook:timestamp",
     "estimated_id": "other_activity:time_spent_on_facebook:timestamp"
-  },
-  {
-    "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/fbid",
-    "true_id": "other_activity:time_spent_on_facebook:fbid",
-    "estimated_id": "other_activity:time_spent_on_facebook:fbid"
   },
   {
     "path": "your_facebook_activity/other_activity/time_spent_on_facebook.json/media",
@@ -1288,11 +1268,6 @@
     "path": "logged_information/interactions/groups_you've_visited.json/media",
     "true_id": "your_interactions_on_facebook:groups_you_ve_visited:media",
     "estimated_id": "your_interactions_on_facebook:groups_you_ve_visited:media"
-  },
-  {
-    "path": "ads_information/advertisers_you've_interacted_with.json/history_v2/timestamp",
-    "true_id": "ads_information:advertisers_you_ve_interacted_with:timestamp",
-    "estimated_id": "NA"
   },
   {
     "path": "your_facebook_activity/other_activity/your_recently_followed_history.json/label_values/label",
