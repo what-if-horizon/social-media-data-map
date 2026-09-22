@@ -77,69 +77,18 @@ def run_id_std_for_testing(input_file, output_dir, country_list):
         
 
 
-def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_cats, country_list):
-    df = pd.read_csv(df_cats)
-    cats = str(df['keepID'].values.tolist())   
+       f.write(data)
 
-    country_str = '_'.join(country_list)
-    output_file_data = f'std_ids_test_{country_str}'
-    output_file_results = f'std_ids_test_results_{country_str}'       
+    # Save metrics
+    results_json = json.dumps(results_dict, indent=2)
 
-    with open(input_file, "r") as file:
-        data = json.load(file)
+    print(results_json)
 
-    
-    results_dict = {}
-
-    for platform, results in data.items():
-        
-        incorrect = 0
-        correct = 0
-        total = len(results)
-        #result_list = []
-
-        for d in results:
-            estimated_id = d['estimated_id']
-            true_id = d['true_id']
-            if estimated_id != true_id:
-                incorrect +=1
-                # Calculating similarity ratio
-                d['result'] = 'INCORRECT'
-                d['sim_ratio'] = SequenceMatcher(None, true_id, estimated_id).ratio()
-
-                if estimated_id in cats:
-                    d['present_in_list'] = 'True'
-                else:
-                    d['present_in_list'] = 'False'
-
-            else:
-                correct += 1
-                d['result'] = 'CORRECT' 
-
-        node = {"platform": platform,
-                "total_cases": total,
-                "total_correct": correct,
-                "total_incorrect": incorrect,
-                "percentage_total_correct": f'{(100/total)*correct}%',
-                "percentage_total_incorrect": f'{(100/total)*incorrect}%'
-                }
-
-        #result_list.append(node)
-        results_dict[platform] = node
-
-    data = json.dumps(data, indent = 2)
-    with open(f'{output_dir_data}/{output_file_data}.json', "w") as f:
-        f.write(data)
-
-
-    print(f'{correct}/{total} ({(100/total)*correct}%) CORRECT CASES')
-    print(f'{incorrect}/{total} ({(100/total)*incorrect}%) INCORRECT CASES')
-
-    results_dict = json.dumps(results_dict, indent = 2)
-
-    print(results_dict)
-    with open(f'{output_dir_results}/{output_file_results}.json', "w") as f:
-        f.write(results_dict)
+    with open(
+        f'{output_dir_results}/{output_file_results}.json',
+        "w"
+    ) as f:
+        f.write(results_json)
 
 ###############################################################
 # PRODUCTION

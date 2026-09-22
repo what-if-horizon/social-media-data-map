@@ -87,6 +87,10 @@ id_std:
 		launchers/run_llm_snellius.sh
 
 
+test_id_std:
+	bash launchers/run_basic_snellius.sh scripts/1.01.2_arl_testing_id_standardisation.py
+
+
 MODEL_CONFIG_STD=gpt-oss-20b_4agent.yaml
 PYTHON_SCRIPT_STD=scripts/1.02_rnv_run_path_standardisation.py
 
