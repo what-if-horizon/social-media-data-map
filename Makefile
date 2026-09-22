@@ -78,7 +78,7 @@ id_std_dev:
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_ID) \
 	bash launchers/run_llm_on_server_snellius.sh
 
-TIME_STD_ID=02:00:00
+TIME_STD_ID=04:00:00
 
 id_std:
 	sbatch \
@@ -99,7 +99,7 @@ path_std_dev:
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
 	bash launchers/run_llm_on_server_snellius.sh
 	
-TIME_STD=04:30:00
+TIME_STD=10:30:00
 
 
 path_std:
@@ -107,6 +107,40 @@ path_std:
 		--time=$(TIME_STD) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
 		launchers/run_llm_snellius.sh
+
+
+MODEL_CONFIG_STD_SEQ=gpt-oss-20b.yaml
+PYTHON_SCRIPT_STD_SEQ=scripts/1.02.01_rnv_run_path_standardisation_seq.py
+
+path_std_seq_dev:
+	MODEL_CONFIG=$(MODEL_CONFIG_STD_SEQ) \
+	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_SEQ) \
+	bash launchers/run_llm_on_server_snellius.sh
+
+TIME_STD_SEQ=10:00:00
+path_std_seq:
+	sbatch \
+		--time=$(TIME_STD_SEQ) \
+		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD_SEQ),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_SEQ) \
+		launchers/run_llm_snellius.sh
+
+
+MODEL_CONFIG_STD_20=gpt-oss-20b.yaml
+PYTHON_SCRIPT_STD_20=scripts/1.02.03_rnv_run_path_standardisation_20rows.py
+
+path_std_20_dev:
+	MODEL_CONFIG=$(MODEL_CONFIG_STD_20) \
+	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_20) \
+	bash launchers/run_llm_on_server_snellius.sh
+
+TIME_STD_20=01:00:00
+path_std_20:
+	sbatch \
+		--time=$(TIME_STD_20) \
+		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD_20),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_20) \
+		launchers/run_llm_snellius.sh
+
+
 
 
 

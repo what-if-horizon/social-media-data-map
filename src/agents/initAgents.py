@@ -24,7 +24,8 @@ class VLLMAgent:
         self.client = OpenAI(
             base_url=base_url,
             api_key="x",
-            timeout=120.0             # vLLM ignores API key by default
+            timeout=90.0,            # vLLM ignores API key by default
+            max_retries = 0,
         )
 
         # Name exposed by the vLLM server

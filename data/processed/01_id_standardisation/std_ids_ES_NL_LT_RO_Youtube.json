@@ -1,0 +1,722 @@
+[
+  {
+    "path": "istoric/istoricul ca\u0306uta\u0306rilor.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "istoric/istoricul ca\u0306uta\u0306rilor.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "istoric/istoricul ca\u0306uta\u0306rilor.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "istoric/istoricul ca\u0306uta\u0306rilor.json/description",
+    "true_id": "search-history:description",
+    "estimated_id": "search-history:description"
+  },
+  {
+    "path": "istoric/istoricul ca\u0306uta\u0306rilor.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "istoric/istoricul ca\u0306uta\u0306rilor.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "istoric/istoricul ca\u0306uta\u0306rilor.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "istoric/istoricul-viziona\u0306rilor.json/header",
+    "true_id": "watch-history:header",
+    "estimated_id": "watch-history:header"
+  },
+  {
+    "path": "istoric/istoricul-viziona\u0306rilor.json/title",
+    "true_id": "watch-history:title",
+    "estimated_id": "watch-history:title"
+  },
+  {
+    "path": "istoric/istoricul-viziona\u0306rilor.json/titleUrl",
+    "true_id": "watch-history:titleUrl",
+    "estimated_id": "watch-history:titleUrl"
+  },
+  {
+    "path": "istoric/istoricul-viziona\u0306rilor.json/time",
+    "true_id": "watch-history:time",
+    "estimated_id": "watch-history:time"
+  },
+  {
+    "path": "istoric/istoricul-viziona\u0306rilor.json/products",
+    "true_id": "watch-history:products",
+    "estimated_id": "watch-history:products"
+  },
+  {
+    "path": "istoric/istoricul-viziona\u0306rilor.json/activityControls",
+    "true_id": "watch-history:activityControls",
+    "estimated_id": "watch-history:activityControls"
+  },
+  {
+    "path": "istoric/istoricul ca\u0306uta\u0306rilor.json/details/name",
+    "true_id": "search-history:name",
+    "estimated_id": "search-history:name"
+  },
+  {
+    "path": "istoric/istoricul-viziona\u0306rilor.json/subtitles/name",
+    "true_id": "watch-history:subtitles:name",
+    "estimated_id": "watch-history:subtitles:name"
+  },
+  {
+    "path": "istoric/istoricul-viziona\u0306rilor.json/subtitles/url",
+    "true_id": "watch-history:subtitles:url",
+    "estimated_id": "watch-history:subtitles:url"
+  },
+  {
+    "path": "geschiedenis/kijkgeschiedenis.json/header",
+    "true_id": "watch-history:header",
+    "estimated_id": "watch-history:header"
+  },
+  {
+    "path": "geschiedenis/kijkgeschiedenis.json/title",
+    "true_id": "watch-history:title",
+    "estimated_id": "watch-history:title"
+  },
+  {
+    "path": "geschiedenis/kijkgeschiedenis.json/titleUrl",
+    "true_id": "watch-history:titleUrl",
+    "estimated_id": "watch-history:titleUrl"
+  },
+  {
+    "path": "geschiedenis/kijkgeschiedenis.json/time",
+    "true_id": "watch-history:time",
+    "estimated_id": "watch-history:time"
+  },
+  {
+    "path": "geschiedenis/kijkgeschiedenis.json/products",
+    "true_id": "watch-history:products",
+    "estimated_id": "watch-history:products"
+  },
+  {
+    "path": "geschiedenis/kijkgeschiedenis.json/activityControls",
+    "true_id": "watch-history:activityControls",
+    "estimated_id": "watch-history:activityControls"
+  },
+  {
+    "path": "geschiedenis/zoekgeschiedenis.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "geschiedenis/zoekgeschiedenis.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "geschiedenis/zoekgeschiedenis.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "geschiedenis/zoekgeschiedenis.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "geschiedenis/zoekgeschiedenis.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "geschiedenis/zoekgeschiedenis.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "geschiedenis/kijkgeschiedenis.json/subtitles/name",
+    "true_id": "watch-history:subtitles:name",
+    "estimated_id": "watch-history:subtitles:name"
+  },
+  {
+    "path": "geschiedenis/kijkgeschiedenis.json/subtitles/url",
+    "true_id": "watch-history:subtitles:url",
+    "estimated_id": "watch-history:subtitles:url"
+  },
+  {
+    "path": "historial/historial-de-bu\u0301squeda.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "historial/historial-de-bu\u0301squeda.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "historial/historial-de-bu\u0301squeda.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "historial/historial-de-bu\u0301squeda.json/description",
+    "true_id": "search-history:description",
+    "estimated_id": "search-history:description"
+  },
+  {
+    "path": "historial/historial-de-bu\u0301squeda.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "historial/historial-de-bu\u0301squeda.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "historial/historial-de-bu\u0301squeda.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "historial/historial-de-reproducciones.json/header",
+    "true_id": "watch-history:header",
+    "estimated_id": "watch-history:header"
+  },
+  {
+    "path": "historial/historial-de-reproducciones.json/title",
+    "true_id": "watch-history:title",
+    "estimated_id": "watch-history:title"
+  },
+  {
+    "path": "historial/historial-de-reproducciones.json/titleUrl",
+    "true_id": "watch-history:titleUrl",
+    "estimated_id": "watch-history:titleUrl"
+  },
+  {
+    "path": "historial/historial-de-reproducciones.json/time",
+    "true_id": "watch-history:time",
+    "estimated_id": "watch-history:time"
+  },
+  {
+    "path": "historial/historial-de-reproducciones.json/products",
+    "true_id": "watch-history:products",
+    "estimated_id": "watch-history:products"
+  },
+  {
+    "path": "historial/historial-de-reproducciones.json/activityControls",
+    "true_id": "watch-history:activityControls",
+    "estimated_id": "watch-history:activityControls"
+  },
+  {
+    "path": "historial/historial-de-bu\u0301squeda.json/details/name",
+    "true_id": "search-history:name",
+    "estimated_id": "search-history:name"
+  },
+  {
+    "path": "historial/historial-de-reproducciones.json/subtitles/name",
+    "true_id": "watch-history:subtitles:name",
+    "estimated_id": "watch-history:subtitles:name"
+  },
+  {
+    "path": "historial/historial-de-reproducciones.json/subtitles/url",
+    "true_id": "watch-history:url",
+    "estimated_id": "watch-history:subtitles:url"
+  },
+  {
+    "path": "istoric/istoricul c\u0103ut\u0103rilor.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "istoric/istoricul c\u0103ut\u0103rilor.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "istoric/istoricul c\u0103ut\u0103rilor.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "istoric/istoricul c\u0103ut\u0103rilor.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "istoric/istoricul c\u0103ut\u0103rilor.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "istoric/istoricul c\u0103ut\u0103rilor.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "istoric/istoricul-vizion\u0103rilor.json/header",
+    "true_id": "watch-history:header",
+    "estimated_id": "watch-history:header"
+  },
+  {
+    "path": "istoric/istoricul-vizion\u0103rilor.json/title",
+    "true_id": "watch-history:title",
+    "estimated_id": "watch-history:title"
+  },
+  {
+    "path": "istoric/istoricul-vizion\u0103rilor.json/titleUrl",
+    "true_id": "watch-history:titleUrl",
+    "estimated_id": "watch-history:titleUrl"
+  },
+  {
+    "path": "istoric/istoricul-vizion\u0103rilor.json/time",
+    "true_id": "watch-history:time",
+    "estimated_id": "watch-history:time"
+  },
+  {
+    "path": "istoric/istoricul-vizion\u0103rilor.json/products",
+    "true_id": "watch-history:products",
+    "estimated_id": "watch-history:products"
+  },
+  {
+    "path": "istoric/istoricul-vizion\u0103rilor.json/activityControls",
+    "true_id": "watch-history:activityControls",
+    "estimated_id": "watch-history:activityControls"
+  },
+  {
+    "path": "istoric/istoricul-vizion\u0103rilor.json/subtitles/name",
+    "true_id": "watch-history:subtitles:name",
+    "estimated_id": "watch-history:subtitles:name"
+  },
+  {
+    "path": "istoric/istoricul-vizion\u0103rilor.json/subtitles/url",
+    "true_id": "watch-history:subtitles:url",
+    "estimated_id": "watch-history:subtitles:url"
+  },
+  {
+    "path": "istorija/paie\u0161kos istorija.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "istorija/paie\u0161kos istorija.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "istorija/paie\u0161kos istorija.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "istorija/paie\u0161kos istorija.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "istorija/paie\u0161kos istorija.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "istorija/paie\u0161kos istorija.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "istorija/\u017ei\u016br\u0117jimo istorija.json/header",
+    "true_id": "watch-history:header",
+    "estimated_id": "watch-history:header"
+  },
+  {
+    "path": "istorija/\u017ei\u016br\u0117jimo istorija.json/title",
+    "true_id": "watch-history:title",
+    "estimated_id": "watch-history:title"
+  },
+  {
+    "path": "istorija/\u017ei\u016br\u0117jimo istorija.json/titleUrl",
+    "true_id": "watch-history:titleUrl",
+    "estimated_id": "watch-history:titleUrl"
+  },
+  {
+    "path": "istorija/\u017ei\u016br\u0117jimo istorija.json/time",
+    "true_id": "watch-history:time",
+    "estimated_id": "watch-history:time"
+  },
+  {
+    "path": "istorija/\u017ei\u016br\u0117jimo istorija.json/products",
+    "true_id": "watch-history:products",
+    "estimated_id": "watch-history:products"
+  },
+  {
+    "path": "istorija/\u017ei\u016br\u0117jimo istorija.json/activityControls",
+    "true_id": "watch-history:activityControls",
+    "estimated_id": "watch-history:activityControls"
+  },
+  {
+    "path": "istorija/\u017ei\u016br\u0117jimo istorija.json/subtitles/name",
+    "true_id": "watch-history:subtitles:name",
+    "estimated_id": "watch-history:subtitles:name"
+  },
+  {
+    "path": "istorija/\u017ei\u016br\u0117jimo istorija.json/subtitles/url",
+    "true_id": "watch-history:subtitles:url",
+    "estimated_id": "watch-history:subtitles:url"
+  },
+  {
+    "path": "istorija/paies\u030ckos istorija.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "istorija/paies\u030ckos istorija.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "istorija/paies\u030ckos istorija.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "istorija/paies\u030ckos istorija.json/description",
+    "true_id": "search-history:description",
+    "estimated_id": "search-history:description"
+  },
+  {
+    "path": "istorija/paies\u030ckos istorija.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "istorija/paies\u030ckos istorija.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "istorija/paies\u030ckos istorija.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "istorija/z\u030ciu\u0304re\u0307jimo istorija.json/header",
+    "true_id": "watch-history:header",
+    "estimated_id": "watch-history:header"
+  },
+  {
+    "path": "istorija/z\u030ciu\u0304re\u0307jimo istorija.json/title",
+    "true_id": "watch-history:title",
+    "estimated_id": "watch-history:title"
+  },
+  {
+    "path": "istorija/z\u030ciu\u0304re\u0307jimo istorija.json/titleUrl",
+    "true_id": "watch-history:titleUrl",
+    "estimated_id": "watch-history:titleUrl"
+  },
+  {
+    "path": "istorija/z\u030ciu\u0304re\u0307jimo istorija.json/description",
+    "true_id": "watch-history:description",
+    "estimated_id": "watch-history:description"
+  },
+  {
+    "path": "istorija/z\u030ciu\u0304re\u0307jimo istorija.json/time",
+    "true_id": "watch-history:time",
+    "estimated_id": "watch-history:time"
+  },
+  {
+    "path": "istorija/z\u030ciu\u0304re\u0307jimo istorija.json/products",
+    "true_id": "watch-history:products",
+    "estimated_id": "watch-history:products"
+  },
+  {
+    "path": "istorija/z\u030ciu\u0304re\u0307jimo istorija.json/activityControls",
+    "true_id": "watch-history:activityControls",
+    "estimated_id": "watch-history:activityControls"
+  },
+  {
+    "path": "istorija/paies\u030ckos istorija.json/details/name",
+    "true_id": "search-history:name",
+    "estimated_id": "search-history:name"
+  },
+  {
+    "path": "istorija/z\u030ciu\u0304re\u0307jimo istorija.json/details/name",
+    "true_id": "watch-history:details:name",
+    "estimated_id": "watch-history:details:name"
+  },
+  {
+    "path": "historial/historial-de-b\u00fasqueda.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "historial/historial-de-b\u00fasqueda.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "historial/historial-de-b\u00fasqueda.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "historial/historial-de-b\u00fasqueda.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "historial/historial-de-b\u00fasqueda.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "historial/historial-de-b\u00fasqueda.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "historial/historial-de-reproducciones.json/details/name",
+    "true_id": "watch-history:details:name",
+    "estimated_id": "watch-history:details:name"
+  },
+  {
+    "path": "geschiedenis/zoekgeschiedenis.json/description",
+    "true_id": "search-history:description",
+    "estimated_id": "search-history:description"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de cerques.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de cerques.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de cerques.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de cerques.json/description",
+    "true_id": "search-history:description",
+    "estimated_id": "search-history:description"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de cerques.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de cerques.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de cerques.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de visualitzacions.json/header",
+    "true_id": "watch-history:header",
+    "estimated_id": "watch-history:header"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de visualitzacions.json/title",
+    "true_id": "watch-history:title",
+    "estimated_id": "watch-history:title"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de visualitzacions.json/titleUrl",
+    "true_id": "watch-history:titleUrl",
+    "estimated_id": "watch-history:titleUrl"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de visualitzacions.json/time",
+    "true_id": "watch-history:time",
+    "estimated_id": "watch-history:time"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de visualitzacions.json/products",
+    "true_id": "watch-history:products",
+    "estimated_id": "watch-history:products"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de visualitzacions.json/activityControls",
+    "true_id": "watch-history:activityControls",
+    "estimated_id": "watch-history:activityControls"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de cerques.json/details/name",
+    "true_id": "search-history:name",
+    "estimated_id": "NA"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de visualitzacions.json/subtitles/name",
+    "true_id": "watch-history:subtitles:name",
+    "estimated_id": "watch-history:subtitles:name"
+  },
+  {
+    "path": "Takeout/YouTube i YouTube\u00a0Music/historial/historial de visualitzacions.json/subtitles/url",
+    "true_id": "watch-history:url",
+    "estimated_id": "watch-history:subtitles:url"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-b\u00fasqueda.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-b\u00fasqueda.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-b\u00fasqueda.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-b\u00fasqueda.json/description",
+    "true_id": "search-history:description",
+    "estimated_id": "search-history:description"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-b\u00fasqueda.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-b\u00fasqueda.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-b\u00fasqueda.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/header",
+    "true_id": "watch-history:header",
+    "estimated_id": "watch-history:header"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/title",
+    "true_id": "watch-history:title",
+    "estimated_id": "watch-history:title"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/titleUrl",
+    "true_id": "watch-history:titleUrl",
+    "estimated_id": "watch-history:titleUrl"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/time",
+    "true_id": "watch-history:time",
+    "estimated_id": "watch-history:time"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/products",
+    "true_id": "watch-history:products",
+    "estimated_id": "watch-history:products"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/activityControls",
+    "true_id": "watch-history:activityControls",
+    "estimated_id": "watch-history:activityControls"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-b\u00fasqueda.json/details/name",
+    "true_id": "search-history:name",
+    "estimated_id": "search-history:name"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/subtitles/name",
+    "true_id": "watch-history:subtitles:name",
+    "estimated_id": "watch-history:subtitles:name"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/subtitles/url",
+    "true_id": "watch-history:url",
+    "estimated_id": "watch-history:subtitles:url"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/description",
+    "true_id": "watch-history:description",
+    "estimated_id": "watch-history:description"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/details/name",
+    "true_id": "watch-history:details:name",
+    "estimated_id": "watch-history:details:name"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de b\u00fasquedas.json/header",
+    "true_id": "search-history:header",
+    "estimated_id": "search-history:header"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de b\u00fasquedas.json/title",
+    "true_id": "search-history:title",
+    "estimated_id": "search-history:title"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de b\u00fasquedas.json/titleUrl",
+    "true_id": "search-history:titleUrl",
+    "estimated_id": "search-history:titleUrl"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de b\u00fasquedas.json/time",
+    "true_id": "search-history:time",
+    "estimated_id": "search-history:time"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de b\u00fasquedas.json/products",
+    "true_id": "search-history:products",
+    "estimated_id": "search-history:products"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de b\u00fasquedas.json/activityControls",
+    "true_id": "search-history:activityControls",
+    "estimated_id": "search-history:activityControls"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de reproducciones.json/header",
+    "true_id": "watch-history:header",
+    "estimated_id": "watch-history:header"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de reproducciones.json/title",
+    "true_id": "watch-history:title",
+    "estimated_id": "watch-history:title"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de reproducciones.json/time",
+    "true_id": "watch-history:time",
+    "estimated_id": "watch-history:time"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de reproducciones.json/products",
+    "true_id": "watch-history:products",
+    "estimated_id": "watch-history:products"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de reproducciones.json/activityControls",
+    "true_id": "watch-history:activityControls",
+    "estimated_id": "watch-history:activityControls"
+  },
+  {
+    "path": "Takeout/YouTube y YouTube\u00a0Music/historial de videos/historial de reproducciones.json/details/name",
+    "true_id": "watch-history:details:name",
+    "estimated_id": "watch-history:details:name"
+  }
+]

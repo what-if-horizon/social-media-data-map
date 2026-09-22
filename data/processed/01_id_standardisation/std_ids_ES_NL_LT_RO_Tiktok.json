@@ -1,0 +1,187 @@
+[
+  {
+    "path": "Profile/Profile Info/ProfileMap/likesReceived",
+    "true_id": "Profile:Profile Information:ProfileMap:likesReceived",
+    "estimated_id": "Profile:Profile Information:ProfileMap:likesReceived"
+  },
+  {
+    "path": "Profile/Profile Info/ProfileMap/userName",
+    "true_id": "Profile:Profile Information:ProfileMap:userName",
+    "estimated_id": "Profile:Profile Information:ProfileMap:userName"
+  },
+  {
+    "path": "Your Activity/Activity Summary/ActivitySummaryMap/videosCommentedOnSinceAccountRegistration",
+    "true_id": "Activity:Activity Summary:ActivitySummaryMap:videosCommentedOnSinceAccountRegistration",
+    "estimated_id": "Activity:Activity Summary:ActivitySummaryMap:videosCommentedOnSinceAccountRegistration"
+  },
+  {
+    "path": "Your Activity/Activity Summary/ActivitySummaryMap/videosSharedSinceAccountRegistration",
+    "true_id": "Activity:Activity Summary:ActivitySummaryMap:videosSharedSinceAccountRegistration",
+    "estimated_id": "Activity:Activity Summary:ActivitySummaryMap:videosSharedSinceAccountRegistration"
+  },
+  {
+    "path": "Your Activity/Activity Summary/ActivitySummaryMap/videosWatchedToTheEndSinceAccountRegistration",
+    "true_id": "Activity:Activity Summary:ActivitySummaryMap:videosWatchedToTheEndSinceAccountRegistration",
+    "estimated_id": "Activity:Activity Summary:ActivitySummaryMap:videosWatchedToTheEndSinceAccountRegistration"
+  },
+  {
+    "path": "Your Activity/Searches/SearchList/Date",
+    "true_id": "Activity:Search History:SearchList:Date",
+    "estimated_id": "Activity:Search History:SearchList:Date"
+  },
+  {
+    "path": "Your Activity/Searches/SearchList/SearchTerm",
+    "true_id": "Activity:Search History:SearchList:SearchTerm",
+    "estimated_id": "Activity:Search History:SearchList:SearchTerm"
+  },
+  {
+    "path": "Your Activity/Watch History/VideoList/Date",
+    "true_id": "Activity:Video Browsing History:VideoList:Date",
+    "estimated_id": "Activity:Video Browsing History:VideoList:Date"
+  },
+  {
+    "path": "Your Activity/Watch History/VideoList/Link",
+    "true_id": "Activity:Video Browsing History:VideoList:Link",
+    "estimated_id": "Activity:Video Browsing History:VideoList:Link"
+  },
+  {
+    "path": "Post/Posts/VideoList/Date",
+    "true_id": "Video:Videos:VideoList:Date",
+    "estimated_id": "Video:Videos:VideoList:Date"
+  },
+  {
+    "path": "Post/Posts/VideoList/Link",
+    "true_id": "Video:Videos:VideoList:Link",
+    "estimated_id": "Video:Videos:VideoList:Link"
+  },
+  {
+    "path": "Post/Posts/VideoList/Likes",
+    "true_id": "Video:Videos:VideoList:Likes",
+    "estimated_id": "Video:Videos:VideoList:Likes"
+  },
+  {
+    "path": "Post/Posts/VideoList/WhoCanView",
+    "true_id": "Video:Videos:VideoList:WhoCanView",
+    "estimated_id": "Video:Videos:VideoList:WhoCanView"
+  },
+  {
+    "path": "Post/Posts/VideoList/AllowComments",
+    "true_id": "Video:Videos:VideoList:AllowComments",
+    "estimated_id": "Video:Videos:VideoList:AllowComments"
+  },
+  {
+    "path": "Post/Posts/VideoList/AllowStitches",
+    "true_id": "Video:Videos:VideoList:AllowStitches",
+    "estimated_id": "Video:Videos:VideoList:AllowStitches"
+  },
+  {
+    "path": "Post/Posts/VideoList/AllowDuets",
+    "true_id": "Video:Videos:VideoList:AllowDuets",
+    "estimated_id": "Video:Videos:VideoList:AllowDuets"
+  },
+  {
+    "path": "Post/Posts/VideoList/AllowStickers",
+    "true_id": "Video:Videos:VideoList:AllowStickers",
+    "estimated_id": "Video:Videos:VideoList:AllowStickers"
+  },
+  {
+    "path": "Post/Posts/VideoList/AllowSharingToStory",
+    "true_id": "Video:Videos:VideoList:AllowSharingToStory",
+    "estimated_id": "Video:Videos:VideoList:AllowSharingToStory"
+  },
+  {
+    "path": "Post/Posts/VideoList/ContentDisclosure",
+    "true_id": "Video:Videos:VideoList:ContentDisclosure",
+    "estimated_id": "Video:Videos:VideoList:ContentDisclosure"
+  },
+  {
+    "path": "Post/Posts/VideoList/AIGeneratedContent",
+    "true_id": "Video:Videos:VideoList:AIGeneratedContent",
+    "estimated_id": "Video:Videos:VideoList:AIGeneratedContent"
+  },
+  {
+    "path": "Post/Posts/VideoList/Sound",
+    "true_id": "Video:Videos:VideoList:Sound",
+    "estimated_id": "Video:Videos:VideoList:Sound"
+  },
+  {
+    "path": "Post/Posts/VideoList/Location",
+    "true_id": "Video:Videos:VideoList:Location",
+    "estimated_id": "Video:Videos:VideoList:Location"
+  },
+  {
+    "path": "Post/Posts/VideoList/Title",
+    "true_id": "Video:Videos:VideoList:Title",
+    "estimated_id": "Video:Videos:VideoList:Title"
+  },
+  {
+    "path": "Post/Posts/VideoList/AddYoursText",
+    "true_id": "Video:Videos:VideoList:AddYoursText",
+    "estimated_id": "Video:Videos:VideoList:AddYoursText"
+  },
+  {
+    "path": "Your Activity/Favorite Videos/FavoriteVideoList/Date",
+    "true_id": "Activity:Favorite Videos:FavoriteVideoList:Date",
+    "estimated_id": "Activity:Favorite Videos:FavoriteVideoList:Date"
+  },
+  {
+    "path": "Your Activity/Favorite Videos/FavoriteVideoList/Link",
+    "true_id": "Activity:Favorite Videos:FavoriteVideoList:Link",
+    "estimated_id": "Activity:Favorite Videos:FavoriteVideoList:Link"
+  },
+  {
+    "path": "Your Activity/Follower/FansList/Date",
+    "true_id": "Activity:Follower List:FansList:Date",
+    "estimated_id": "Activity:Follower List:FansList:Date"
+  },
+  {
+    "path": "Your Activity/Follower/FansList/UserName",
+    "true_id": "Activity:Follower List:FansList:UserName",
+    "estimated_id": "Activity:Follower List:FansList:UserName"
+  },
+  {
+    "path": "Your Activity/Following/Following/Date",
+    "true_id": "Activity:Following List:Following:Date",
+    "estimated_id": "Activity:Following List:Following:Date"
+  },
+  {
+    "path": "Your Activity/Following/Following/UserName",
+    "true_id": "Activity:Following List:Following:UserName",
+    "estimated_id": "Activity:Following List:Following:UserName"
+  },
+  {
+    "path": "Your Activity/Hashtag/HashtagList/HashtagName",
+    "true_id": "Activity:Hashtag:HashtagList:HashtagName",
+    "estimated_id": "Activity:Hashtag:HashtagList:HashtagName"
+  },
+  {
+    "path": "Your Activity/Hashtag/HashtagList/HashtagLink",
+    "true_id": "Activity:Hashtag:HashtagList:HashtagLink",
+    "estimated_id": "Activity:Hashtag:HashtagList:HashtagLink"
+  },
+  {
+    "path": "Your Activity/Like List/ItemFavoriteList/date",
+    "true_id": "Activity:Like List:ItemFavoriteList:date",
+    "estimated_id": "Activity:Like List:ItemFavoriteList:date"
+  },
+  {
+    "path": "Your Activity/Like List/ItemFavoriteList/link",
+    "true_id": "Activity:Like List:ItemFavoriteList:link",
+    "estimated_id": "Activity:Like List:ItemFavoriteList:link"
+  },
+  {
+    "path": "Your Activity/Share History/ShareHistoryList/Date",
+    "true_id": "Activity:Share History:ShareHistoryList:Date",
+    "estimated_id": "Activity:Share History:ShareHistoryList:Date"
+  },
+  {
+    "path": "Your Activity/Share History/ShareHistoryList/SharedContent",
+    "true_id": "Activity:Share History:ShareHistoryList:SharedContent",
+    "estimated_id": "Activity:Share History:ShareHistoryList:SharedContent"
+  },
+  {
+    "path": "Your Activity/Share History/ShareHistoryList/Link",
+    "true_id": "Activity:Share History:ShareHistoryList:Link",
+    "estimated_id": "Activity:Share History:ShareHistoryList:Link"
+  }
+]
