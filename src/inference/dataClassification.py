@@ -9,6 +9,7 @@ import random
 from tqdm import tqdm
 from pathlib import Path
 from datetime import datetime
+import re
 
 
 
@@ -321,6 +322,7 @@ def process_chunk(
     platform,
     file_number,
     tmp_file,
+    judge=False,
 ):
     from src.inference import generateInference as gI
 
@@ -334,7 +336,15 @@ def process_chunk(
             desc=f"{platform} {file_number} agent {agent}",
             position=agent,
         ):
-            path = row["final_path"]
+
+            if judge:
+                path = row["path"]
+                data_1 = row["path"]
+                data_2 = row["category"]
+            else:
+                path = row["final_path"]
+                data_1 = row["final_path"]
+                data_2 = None
 
             for attempt in range(3):
                 try:
@@ -344,24 +354,33 @@ def process_chunk(
                         flush=True,
                     )
 
-                    output = gI.generate_output(
-                        data_1=path,
-                        template=template,
-                        agent_no=agent,
-                    )
+                    if data_2 is not None:
+                        output = gI.generate_output(
+                            data_1=data_1,
+                            data_2=data_2,
+                            template=template,
+                            agent_no=agent,
+                        )
+                    else:
+                        output = gI.generate_output(
+                            data_1=data_1,
+                            template=template,
+                            agent_no=agent,
+                        )
 
                     output = json.loads(output)
 
-                    node = {
-                        "path": path,
-                    }
+                    node = dict(row)
                     node.update(output)
 
                     results.append(node)
 
                     # Checkpoint immediately
                     f.write(
-                        json.dumps(node, ensure_ascii=False) + "\n"
+                        json.dumps(
+                            node,
+                            ensure_ascii=False,
+                        ) + "\n"
                     )
                     f.flush()
 
@@ -530,6 +549,7 @@ def run_classification(
                 platform,
                 file_number,
                 tmp_file,
+                False,
             )
         )
 
@@ -664,187 +684,438 @@ def test_classification_dev(input_file, output_dir_data, output_dir_results, cou
 
 
 
-def test_classification(input_dir, output_dir_data, output_dir_results, country_list):
+def test_classification_seq(input_file, output_dir_data, output_dir_results, country_list):
 
     country_str = "_".join(country_list)
 
-    for platform_dir in input_dir.iterdir():
 
-        platform = platform_dir.name
+    json_name = input_file.stem
+    platform =  json_name.split("_")[0]
+    file_number = re.search(r"_(\d+)", json_name).group(1)
 
-        for file in platform_dir.iterdir():
+    
 
-            if "schneider2010" in file.name:
-                template = p.prompt_judge_dt_schneider_2010()
-                file_name = "schneider2010"
+    if "schneider2010" in input_file.name:
+        template = p.prompt_judge_dt_schneider_2010()
+        file_name = "schneider2010"
 
-            elif "wu2010" in file.name:
-                template = p.prompt_judge_dt_wu2010()
-                file_name = "wu2010"
+    elif "wu2010" in input_file.name:
+        template = p.prompt_judge_dt_wu2010()
+        file_name = "wu2010"
 
-            elif "verduyn2020" in file.name:
-                template = p.prompt_dt_verduyn_2020()
-                file_name = "verduyn2020"
+    elif "verduyn2020" in input_file.name:
+        template = p.prompt_dt_verduyn_2020()
+        file_name = "verduyn2020"
 
-            else:
-                continue
+    
 
-            output_file = f"{platform}_{file_name}_{country_str}"
+    output_file = f"{platform}_{file_number}_{file_name}_{country_str}"
 
-            data_output_path = (
-                output_dir_data / f"{output_file}_llm_judge.json"
-            )
+    data_output_path = (
+        output_dir_data / f"{output_file}_llm_judge.json"
+    )
 
-            result_output_path = (
-                output_dir_results / f"{output_file}_results.json"
-            )
+    result_output_path = (
+        output_dir_results / f"{output_file}_results.json"
+    )
 
-            # --------------------------------------------------
-            # Load original data
-            # --------------------------------------------------
+    # --------------------------------------------------
+    # Load original data
+    # --------------------------------------------------
 
-            with open(file, "r") as f:
-                data = json.load(f)
+    with open(input_file, "r") as f:
+        data = json.load(f)
 
-            # --------------------------------------------------
-            # Resume existing results if available
-            # --------------------------------------------------
+    # --------------------------------------------------
+    # Resume existing results if available
+    # --------------------------------------------------
 
-            if data_output_path.exists():
+    if data_output_path.exists():
+
+        print(
+            f"[{datetime.now()}] Resuming from "
+            f"{data_output_path}",
+            flush=True
+        )
+
+        with open(data_output_path, "r") as f:
+            data = json.load(f)
+
+    total = len(data)
+
+    # --------------------------------------------------
+    # Process
+    # --------------------------------------------------
+
+    for i, r in enumerate(
+        tqdm(
+            data,
+            desc=f"Processing results for platform: {platform}"
+        )
+    ):
+
+        # Skip rows that were already judged
+        if "judgement" in r:
+            continue
+
+        #path = r.get("path", f"row {i}")
+        path = r['path']
+        answer = r['category']
+
+        for attempt in range(3):
+
+            try:
 
                 print(
-                    f"[{datetime.now()}] Resuming from "
-                    f"{data_output_path}",
+                    f"[{datetime.now()}] "
+                    f"WORKING {i + 1}/{total}: {path} "
+                    f"(attempt {attempt + 1}/3)",
                     flush=True
                 )
 
-                with open(data_output_path, "r") as f:
-                    data = json.load(f)
-
-            total = len(data)
-
-            # --------------------------------------------------
-            # Process
-            # --------------------------------------------------
-
-            for i, r in enumerate(
-                tqdm(
-                    data,
-                    desc=f"Processing results for platform: {platform}"
-                )
-            ):
-
-                # Skip rows that were already judged
-                if "judgement" in r:
-                    continue
-
-                path = r.get("path", f"row {i}")
-
-                for attempt in range(3):
-
-                    try:
-
-                        print(
-                            f"[{datetime.now()}] "
-                            f"WORKING {i + 1}/{total}: {path} "
-                            f"(attempt {attempt + 1}/3)",
-                            flush=True
-                        )
-
-                        input_result = json.dumps(r)
-
-                        output = gI.generate_output(
-                            data_1=input_result,
-                            template=template
-                        )
-
-                        output = json.loads(output)
-
-                        r.update(output)
-
-                        # --------------------------------------
-                        # SAVE IMMEDIATELY
-                        # --------------------------------------
-
-                        with open(data_output_path, "w") as f:
-                            json.dump(
-                                data,
-                                f,
-                                indent=2
-                            )
-
-                        print(
-                            f"[{datetime.now()}] SAVED: {path}",
-                            flush=True
-                        )
-
-                        # Successful -> next row
-                        break
-
-                    except Exception as e:
-
-                        print(
-                            f"[{datetime.now()}] FAILED: {path} "
-                            f"(attempt {attempt + 1}/3): "
-                            f"{type(e).__name__}: {e}",
-                            flush=True
-                        )
-
-                        if attempt == 2:
-                            print(
-                                f"[{datetime.now()}] "
-                                f"GIVING UP: {path}",
-                                flush=True
-                            )
-
-            # --------------------------------------------------
-            # Calculate final statistics from saved data
-            # --------------------------------------------------
-
-            correct_total = sum(
-                r.get("judgement") == "CORRECT"
-                for r in data
-            )
-
-            incorrect_total = sum(
-                r.get("judgement") == "INCORRECT"
-                for r in data
-            )
-
-            judged_total = correct_total + incorrect_total
-
-            node = {
-                "platform": platform,
-                "total_cases": total,
-                "total_judged": judged_total,
-                "total_correct": correct_total,
-                "total_incorrect": incorrect_total,
-                "percentage_total_correct": (
-                    f"{100 * correct_total / judged_total}%"
-                    if judged_total else "0%"
-                ),
-                "percentage_total_incorrect": (
-                    f"{100 * incorrect_total / judged_total}%"
-                    if judged_total else "0%"
-                ),
-            }
-
-            print(json.dumps(node, indent=2))
-
-            # Save final summary
-            with open(result_output_path, "w") as f:
-                json.dump(
-                    [node],
-                    f,
-                    indent=2
+                output = gI.generate_output(
+                    data_1=path,
+                    data_2 =answer,
+                    template=template
                 )
 
-    
-    
+                output = json.loads(output)
+
+                r.update(output)
+
+                # --------------------------------------
+                # SAVE IMMEDIATELY
+                # --------------------------------------
+
+                with open(data_output_path, "w") as f:
+                    json.dump(
+                        data,
+                        f,
+                        indent=2
+                    )
+
+                print(
+                    f"[{datetime.now()}] SAVED: {path}",
+                    flush=True
+                )
+
+                # Successful -> next row
+                break
+
+            except Exception as e:
+
+                print(
+                    f"[{datetime.now()}] FAILED: {path} "
+                    f"(attempt {attempt + 1}/3): "
+                    f"{type(e).__name__}: {e}",
+                    flush=True
+                )
+
+                if attempt == 2:
+                    print(
+                        f"[{datetime.now()}] "
+                        f"GIVING UP: {path}",
+                        flush=True
+                    )
+
+    # --------------------------------------------------
+    # Calculate final statistics from saved data
+    # --------------------------------------------------
+
+    correct_total = sum(
+        r.get("judgement") == "CORRECT"
+        for r in data
+    )
+
+    incorrect_total = sum(
+        r.get("judgement") == "INCORRECT"
+        for r in data
+    )
+
+    judged_total = correct_total + incorrect_total
+
+    node = {
+        "platform": platform,
+        "total_cases": total,
+        "total_judged": judged_total,
+        "total_correct": correct_total,
+        "total_incorrect": incorrect_total,
+        "percentage_total_correct": (
+            f"{100 * correct_total / judged_total}%"
+            if judged_total else "0%"
+        ),
+        "percentage_total_incorrect": (
+            f"{100 * incorrect_total / judged_total}%"
+            if judged_total else "0%"
+        ),
+    }
+
+    print(json.dumps(node, indent=2))
+
+    # Save final summary
+    with open(result_output_path, "w") as f:
+        json.dump(
+            [node],
+            f,
+            indent=2
+        )
 
 
-    
-    
+def test_classification(
+    input_file,
+    output_dir_data,
+    output_dir_results,
+    country_list,
+    num_agents,
+):
+    country_str = "_".join(country_list)
+
+    json_name = input_file.stem
+    platform = json_name.split("_")[0]
+    file_number = re.search(
+        r"_(\d+)",
+        json_name
+    ).group(1)
+
+    if "schneider2010" in input_file.name:
+        template = p.prompt_judge_dt_schneider_2010()
+        file_name = "schneider2010"
+
+    elif "wu2010" in input_file.name:
+        template = p.prompt_judge_dt_wu2010()
+        file_name = "wu2010"
+
+    elif "verduyn2020" in input_file.name:
+        template = p.prompt_dt_verduyn_2020()
+        file_name = "verduyn2020"
+
+    else:
+        raise ValueError(
+            f"Could not determine taxonomy from {input_file.name}"
+        )
+
+    output_file = (
+        f"{platform}_{file_number}_{file_name}_{country_str}"
+    )
+
+    data_output_path = (
+        output_dir_data
+        / f"{output_file}_llm_judge.json"
+    )
+
+    result_output_path = (
+        output_dir_results
+        / f"{output_file}_results.json"
+    )
+
+    # --------------------------------------------------
+    # Load original data
+    # --------------------------------------------------
+
+    with open(input_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # --------------------------------------------------
+    # Resume existing results if available
+    # --------------------------------------------------
+
+    if data_output_path.exists():
+
+        print(
+            f"[{datetime.now()}] Resuming from "
+            f"{data_output_path}",
+            flush=True,
+        )
+
+        with open(
+            data_output_path,
+            "r",
+            encoding="utf-8",
+        ) as f:
+            data = json.load(f)
+
+    # --------------------------------------------------
+    # Remove already judged rows
+    # --------------------------------------------------
+
+    data_to_process = [
+        r for r in data
+        if "judgement" not in r
+    ]
+
+    total = len(data)
+
+    print(
+        f"[{datetime.now()}] Processing "
+        f"{len(data_to_process)} remaining rows "
+        f"for {platform} {file_number}",
+        flush=True,
+    )
+
+    if data_to_process:
+
+        df = pd.DataFrame(data_to_process)
+
+        # --------------------------------------------------
+        # Split across agents
+        # --------------------------------------------------
+
+        chunks = [
+            df.iloc[i::num_agents]
+            for i in range(num_agents)
+        ]
+
+        chunks = [
+            (agent, chunk)
+            for agent, chunk in enumerate(chunks)
+            if not chunk.empty
+        ]
+
+        jobs = []
+
+        for agent, chunk in chunks:
+
+            tmp_file = (
+                output_dir_data
+                / f"agent_{agent}_{platform}_{file_number}.jsonl"
+            )
+
+            jobs.append(
+                (
+                    chunk,
+                    template,
+                    agent,
+                    platform,
+                    file_number,
+                    tmp_file,
+                    True
+                )
+            )
+
+        # --------------------------------------------------
+        # Run agents in parallel
+        # --------------------------------------------------
+
+        from multiprocessing import get_context
+
+        with get_context("spawn").Pool(
+            processes=len(jobs)
+        ) as pool:
+
+            results = pool.starmap(
+                process_chunk,
+                jobs,
+                chunksize=1,
+            )
+
+        # --------------------------------------------------
+        # Combine results
+        # --------------------------------------------------
+
+        new_results = [
+            item
+            for agent_results in results
+            for item in agent_results
+        ]
+
+        data_by_path = {
+            r["path"]: r
+            for r in data
+        }
+
+        for result in new_results:
+            data_by_path[result["path"]] = result
+
+        data = list(data_by_path.values())
+
+        # --------------------------------------------------
+        # Save final data
+        # --------------------------------------------------
+
+        with open(
+            data_output_path,
+            "w",
+            encoding="utf-8",
+        ) as f:
+            json.dump(
+                data,
+                f,
+                indent=2,
+                ensure_ascii=False,
+            )
+
+        # --------------------------------------------------
+        # Remove temporary agent files
+        # --------------------------------------------------
+
+        for _, _, _, _, _, tmp_file in jobs:
+            tmp_file.unlink(missing_ok=True)
+
+    # --------------------------------------------------
+    # Calculate final statistics
+    # --------------------------------------------------
+
+    correct_total = sum(
+        r.get("judgement") == "CORRECT"
+        for r in data
+    )
+
+    incorrect_total = sum(
+        r.get("judgement") == "INCORRECT"
+        for r in data
+    )
+
+    judged_total = (
+        correct_total
+        + incorrect_total
+    )
+
+    node = {
+        "platform": platform,
+        "file_number": file_number,
+        "total_cases": total,
+        "total_judged": judged_total,
+        "total_correct": correct_total,
+        "total_incorrect": incorrect_total,
+        "percentage_total_correct": (
+            f"{100 * correct_total / judged_total}%"
+            if judged_total
+            else "0%"
+        ),
+        "percentage_total_incorrect": (
+            f"{100 * incorrect_total / judged_total}%"
+            if judged_total
+            else "0%"
+        ),
+    }
+
+    print(
+        json.dumps(
+            node,
+            indent=2,
+        )
+    )
+
+    # --------------------------------------------------
+    # Save final summary
+    # --------------------------------------------------
+
+    with open(
+        result_output_path,
+        "w",
+        encoding="utf-8",
+    ) as f:
+        json.dump(
+            [node],
+            f,
+            indent=2,
+        )
+
+
+
+
+
+
     
 
 
