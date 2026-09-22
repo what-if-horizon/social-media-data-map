@@ -212,7 +212,7 @@ def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_
 #-------------------------------------------------------------
 # Run inference not distributed
 #-------------------------------------------------------------
-def run_id_std_solo(input_dir, output_dir, id_dir, country_list, model):
+def run_id_std_solo(input_dir, output_dir, id_dir, country_list, model, sample = None, selected_platform = None):
 
     from src.inference import generateInference as gI
     from src.inference import prompts as p
@@ -226,6 +226,9 @@ def run_id_std_solo(input_dir, output_dir, id_dir, country_list, model):
     for platform_dir in id_dir.iterdir():
 
         platform = platform_dir.name
+        if selected_platform != None:
+            if platform != selected_platform:
+                continue
 
         print(
             f"\n{'='*80}\n"
@@ -258,9 +261,8 @@ def run_id_std_solo(input_dir, output_dir, id_dir, country_list, model):
             df_reference_paths["final_path"].values.tolist()
         )
 
-        # JUST FOR TESTING
-        #random.seed(100)
-        #df_all_paths = df_all_paths.sample(n=20)
+        if sample != None:
+            df_all_paths = df_all_paths.sample(n = sample, random_state=42)
 
         output_list = []
 
@@ -389,6 +391,7 @@ def process_chunk(chunk, refs, agent, platform, model, tmp_file):
                 parsed = parse_json(raw)
                 if not isinstance(parsed, dict):
                     raise ValueError(f"Expected dict, got {type(parsed).__name__}")
+                
             except Exception as e:
                 print(f"[{datetime.now()}] ERROR agent={agent}, {path}: {e}", flush=True)
                 traceback.print_exc()
@@ -403,54 +406,54 @@ def process_chunk(chunk, refs, agent, platform, model, tmp_file):
     return results, failures
 
 
-def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents, sample = None):
-    input_dir, id_dir, output_dir = Path(input_dir), Path(id_dir), Path(output_dir)
+def run_id_std(platform_file, output_dir, id_dir, country_list, model, num_agents, sample = None):
+    id_dir, output_dir =Path(id_dir), Path(output_dir)
     country_str = "_".join(country_list)
 
-    for platform_dir in sorted(d for d in id_dir.iterdir() if d.is_dir()):
-        platform = platform_dir.name
-        print(f"\n{'=' * 80}\n[{datetime.now()}] START PLATFORM: {platform}\n{'=' * 80}", flush=True)
+    
+    platform_file_name = platform_file.stem
+    platform = platform_file_name.split("_")[0]
+    file_number = platform_file_name.split("_")[-1]
 
-        out_dir = output_dir / platform
-        out_dir.mkdir(parents=True, exist_ok=True)
-        output_file = out_dir / f"{platform}_std_ids_{country_str}_{model}.json"
-        failed_file = out_dir / f"{platform}_std_ids_failed_{country_str}_{model}.json"
+    print(f"\n{'=' * 80}\n[{datetime.now()}] START PLATFORM: {platform}\n{'=' * 80}", flush=True)
 
-        all_matches = sorted(input_dir.glob(f"{platform}*.csv"))
-        ref_matches = sorted(platform_dir.glob("*.csv"))
-        if len(all_matches) != 1 or len(ref_matches) != 1:
-            print(f"Skipping {platform}: found {all_matches} / {ref_matches}")
-            continue
+    out_dir = output_dir / platform
+    out_dir.mkdir(parents=True, exist_ok=True)
+    output_file = out_dir / f"{platform}_{file_number}_std_ids_{country_str}_{model}.json"
+    failed_file = out_dir / f"{platform}_{file_number}_std_ids_failed_{country_str}_{model}.json"
 
-        df_all = pd.read_csv(all_matches[0])
-        df_ref = pd.read_csv(ref_matches[0])
+    platform_dir = id_dir / platform
+    reference_paths = next(platform_dir.iterdir())
+    
+    df_all = pd.read_csv(platform_file)
+    df_ref = pd.read_csv(reference_paths)
 
-        ref_set = set(df_ref["final_path"])
-        df_all = df_all[~df_all["final_path"].isin(ref_set)].drop_duplicates("final_path")
+    ref_set = set(df_ref["final_path"])
+    df_all = df_all[~df_all["final_path"].isin(ref_set)].drop_duplicates("final_path")
 
-        if sample != None:
-            df_all = df_all.sample(n = sample, random_state=42)
+    if sample != None:
+        df_all = df_all.sample(n = sample, random_state=42)
 
-        refs = str(df_ref["final_path"].tolist())
+    refs = str(df_ref["final_path"].tolist())
 
-        chunks = [df_all.iloc[i::num_agents] for i in range(num_agents)]
-        jobs = [(chunk, refs, agent, platform, model, out_dir / f"agent_{agent}.jsonl")
-                for agent, chunk in enumerate(chunks)]
+    chunks = [df_all.iloc[i::num_agents] for i in range(num_agents)]
+    jobs = [(chunk, refs, agent, platform, model, out_dir / f"agent_{agent}_{platform}_{file_number}.jsonl")
+            for agent, chunk in enumerate(chunks)]
 
-        with get_context("spawn").Pool(processes=num_agents) as pool:
-            results = pool.starmap(process_chunk, jobs, chunksize=1)
+    with get_context("spawn").Pool(processes=num_agents) as pool:
+        results = pool.starmap(process_chunk, jobs, chunksize=1)
 
-        output_list = [r for res, _ in results for r in res]
-        failures = [x for _, fail in results for x in fail]
+    output_list = [r for res, _ in results for r in res]
+    failures = [x for _, fail in results for x in fail]
 
-        output_file.write_text(json.dumps(output_list, indent=2, ensure_ascii=False), encoding="utf-8")
-        failed_file.write_text(json.dumps(failures, indent=2, ensure_ascii=False), encoding="utf-8")
+    output_file.write_text(json.dumps(output_list, indent=2, ensure_ascii=False), encoding="utf-8")
+    failed_file.write_text(json.dumps(failures, indent=2, ensure_ascii=False), encoding="utf-8")
 
-        # Final files are safely on disk, so the agent checkpoints are no longer needed
-        for _, _, _, _, _, tmp_file in jobs:
-            tmp_file.unlink(missing_ok=True)
+    # Final files are safely on disk, so the agent checkpoints are no longer needed
+    for _, _, _, _, _, tmp_file in jobs:
+        tmp_file.unlink(missing_ok=True)
 
-        print(f"Finished {platform}: {len(output_list)} ok, {len(failures)} failed", flush=True)
+    print(f"Finished {platform}: {len(output_list)} ok, {len(failures)} failed", flush=True)
 
 #-------------------------------------------------------------
 # Find disagreements between LLMs

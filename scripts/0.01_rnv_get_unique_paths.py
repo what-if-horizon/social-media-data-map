@@ -67,6 +67,7 @@ def combine_list(df, platform):
 
 def clean_paths(df, platform):
     df["final_path"] = df["final_path"].str.replace(r'/\d{5,}(?=/)', '/$NUMBER', regex=True)
+    df["final_path"] = df["final_path"].str.replace(r'/\d+\.json(?=/)','/$NUMBER.json',regex=True)
 
     if platform == 'facebook':
        df["final_path"] = df["final_path"].str.replace(r'(?<=/group_badges_v2/).*','$GROUPNAME',regex=True)

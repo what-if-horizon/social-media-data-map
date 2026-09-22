@@ -19,7 +19,20 @@ ENV=$(grep "^environment:" "$MODEL_YAML" | cut -d' ' -f2)
 source "$HOME/$ENV"
 
 export VLLM_USE_FLASHINFER_CUBIN=1
-export CUDA_HOME=/apps/ACC/CUDA/12.8
+#export CUDA_HOME=/apps/ACC/CUDA/12.8
+
+
+#module load 2025
+#module load CUDA/12.8.0
+
+echo "===== CUDA DEBUG ====="
+module list
+which nvcc
+readlink -f "$(which nvcc)"
+nvcc --version
+echo "CUDA_HOME=$CUDA_HOME"
+echo "======================"
+
 
 
 # Necessary when running gpt-oss-20b
