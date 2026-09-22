@@ -142,7 +142,7 @@ def test_classification_dev(input_file, output_dir_data, output_dir_results, cou
 
 
 
-def run_classification(input_dir, output_dir, data_tax, country_list, model, sample = None):
+def run_classification_seq(platform_file, output_dir, data_tax, country_list, model, sample = None):
 
     """
     data_tax: The data can be classified according to different data taxonomies
@@ -168,150 +168,439 @@ def run_classification(input_dir, output_dir, data_tax, country_list, model, sam
     template = templates[data_tax]
     country_str = "_".join(country_list)
 
-    input_dir = Path(input_dir)
+   
     output_dir = Path(output_dir)
 
-    for platform_file in input_dir.iterdir():
+   
 
-        platform = platform_file.name
-        platform = platform.split("_")[0]
+    platform_file_name = platform_file.stem
+    platform = platform_file_name.split("_")[0]
+    file_number = platform_file_name.split("_")[-1]
+
+    print(
+        f"\n{'='*80}\n"
+        f"[{datetime.now()}] START PLATFORM: {platform}\n"
+        f"{'='*80}",
+        flush=True
+    )
+
+    output_file = (
+        output_dir / platform / f"{platform}_{file_number}_class_ids_{data_tax}_{country_str}_{model}.json"
+    )
+
+    # Find input file
+    #all_paths = next(input_dir.glob(f"{platform}*"))
+    df = pd.read_csv(platform_file)
+
+    if sample is not None:
+        df = df.sample(n=sample, random_state=42)
+
+    # --------------------------------------------------
+    # Load existing results if the job is being resumed
+    # --------------------------------------------------
+
+    if output_file.exists():
+        with open(output_file) as f:
+            output_list = json.load(f)
+
+        processed_paths = {
+            item["path"]
+            for item in output_list
+        }
 
         print(
-            f"\n{'='*80}\n"
-            f"[{datetime.now()}] START PLATFORM: {platform}\n"
-            f"{'='*80}",
+            f"[{datetime.now()}] Resuming  {platform} no. {file_number}: "
+            f"{len(output_list)} rows already processed",
             flush=True
         )
 
-        output_file = (
-            output_dir / platform / f"{platform}_class_ids_{data_tax}_{country_str}_{model}.json"
-        )
+    else:
+        output_list = []
+        processed_paths = set()
 
-        # Find input file
-        #all_paths = next(input_dir.glob(f"{platform}*"))
-        df = pd.read_csv(platform_file)
+    # --------------------------------------------------
+    # Process rows
+    # --------------------------------------------------
 
-        if sample is not None:
-            df = df.sample(n=sample, random_state=42)
+    df_to_process = df[
+        ~df["final_path"].isin(processed_paths)
+    ]
 
-        # --------------------------------------------------
-        # Load existing results if the job is being resumed
-        # --------------------------------------------------
+    print(
+        f"[{datetime.now()}] Processing "
+        f"{len(df_to_process)} remaining rows for {platform} no. {file_number}",
+        flush=True
+    )
 
-        if output_file.exists():
-            with open(output_file) as f:
-                output_list = json.load(f)
+    try:
+        for _, row in tqdm(
+        df_to_process.iterrows(),
+        total=len(df_to_process)):
 
-            processed_paths = {
-                item["path"]
-                for item in output_list
-            }
+            path = row["final_path"]
 
-            print(
-                f"[{datetime.now()}] Resuming {platform}: "
-                f"{len(output_list)} rows already processed",
-                flush=True
-            )
+            for attempt in range(3):
+                try:
+                    print(
+                        f"[{datetime.now()}] WORKING: {path} "
+                        f"(attempt {attempt + 1}/3)",
+                        flush=True
+                    )
 
-        else:
-            output_list = []
-            processed_paths = set()
+                    output = gI.generate_output(
+                        data_1=path,
+                        template=template
+                    )
 
-        # --------------------------------------------------
-        # Process rows
-        # --------------------------------------------------
+                    output = json.loads(output)
 
-        df_to_process = df[
-            ~df["final_path"].isin(processed_paths)
-        ]
+                    node = {
+                        "path": path
+                    }
+                    node.update(output)
+
+                    output_list.append(node)
+
+                    # Save immediately after successful row
+                    with open(output_file, "w") as f:
+                        json.dump(
+                            output_list,
+                            f,
+                            indent=2
+                        )
+
+                    print(
+                        f"[{datetime.now()}] SAVED: {path}",
+                        flush=True
+                    )
+
+                    # Success -> move to next row
+                    break
+
+                except Exception as e:
+
+                    print(
+                        f"[{datetime.now()}] FAILED: {path} "
+                        f"(attempt {attempt + 1}/3): "
+                        f"{type(e).__name__}: {e}",
+                        flush=True
+                    )
+
+                    if attempt == 2:
+                        print(
+                            f"[{datetime.now()}] GIVING UP: {path}",
+                            flush=True
+                        )
+                        raise
+
+    except Exception:
 
         print(
-            f"[{datetime.now()}] Processing "
-            f"{len(df_to_process)} remaining rows for {platform}",
+            f"\n[{datetime.now()}] PLATFORM FAILED:  {platform} no. {file_number}",
+            flush=True
+        )
+        print(
+            f"[{datetime.now()}] Partial results available at: "
+            f" {platform} no. {file_number}",
             flush=True
         )
 
-        try:
-            for _, row in tqdm(
-            df_to_process.iterrows(),
-            total=len(df_to_process)):
+        raise
 
-                path = row["final_path"]
+    print(
+        f"\n[{datetime.now()}] COMPLETED PLATFORM: {platform}\n"
+        f"Results: {output_file}",
+        flush=True
+    )
 
-                for attempt in range(3):
-                    try:
+
+def process_chunk(
+    chunk,
+    template,
+    agent,
+    platform,
+    file_number,
+    tmp_file,
+):
+    from src.inference import generateInference as gI
+
+    results = []
+
+    with open(tmp_file, "a", encoding="utf-8") as f:
+
+        for _, row in tqdm(
+            chunk.iterrows(),
+            total=len(chunk),
+            desc=f"{platform} {file_number} agent {agent}",
+            position=agent,
+        ):
+            path = row["final_path"]
+
+            for attempt in range(3):
+                try:
+                    print(
+                        f"[{datetime.now()}] WORKING: {path} "
+                        f"(agent {agent}, attempt {attempt + 1}/3)",
+                        flush=True,
+                    )
+
+                    output = gI.generate_output(
+                        data_1=path,
+                        template=template,
+                        agent_no=agent,
+                    )
+
+                    output = json.loads(output)
+
+                    node = {
+                        "path": path,
+                    }
+                    node.update(output)
+
+                    results.append(node)
+
+                    # Checkpoint immediately
+                    f.write(
+                        json.dumps(node, ensure_ascii=False) + "\n"
+                    )
+                    f.flush()
+
+                    print(
+                        f"[{datetime.now()}] SAVED: {path}",
+                        flush=True,
+                    )
+
+                    break
+
+                except Exception as e:
+                    print(
+                        f"[{datetime.now()}] FAILED: {path} "
+                        f"(agent {agent}, attempt {attempt + 1}/3): "
+                        f"{type(e).__name__}: {e}",
+                        flush=True,
+                    )
+
+                    if attempt == 2:
                         print(
-                            f"[{datetime.now()}] WORKING: {path} "
-                            f"(attempt {attempt + 1}/3)",
-                            flush=True
+                            f"[{datetime.now()}] GIVING UP: {path}",
+                            flush=True,
                         )
+                        raise
 
-                        output = gI.generate_output(
-                            data_1=path,
-                            template=template
-                        )
+    return results
 
-                        output = json.loads(output)
 
-                        node = {
-                            "path": path
-                        }
-                        node.update(output)
+def run_classification(
+    platform_file,
+    output_dir,
+    data_tax,
+    country_list,
+    model,
+    num_agents
+):
+    """
+    data_tax:
+        - 'schneider2010'
+        - 'wu2010'
+        - 'verduyn2020'
 
-                        output_list.append(node)
+    country_list:
+        e.g. ['ES', 'NL']
+    """
 
-                        # Save immediately after successful row
-                        with open(output_file, "w") as f:
-                            json.dump(
-                                output_list,
-                                f,
-                                indent=2
-                            )
+    templates = {
+        "schneider2010": p.prompt_dt_schneider_2010(),
+        "wu2010": p.prompt_dt_wu_2010(),
+        "verduyn2020": p.prompt_dt_verduyn_2020(),
+    }
 
-                        print(
-                            f"[{datetime.now()}] SAVED: {path}",
-                            flush=True
-                        )
+    template = templates[data_tax]
+    country_str = "_".join(country_list)
 
-                        # Success -> move to next row
-                        break
+    output_dir = Path(output_dir)
 
-                    except Exception as e:
+    platform_file_name = platform_file.stem
+    platform = platform_file_name.split("_")[0]
+    file_number = platform_file_name.split("_")[-1]
 
-                        print(
-                            f"[{datetime.now()}] FAILED: {path} "
-                            f"(attempt {attempt + 1}/3): "
-                            f"{type(e).__name__}: {e}",
-                            flush=True
-                        )
+    print(
+        f"\n{'=' * 80}\n"
+        f"[{datetime.now()}] START PLATFORM: {platform} "
+        f"FILE: {file_number}\n"
+        f"{'=' * 80}",
+        flush=True,
+    )
 
-                        if attempt == 2:
-                            print(
-                                f"[{datetime.now()}] GIVING UP: {path}",
-                                flush=True
-                            )
-                            raise
+    # --------------------------------------------------
+    # Output paths
+    # --------------------------------------------------
 
-        except Exception:
+    out_dir = output_dir / platform
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-            print(
-                f"\n[{datetime.now()}] PLATFORM FAILED: {platform}",
-                flush=True
-            )
-            print(
-                f"[{datetime.now()}] Partial results available at: "
-                f"{output_file}",
-                flush=True
-            )
+    output_file = (
+        out_dir
+        / f"{platform}_{file_number}_class_ids_"
+          f"{data_tax}_{country_str}_{model}.json"
+    )
 
-            raise
+    # --------------------------------------------------
+    # Read input
+    # --------------------------------------------------
+
+    df = pd.read_csv(platform_file)
+
+    # --------------------------------------------------
+    # Load existing results
+    # --------------------------------------------------
+
+    if output_file.exists():
+
+        with open(output_file) as f:
+            output_list = json.load(f)
+
+        processed_paths = {
+            item["path"]
+            for item in output_list
+        }
 
         print(
-            f"\n[{datetime.now()}] COMPLETED PLATFORM: {platform}\n"
-            f"Results: {output_file}",
-            flush=True
+            f"[{datetime.now()}] Resuming {platform} "
+            f"no. {file_number}: "
+            f"{len(output_list)} rows already processed",
+            flush=True,
         )
 
+    else:
+        output_list = []
+        processed_paths = set()
+
+    # --------------------------------------------------
+    # Remove already processed rows
+    # --------------------------------------------------
+
+    df_to_process = df[
+        ~df["final_path"].isin(processed_paths)
+    ].copy()
+
+    print(
+        f"[{datetime.now()}] Processing "
+        f"{len(df_to_process)} remaining rows for "
+        f"{platform} no. {file_number}",
+        flush=True,
+    )
+
+    if df_to_process.empty:
+        print(
+            f"[{datetime.now()}] Nothing left to process.",
+            flush=True,
+        )
+        return
+
+    # --------------------------------------------------
+    # Split across agents
+    # --------------------------------------------------
+
+    chunks = [
+        df_to_process.iloc[i::num_agents]
+        for i in range(num_agents)
+    ]
+
+    # Don't create workers for empty chunks
+    chunks = [
+        (agent, chunk)
+        for agent, chunk in enumerate(chunks)
+        if not chunk.empty
+    ]
+
+    jobs = []
+
+    for agent, chunk in chunks:
+
+        tmp_file = (
+            out_dir
+            / f"agent_{agent}_{platform}_{file_number}.jsonl"
+        )
+
+        jobs.append(
+            (
+                chunk,
+                template,
+                agent,
+                platform,
+                file_number,
+                tmp_file,
+            )
+        )
+
+    # --------------------------------------------------
+    # Run agents in parallel
+    # --------------------------------------------------
+
+    from multiprocessing import get_context
+
+    with get_context("spawn").Pool(
+        processes=len(jobs)
+    ) as pool:
+
+        results = pool.starmap(
+            process_chunk,
+            jobs,
+            chunksize=1,
+        )
+
+    # --------------------------------------------------
+    # Combine results
+    # --------------------------------------------------
+
+    new_results = [
+        item
+        for agent_results in results
+        for item in agent_results
+    ]
+
+    output_list.extend(new_results)
+
+    # --------------------------------------------------
+    # Save final output
+    # --------------------------------------------------
+
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(
+            output_list,
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
+
+    # --------------------------------------------------
+    # Remove temporary agent files
+    # --------------------------------------------------
+
+    for _, _, _, _, _, tmp_file in jobs:
+        tmp_file.unlink(missing_ok=True)
+
+    print(
+        f"\n[{datetime.now()}] COMPLETED PLATFORM: {platform} "
+        f"FILE: {file_number}",
+        flush=True,
+    )
+
+    print(
+        f"Results: {output_file}",
+        flush=True,
+    )
+
+    print(
+        f"Total results: {len(output_list)}",
+        flush=True,
+    )
+
+
+
+#####################################################################
+# LLM AS JUDGE
+#######################################################################
 def test_classification_dev(input_file, output_dir_data, output_dir_results, country_list):
 
     if 'schneider2010' in input_file:

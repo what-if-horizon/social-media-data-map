@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=gpu_h100
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:4
 #SBATCH --output=logs/%x.out
 #SBATCH --error=logs/%x.err
 
@@ -78,10 +77,11 @@ echo "All servers ready"
 #--------------------------------------------------
 PYTHON_SCRIPT=${PYTHON_SCRIPT}
 SCRIPT_NAME=$(basename "$PYTHON_SCRIPT" .py)
+INPUT_NAME=$(basename "$INPUT_FILE" .csv)
 
 python -u "$PYTHON_SCRIPT" \
-    > "$LOG_DIR/${SCRIPT_NAME}.out" \
-    2> "$LOG_DIR/${SCRIPT_NAME}.err"
+    > "$LOG_DIR/${SCRIPT_NAME}_${INPUT_NAME}.out" \
+    2> "$LOG_DIR/${SCRIPT_NAME}_${INPUT_NAME}.err"
 
 
 echo "Job finished at: $(date '+%Y-%m-%d %H:%M:%S')"

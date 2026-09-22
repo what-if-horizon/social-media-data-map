@@ -72,88 +72,89 @@ merge_csv:
 #ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
 MODEL_CONFIG_STD_ID=gpt-oss-20b.yaml
 PYTHON_SCRIPT_STD_ID=scripts/1.01_rnv_test_id_standardisation.py
+NUM_GPU_STD_ID=4
+TIME_STD_ID=04:00:00
 
 id_std_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_STD_ID) \
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_ID) \
 	bash launchers/run_llm_on_server_snellius.sh
 
-TIME_STD_ID=04:00:00
-
 id_std:
 	sbatch \
 		--time=$(TIME_STD_ID) \
+		--gres=gpu:$(NUM_GPU_STD_ID) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD_ID),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_ID) \
 		launchers/run_llm_snellius.sh
 
 
-MODEL_CONFIG_STD=gpt-oss-20b_4agent.yaml
+MODEL_CONFIG_STD?=gpt-oss-20b_4agent.yaml
 PYTHON_SCRIPT_STD=scripts/1.02_rnv_run_path_standardisation.py
+PATH_STD_DIR=/projects/prjs2007/data_donation/ddd_development_2files/00_ingest/005_merged_structures
+TIME_STD?=01:00:00
+NUM_GPU_STD?=4
+
+# PATH STANDARDISATION ACROSS MULTIPLE NODES PARALALISED ACROSS MAX 4 GPUS
+path_std:
+	@for file in $(PATH_STD_DIR)/*/*.csv; do \
+		job_name=$$(basename "$$file" .csv); \
+		echo "Submitting $$job_name"; \
+		sbatch \
+			--job-name="PATH_STD_$(MODEL_CONFIG_STD)_$$(basename "$$file" .csv)" \
+			--time=$(TIME_STD) \
+			--gres=gpu:$(NUM_GPU_STD) \
+			--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD),INPUT_FILE=$$file \
+			launchers/run_llm_snellius.sh; \
+	done
+
 
 path_std_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_STD) \
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
 	bash launchers/run_llm_on_server_snellius.sh
 	
-TIME_STD=10:30:00
-
-
-path_std:
+#NEED UPDATE
+path_std_one_job:
 	sbatch \
 		--time=$(TIME_STD) \
+		--gres=gpu:$(NUM_GPU_STD) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD) \
 		launchers/run_llm_snellius.sh
 
 
 MODEL_CONFIG_STD_SEQ=gpt-oss-20b.yaml
 PYTHON_SCRIPT_STD_SEQ=scripts/1.02.01_rnv_run_path_standardisation_seq.py
+TIME_STD_SEQ=10:00:00
+NUM_GPU_STD_SEQ=1
 
 path_std_seq_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_STD_SEQ) \
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_SEQ) \
 	bash launchers/run_llm_on_server_snellius.sh
 
-TIME_STD_SEQ=10:00:00
+
 path_std_seq:
 	sbatch \
 		--time=$(TIME_STD_SEQ) \
+		--gres=gpu:$(NUM_GPU_STD_SEQ) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD_SEQ),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_SEQ) \
 		launchers/run_llm_snellius.sh
 
 
-MODEL_CONFIG_STD_20=Qwen3.8-27B.yaml
-PYTHON_SCRIPT_STD_20=scripts/1.02.03_rnv_run_path_standardisation_20rows.py
-
-path_std_20_dev:
-	MODEL_CONFIG=$(MODEL_CONFIG_STD_20) \
-	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_20) \
-	bash launchers/run_llm_on_server_snellius.sh
-
-TIME_STD_20=01:00:00
-path_std_20:
-	sbatch \
-		--time=$(TIME_STD_20) \
-		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD_20),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_20) \
-		launchers/run_llm_snellius.sh
-
-
-
-
-
 MODEL_CONFIG_STD_DIS=gpt-oss-120b.yaml
 PYTHON_SCRIPT_STD_DIS=scripts/1.03_rnv_process_disagreements_path_std.py
+TIME_STD_DIS=02:00:00
+NUM_GPU_STD_DIS=4
 
 path_std_disgreements_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_STD_DIS) \
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_DIS) \
 	bash launchers/run_llm_on_server_snellius.sh
 	
-TIME_STD_DIS=02:00:00
-
-
 path_std_disgreements:
 	sbatch \
 		--time=$(TIME_STD_DIS) \
+		--gres=gpu:$(NUM_GPU_STD_DIS) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_STD_DIS),PYTHON_SCRIPT=$(PYTHON_SCRIPT_STD_DIS) \
 		launchers/run_llm_snellius.sh
 
@@ -162,40 +163,43 @@ path_std_disgreements:
 # DATA CLASSIFICATION
 #----------------------------------------------------------------
 
-#ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
-MODEL_CONFIG_CLASS=gpt-oss-20b.yaml
-PYTHON_SCRIPT_CLASS=scripts/2.01_rnv_run_data_classification.py
 
+MODEL_CONFIG_CLASS=gpt-oss-20b_4agent.yaml
+PYTHON_SCRIPT_CLASS=scripts/2.01_rnv_run_data_classification.py
+#DATA_CLASS_DIR=/projects/prjs2007/data_donation/ddd_development_2files/00_ingest/005_merged_structures
+DATA_CLASS_DIR=/projects/prjs2007/data_donation/ddd_processed/00_ingest/005_merged_structures
+TIME_CLASS=04:00:00
+NUM_GPU_CLASS=4
+
+# DATA CLASSIFICATION ACROSS MULTIPLE NODES PARALALISED ACROSS MAX 4 GPUS
+data_class:
+	@for file in $(DATA_CLASS_DIR)/*/*.csv; do \
+		job_name=$$(basename "$$file" .csv); \
+		echo "Submitting $$job_name"; \
+		sbatch \
+			--job-name="DATA_CLASS$(MODEL_CONFIG_CLASS)_$$(basename "$$file" .csv)" \
+			--time=$(TIME_CLASS) \
+			--gres=gpu:$(NUM_GPU_CLASS) \
+			--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS),INPUT_FILE=$$file \
+			launchers/run_llm_snellius.sh; \
+	done
+
+#ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
 data_class_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_CLASS) \
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS) \
 	bash launchers/run_llm_on_server_snellius.sh
 
-TIME_CLASS=04:00:00
 
-data_class:
+data_class_one_job:
 	sbatch \
 		--time=$(TIME_CLASS) \
+		--gres=gpu:$(NUM_GPU_CLASS) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS) \
 		launchers/run_llm_snellius.sh
 
 
-MODEL_CONFIG_CLASS_20=gpt-oss-20b.yaml
-PYTHON_SCRIPT_CLASS_20=scripts/2.01.01_rnv_run_data_classification_20rows.py
 
-data_class_dev_20:
-	MODEL_CONFIG=$(MODEL_CONFIG_CLASS_20) \
-	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_20) \
-	bash launchers/run_llm_on_server_snellius.sh
-
-
-TIME_CLASS_20=02:00:00
-
-data_class_dev_20:
-	sbatch \
-		--time=$(TIME_CLASS_20) \
-		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS_20),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_20) \
-		launchers/run_llm_snellius.sh
 
 MODEL_CONFIG_CLASS_TEST=Qwen3-30B-A3B.yaml
 PYTHON_SCRIPT_CLASS_TEST=scripts/2.02_rnv_test_data_classification.py
@@ -216,6 +220,7 @@ data_class_test:
 
 
 # To execute the test when the inference is finished
+#UPDATE WITH NEW DATA CLASS FUNCTUON
 data_class_chain:
 	JOB_ID=$$(sbatch --parsable \
 		--time=$(TIME_CLASS) \

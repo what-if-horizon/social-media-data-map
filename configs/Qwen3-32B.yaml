@@ -5,7 +5,7 @@ environment: /venvs/social-media-data-map/bin/activate
 
 models:
 
-  - name: Qwen/Qwen3.8-27B
+  - name: Qwen/Qwen3-32B
     model_num: 0
     gpus: [0,1]
     tensor_parallel: 2
