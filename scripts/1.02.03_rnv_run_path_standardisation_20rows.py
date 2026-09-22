@@ -12,8 +12,8 @@ id_dir = '/projects/prjs2007/data_donation/ddd_processed/00_ingest/004_largest_d
 
 
 country_list =  ['ES', 'NL']
-model = 'gpt-oss-20b'
-#model2 = 'Qwen3.8-27B'
+#model = 'gpt-oss-20b'
+model = 'Qwen3.8-27B'
 #model = 'gpt-oss-120b'
 
 

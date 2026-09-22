@@ -414,7 +414,7 @@ def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents, s
         out_dir = output_dir / platform
         out_dir.mkdir(parents=True, exist_ok=True)
         output_file = out_dir / f"{platform}_std_ids_{country_str}_{model}.json"
-        failed_file = out_dir / f"{platform}_std_ids_failed_{country_str}.json"
+        failed_file = out_dir / f"{platform}_std_ids_failed_{country_str}_{model}.json"
 
         all_matches = sorted(input_dir.glob(f"{platform}*.csv"))
         ref_matches = sorted(platform_dir.glob("*.csv"))
@@ -430,7 +430,7 @@ def run_id_std(input_dir, output_dir, id_dir, country_list, model, num_agents, s
 
         if sample != None:
             df_all = df_all.sample(n = sample, random_state=42)
-            
+
         refs = str(df_ref["final_path"].tolist())
 
         chunks = [df_all.iloc[i::num_agents] for i in range(num_agents)]
