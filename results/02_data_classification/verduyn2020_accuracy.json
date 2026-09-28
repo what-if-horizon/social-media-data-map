@@ -1,0 +1,267 @@
+{
+    "tiktok": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/full/tiktok/tiktok_100rows_class_ids_verduyn2020_ES_NL_gpt-oss-20b_4agent.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotations/full/tiktok/tiktok_merged_structures_seed42_100rows_verduyn2020.xlsx",
+        "n_json_rows": 100,
+        "n_csv_rows": 100,
+        "n_matched": 100,
+        "n_evaluated": 100,
+        "n_invalid": 0,
+        "accuracy": 0.51,
+        "classification_report": {
+            "passive": {
+                "precision": 0.8367346938775511,
+                "recall": 0.5,
+                "f1-score": 0.6259541984732825,
+                "support": 82.0
+            },
+            "active": {
+                "precision": 0.19607843137254902,
+                "recall": 0.5555555555555556,
+                "f1-score": 0.2898550724637681,
+                "support": 18.0
+            },
+            "accuracy": 0.51,
+            "macro avg": {
+                "precision": 0.51640656262505,
+                "recall": 0.5277777777777778,
+                "f1-score": 0.45790463546852533,
+                "support": 100.0
+            },
+            "weighted avg": {
+                "precision": 0.7214165666266507,
+                "recall": 0.51,
+                "f1-score": 0.5654563557915699,
+                "support": 100.0
+            }
+        },
+        "confusion_matrix": {
+            "labels": [
+                "passive",
+                "active"
+            ],
+            "matrix": [
+                [
+                    41,
+                    41
+                ],
+                [
+                    8,
+                    10
+                ]
+            ]
+        }
+    },
+    "facebook": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/full/facebook/facebook_100rows_class_ids_verduyn2020_ES_NL_gpt-oss-20b_4agent.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotations/full/facebook/facebook_merged_structures_seed42_100rows_verduyn2020.xlsx",
+        "n_json_rows": 100,
+        "n_csv_rows": 100,
+        "n_matched": 100,
+        "n_evaluated": 100,
+        "n_invalid": 0,
+        "accuracy": 0.6,
+        "classification_report": {
+            "passive": {
+                "precision": 0.7735849056603774,
+                "recall": 0.5942028985507246,
+                "f1-score": 0.6721311475409836,
+                "support": 69.0
+            },
+            "active": {
+                "precision": 0.40425531914893614,
+                "recall": 0.6129032258064516,
+                "f1-score": 0.48717948717948717,
+                "support": 31.0
+            },
+            "accuracy": 0.6,
+            "macro avg": {
+                "precision": 0.5889201124046568,
+                "recall": 0.6035530621785881,
+                "f1-score": 0.5796553173602353,
+                "support": 100.0
+            },
+            "weighted avg": {
+                "precision": 0.6590927338418305,
+                "recall": 0.6,
+                "f1-score": 0.6147961328289197,
+                "support": 100.0
+            }
+        },
+        "confusion_matrix": {
+            "labels": [
+                "passive",
+                "active"
+            ],
+            "matrix": [
+                [
+                    41,
+                    28
+                ],
+                [
+                    12,
+                    19
+                ]
+            ]
+        }
+    },
+    "x": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/full/x/x_100rows_class_ids_verduyn2020_ES_NL_gpt-oss-20b_4agent.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotations/full/x/x_merged_structures_seed42_100rows_verduyn2020.xlsx",
+        "n_json_rows": 100,
+        "n_csv_rows": 100,
+        "n_matched": 100,
+        "n_evaluated": 100,
+        "n_invalid": 0,
+        "accuracy": 0.51,
+        "classification_report": {
+            "passive": {
+                "precision": 0.9230769230769231,
+                "recall": 0.43902439024390244,
+                "f1-score": 0.5950413223140496,
+                "support": 82.0
+            },
+            "active": {
+                "precision": 0.2459016393442623,
+                "recall": 0.8333333333333334,
+                "f1-score": 0.379746835443038,
+                "support": 18.0
+            },
+            "accuracy": 0.51,
+            "macro avg": {
+                "precision": 0.5844892812105927,
+                "recall": 0.6361788617886179,
+                "f1-score": 0.4873940788785438,
+                "support": 100.0
+            },
+            "weighted avg": {
+                "precision": 0.8011853720050442,
+                "recall": 0.51,
+                "f1-score": 0.5562883146772676,
+                "support": 100.0
+            }
+        },
+        "confusion_matrix": {
+            "labels": [
+                "passive",
+                "active"
+            ],
+            "matrix": [
+                [
+                    36,
+                    46
+                ],
+                [
+                    3,
+                    15
+                ]
+            ]
+        }
+    },
+    "instagram": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/full/instagram/instagram_100rows_class_ids_verduyn2020_ES_NL_gpt-oss-20b_4agent.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotations/full/instagram/instagram_merged_structures_seed42_100rows_verduyn2020.xlsx",
+        "n_json_rows": 100,
+        "n_csv_rows": 100,
+        "n_matched": 100,
+        "n_evaluated": 100,
+        "n_invalid": 0,
+        "accuracy": 0.57,
+        "classification_report": {
+            "passive": {
+                "precision": 0.8163265306122449,
+                "recall": 0.5405405405405406,
+                "f1-score": 0.6504065040650406,
+                "support": 74.0
+            },
+            "active": {
+                "precision": 0.3333333333333333,
+                "recall": 0.6538461538461539,
+                "f1-score": 0.44155844155844154,
+                "support": 26.0
+            },
+            "accuracy": 0.57,
+            "macro avg": {
+                "precision": 0.5748299319727891,
+                "recall": 0.5971933471933473,
+                "f1-score": 0.5459824728117411,
+                "support": 100.0
+            },
+            "weighted avg": {
+                "precision": 0.6907482993197278,
+                "recall": 0.57,
+                "f1-score": 0.5961060078133248,
+                "support": 100.0
+            }
+        },
+        "confusion_matrix": {
+            "labels": [
+                "passive",
+                "active"
+            ],
+            "matrix": [
+                [
+                    40,
+                    34
+                ],
+                [
+                    9,
+                    17
+                ]
+            ]
+        }
+    },
+    "youtube": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/full/youtube/youtube_100rows_class_ids_verduyn2020_ES_NL_gpt-oss-20b_4agent.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotations/full/youtube/youtube_merged_structures_seed42_100rows_verduyn2020.xlsx",
+        "n_json_rows": 100,
+        "n_csv_rows": 100,
+        "n_matched": 100,
+        "n_evaluated": 100,
+        "n_invalid": 0,
+        "accuracy": 0.4,
+        "classification_report": {
+            "passive": {
+                "precision": 0.49382716049382713,
+                "recall": 0.6779661016949152,
+                "f1-score": 0.5714285714285714,
+                "support": 59.0
+            },
+            "active": {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1-score": 0.0,
+                "support": 41.0
+            },
+            "accuracy": 0.4,
+            "macro avg": {
+                "precision": 0.24691358024691357,
+                "recall": 0.3389830508474576,
+                "f1-score": 0.2857142857142857,
+                "support": 100.0
+            },
+            "weighted avg": {
+                "precision": 0.291358024691358,
+                "recall": 0.4,
+                "f1-score": 0.33714285714285713,
+                "support": 100.0
+            }
+        },
+        "confusion_matrix": {
+            "labels": [
+                "passive",
+                "active"
+            ],
+            "matrix": [
+                [
+                    40,
+                    19
+                ],
+                [
+                    41,
+                    0
+                ]
+            ]
+        }
+    }
+}
