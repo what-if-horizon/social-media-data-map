@@ -9,7 +9,7 @@ project_root =  os.environ["PWD"]
 input_test_file = f'{project_root}data/processed/01_id_standardisation/std_ids_ES_NL_LT_RO.json'
 output_dir_data = f'{project_root}data/processed/01_id_standardisation/'
 output_dir_results = f'{project_root}results/01_id_standardisation/'
-df_cats = f'{project_root}data/processed/inference_sample.csv'
+df_cats = f'{project_root}/data/processed/inference_sample.csv'
 
 
 country_list =  ['ES', 'NL', 'LT', 'RO']

@@ -1,5 +1,4 @@
 
-
 import pandas as pd
 import json
 import random
@@ -142,7 +141,118 @@ def run_id_std_for_testing(input_file, output_dir, country_list):
         print(f"SAVED: {output_file}")
 
 
-       f.write(data)
+def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_cats, country_list):
+    df = pd.read_csv(df_cats)
+
+    country_str = '_'.join(country_list)
+    output_file_data = f'std_ids_test_{country_str}'
+    output_file_results = f'std_ids_test_results_{country_str}'
+
+    with open(input_file, "r") as file:
+        data = json.load(file)
+
+    results_dict = {}
+
+    for platform, results in data.items():
+
+        # Candidate keepIDs available to the model for this platform
+        candidate_ids = set(
+            df.loc[df['platform'] == platform, 'keepID']
+            .dropna()
+            .astype(str)
+        )
+
+        total = len(results)
+        correct = 0
+        incorrect = 0
+        na_count = 0
+        invalid_prediction_count = 0
+        gold_available_count = 0
+        correct_when_gold_available = 0
+
+        for d in results:
+            estimated_id = str(d['estimated_id'])
+            true_id = str(d['true_id'])
+
+            # Basic correctness
+            if estimated_id == true_id:
+                correct += 1
+                d['result'] = 'CORRECT'
+            else:
+                incorrect += 1
+                d['result'] = 'INCORRECT'
+
+                # Diagnostic only — NOT used for correctness
+                d['sim_ratio'] = SequenceMatcher(
+                    None, true_id, estimated_id
+                ).ratio()
+
+            # NA
+            is_na = estimated_id == 'NA'
+            d['is_na'] = is_na
+
+            if is_na:
+                na_count += 1
+
+            # Was the prediction one of the allowed candidate IDs?
+            prediction_valid = estimated_id in candidate_ids
+            d['present_in_list'] = prediction_valid
+
+            if not prediction_valid:
+                invalid_prediction_count += 1
+
+            # Was the correct answer available to the model?
+            gold_available = true_id in candidate_ids
+            d['gold_available'] = gold_available
+
+            if gold_available:
+                gold_available_count += 1
+
+                if estimated_id == true_id:
+                    correct_when_gold_available += 1
+
+        # Calculate metrics
+        accuracy = correct / total if total else 0
+        incorrect_rate = incorrect / total if total else 0
+        na_rate = na_count / total if total else 0
+        invalid_prediction_rate = (
+            invalid_prediction_count / total if total else 0
+        )
+        gold_coverage = (
+            gold_available_count / total if total else 0
+        )
+        accuracy_when_gold_available = (
+            correct_when_gold_available / gold_available_count
+            if gold_available_count else 0
+        )
+
+        node = {
+            "platform": platform,
+            "total_cases": total,
+            "total_correct": correct,
+            "total_incorrect": incorrect,
+            "accuracy": accuracy,
+            "incorrect_rate": incorrect_rate,
+            "na_count": na_count,
+            "na_rate": na_rate,
+            "invalid_prediction_count": invalid_prediction_count,
+            "invalid_prediction_rate": invalid_prediction_rate,
+            "gold_available_count": gold_available_count,
+            "gold_coverage": gold_coverage,
+            "correct_when_gold_available": correct_when_gold_available,
+            "accuracy_when_gold_available": accuracy_when_gold_available
+        }
+
+        results_dict[platform] = node
+
+    # Save annotated test cases
+    data = json.dumps(data, indent=2)
+
+    with open(
+        f'{output_dir_data}/{output_file_data}.json',
+        "w"
+    ) as f:
+        f.write(data)
 
     # Save metrics
     results_json = json.dumps(results_dict, indent=2)
