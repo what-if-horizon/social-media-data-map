@@ -141,19 +141,30 @@ def run_id_std_for_testing(input_file, output_dir, country_list):
         print(f"SAVED: {output_file}")
 
 
-def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_cats, country_list):
+def test_id_standardisation(input_dir, output_dir_data, output_dir_results, df_cats, country_list):
     df = pd.read_csv(df_cats)
 
     country_str = '_'.join(country_list)
-    output_file_data = f'std_ids_test_{country_str}'
     output_file_results = f'std_ids_test_results_{country_str}'
 
-    with open(input_file, "r") as file:
-        data = json.load(file)
+    # One file per platform, as written by run_id_std_for_testing:
+    # std_ids_<countries>_<platform>.json. The pattern skips the old combined
+    # file (std_ids_<countries>.json) and the annotated std_ids_test_* outputs.
+    prefix = f'std_ids_{country_str}_'
+    input_files = sorted(Path(input_dir).glob(f'{prefix}*.json'))
+
+    if not input_files:
+        raise FileNotFoundError(f'No files matching {prefix}*.json in {input_dir}')
 
     results_dict = {}
 
-    for platform, results in data.items():
+    for input_file in input_files:
+
+        platform = input_file.stem[len(prefix):]
+        print(f'PROCESSING PLATFORM: {platform} ({input_file.name})')
+
+        with open(input_file, "r") as file:
+            results = json.load(file)
 
         # Candidate keepIDs available to the model for this platform
         candidate_ids = set(
@@ -245,16 +256,14 @@ def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_
 
         results_dict[platform] = node
 
-    # Save annotated test cases
-    data = json.dumps(data, indent=2)
+        # Save annotated test cases, one file per platform
+        with open(
+            f'{output_dir_data}/std_ids_test_{country_str}_{platform}.json',
+            "w"
+        ) as f:
+            f.write(json.dumps(results, indent=2))
 
-    with open(
-        f'{output_dir_data}/{output_file_data}.json',
-        "w"
-    ) as f:
-        f.write(data)
-
-    # Save metrics
+    # Save metrics for all platforms together
     results_json = json.dumps(results_dict, indent=2)
 
     print(results_json)
