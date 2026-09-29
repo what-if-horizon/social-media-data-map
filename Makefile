@@ -59,6 +59,14 @@ find_largest_donation:
 merge_csv:
 	bash launchers/run_basic_snellius.sh scripts/0.03_rnv_merge_structures.py
 
+sample:
+	bash launchers/run_basic_snellius.sh scripts/0.04_rnv_sample_for_inference.py
+
+annotation_sample:
+	bash launchers/run_basic_snellius.sh scripts/0.05_rnv_sample_annotation.py
+
+
+
 
 
 
@@ -91,7 +99,7 @@ id_std:
 MODEL_CONFIG_STD?=gpt-oss-20b_4agent.yaml
 PYTHON_SCRIPT_STD=scripts/1.02_rnv_run_path_standardisation.py
 PATH_STD_DIR=/projects/prjs2007/data_donation/ddd_development_2files/00_ingest/005_merged_structures
-TIME_STD?=01:00:00
+TIME_STD?=00:30:00
 NUM_GPU_STD?=4
 
 # PATH STANDARDISATION ACROSS MULTIPLE NODES PARALALISED ACROSS MAX 4 GPUS
@@ -167,13 +175,16 @@ path_std_disgreements:
 MODEL_CONFIG_CLASS=gpt-oss-20b_4agent.yaml
 PYTHON_SCRIPT_CLASS=scripts/2.01_rnv_run_data_classification.py
 #DATA_CLASS_DIR=/projects/prjs2007/data_donation/ddd_development_2files/00_ingest/005_merged_structures
-DATA_CLASS_DIR=/projects/prjs2007/data_donation/ddd_processed/00_ingest/005_merged_structures
-TIME_CLASS=04:00:00
+#DATA_CLASS_DIR=/projects/prjs2007/data_donation/ddd_processed/00_ingest/005_merged_structures
+DATA_CLASS_DIR=/projects/prjs2007/data_donation/ddd_annotation/sample
+TIME_CLASS=03:30:00
 NUM_GPU_CLASS=4
 
 # DATA CLASSIFICATION ACROSS MULTIPLE NODES PARALALISED ACROSS MAX 4 GPUS
+# make data_class DEV=1 to try with just 1 file 
 data_class:
-	@for file in $(DATA_CLASS_DIR)/*/*.csv; do \
+	@count=0; \
+	for file in $(DATA_CLASS_DIR)/*/*.csv; do \
 		job_name=$$(basename "$$file" .csv); \
 		echo "Submitting $$job_name"; \
 		sbatch \
@@ -182,12 +193,19 @@ data_class:
 			--gres=gpu:$(NUM_GPU_CLASS) \
 			--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS),INPUT_FILE=$$file \
 			launchers/run_llm_snellius.sh; \
+		count=$$((count + 1)); \
+		if [ "$(DEV)" = "1" ] && [ $$count -ge 1 ]; then \
+			break; \
+		fi; \
 	done
 
+
+MODEL_CONFIG_CLASS_TEST=gpt-oss-20b.yaml
+PYTHON_SCRIPT_CLASS_TEST=scripts/2.01.01_rnv_run_test_data_classification.py
 #ONLY FOR DEV PURPOSES!! USE WITH run_servers.sh in interactive node
-data_class_dev:
-	MODEL_CONFIG=$(MODEL_CONFIG_CLASS) \
-	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS) \
+data_class_test_dev:
+	MODEL_CONFIG=$(MODEL_CONFIG_CLASS_TEST) \
+	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
 	bash launchers/run_llm_on_server_snellius.sh
 
 
@@ -201,22 +219,27 @@ data_class_one_job:
 
 
 
-MODEL_CONFIG_CLASS_TEST=Qwen3-30B-A3B.yaml
-PYTHON_SCRIPT_CLASS_TEST=scripts/2.02_rnv_test_data_classification.py
+MODEL_CONFIG_CLASS_TEST_LLM=Qwen3-30B-A3B.yaml
+PYTHON_SCRIPT_CLASS_TEST_LLM=scripts/2.02_rnv_test_data_classification.py
 
-data_class_test_dev:
+data_class_test_LLM_dev:
 	MODEL_CONFIG=$(MODEL_CONFIG_CLASS_TEST) \
 	PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
 	bash launchers/run_llm_on_server_snellius.sh
 
-TIME_CLASS_TEST=04:00:00
+TIME_CLASS_TEST_LLM=04:00:00
 
-data_class_test:
+data_class_test_LLM:
 	sbatch \
 		--time=$(TIME_CLASS_TEST) \
 		--export=ALL,MODEL_CONFIG=$(MODEL_CONFIG_CLASS_TEST),PYTHON_SCRIPT=$(PYTHON_SCRIPT_CLASS_TEST) \
 		launchers/run_llm_snellius.sh
 
+data_class_split:
+	bash launchers/run_basic_snellius.sh scripts/2.03_rnv_split_data_data_classification.py
+
+data_class_test_val:
+	bash launchers/run_basic_snellius.sh scripts/2.04_rnv_test_validate_data_classification.py
 
 
 # To execute the test when the inference is finished

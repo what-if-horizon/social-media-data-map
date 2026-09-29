@@ -8,8 +8,9 @@ import re
 
 #input_dir = '/projects/prjs2007/data_donation/ddd_processed/00_ingest/005_merged_structures'
 input_file = Path(os.environ["INPUT_FILE"])
-output_dir = '/projects/prjs2007/data_donation/ddd_processed/02_path_classification/021_classified_paths'
+#output_dir = '/projects/prjs2007/data_donation/ddd_processed/02_path_classification/021_classified_paths'
 #output_dir = '/projects/prjs2007/data_donation/ddd_development_2files/02_path_classification/021_classified_paths'
+output_dir = '/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification'
 
 
 country_list =  ['ES', 'NL']

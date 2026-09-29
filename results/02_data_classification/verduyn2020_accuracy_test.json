@@ -1,0 +1,922 @@
+{
+    "tiktok": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/test/tiktok/tiktok_test_class_ids_verduyn2020_ES_NL_gpt-oss-20b.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotation/test/tiktok/tiktok_verduyn2020_test.xlsx",
+        "n_json_rows": 20,
+        "n_csv_rows": 20,
+        "n_matched": 20,
+        "n_unmatched_json": 0,
+        "n_unmatched_csv": 0,
+        "exact": {
+            "labels": [
+                "passive",
+                "active",
+                "passive-meta",
+                "active-meta",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.15,
+            "classification_report": {
+                "passive": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 16.0
+                },
+                "active": {
+                    "precision": 0.5,
+                    "recall": 0.75,
+                    "f1-score": 0.6,
+                    "support": 4.0
+                },
+                "passive-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "active-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.15,
+                "macro avg": {
+                    "precision": 0.1,
+                    "recall": 0.15,
+                    "f1-score": 0.12,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.1,
+                    "recall": 0.15,
+                    "f1-score": 0.12,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "passive-meta",
+                    "active-meta",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        0,
+                        3,
+                        1,
+                        2,
+                        10
+                    ],
+                    [
+                        1,
+                        3,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        },
+        "collapsed": {
+            "mapping": {
+                "active-meta": "active",
+                "passive-meta": "passive",
+                "other": "other"
+            },
+            "labels": [
+                "passive",
+                "active",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.2,
+            "classification_report": {
+                "passive": {
+                    "precision": 0.5,
+                    "recall": 0.0625,
+                    "f1-score": 0.1111111111111111,
+                    "support": 16.0
+                },
+                "active": {
+                    "precision": 0.375,
+                    "recall": 0.75,
+                    "f1-score": 0.5,
+                    "support": 4.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.2,
+                "macro avg": {
+                    "precision": 0.2916666666666667,
+                    "recall": 0.2708333333333333,
+                    "f1-score": 0.20370370370370372,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.475,
+                    "recall": 0.2,
+                    "f1-score": 0.18888888888888888,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        1,
+                        5,
+                        10
+                    ],
+                    [
+                        1,
+                        3,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        }
+    },
+    "facebook": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/test/facebook/facebook_test_class_ids_verduyn2020_ES_NL_gpt-oss-20b.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotation/test/facebook/facebook_verduyn2020_test.xlsx",
+        "n_json_rows": 20,
+        "n_csv_rows": 20,
+        "n_matched": 20,
+        "n_unmatched_json": 0,
+        "n_unmatched_csv": 0,
+        "exact": {
+            "labels": [
+                "passive",
+                "active",
+                "passive-meta",
+                "active-meta",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.3,
+            "classification_report": {
+                "passive": {
+                    "precision": 1.0,
+                    "recall": 0.06666666666666667,
+                    "f1-score": 0.125,
+                    "support": 15.0
+                },
+                "active": {
+                    "precision": 0.625,
+                    "recall": 1.0,
+                    "f1-score": 0.7692307692307693,
+                    "support": 5.0
+                },
+                "passive-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "active-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.3,
+                "macro avg": {
+                    "precision": 0.325,
+                    "recall": 0.21333333333333332,
+                    "f1-score": 0.17884615384615385,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.90625,
+                    "recall": 0.3,
+                    "f1-score": 0.28605769230769235,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "passive-meta",
+                    "active-meta",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        1,
+                        3,
+                        2,
+                        3,
+                        6
+                    ],
+                    [
+                        0,
+                        5,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        },
+        "collapsed": {
+            "mapping": {
+                "active-meta": "active",
+                "passive-meta": "passive",
+                "other": "other"
+            },
+            "labels": [
+                "passive",
+                "active",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.4,
+            "classification_report": {
+                "passive": {
+                    "precision": 1.0,
+                    "recall": 0.2,
+                    "f1-score": 0.3333333333333333,
+                    "support": 15.0
+                },
+                "active": {
+                    "precision": 0.45454545454545453,
+                    "recall": 1.0,
+                    "f1-score": 0.625,
+                    "support": 5.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.4,
+                "macro avg": {
+                    "precision": 0.48484848484848486,
+                    "recall": 0.39999999999999997,
+                    "f1-score": 0.3194444444444444,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.8636363636363636,
+                    "recall": 0.4,
+                    "f1-score": 0.40625,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        3,
+                        6,
+                        6
+                    ],
+                    [
+                        0,
+                        5,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        }
+    },
+    "x": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/test/x/x_test_class_ids_verduyn2020_ES_NL_gpt-oss-20b.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotation/test/x/x_verduyn2020_test.xlsx",
+        "n_json_rows": 20,
+        "n_csv_rows": 20,
+        "n_matched": 20,
+        "n_unmatched_json": 0,
+        "n_unmatched_csv": 0,
+        "exact": {
+            "labels": [
+                "passive",
+                "active",
+                "passive-meta",
+                "active-meta",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.25,
+            "classification_report": {
+                "passive": {
+                    "precision": 0.6666666666666666,
+                    "recall": 0.13333333333333333,
+                    "f1-score": 0.2222222222222222,
+                    "support": 15.0
+                },
+                "active": {
+                    "precision": 0.42857142857142855,
+                    "recall": 0.6,
+                    "f1-score": 0.5,
+                    "support": 5.0
+                },
+                "passive-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "active-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.25,
+                "macro avg": {
+                    "precision": 0.21904761904761902,
+                    "recall": 0.14666666666666667,
+                    "f1-score": 0.14444444444444443,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.6071428571428571,
+                    "recall": 0.25,
+                    "f1-score": 0.29166666666666663,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "passive-meta",
+                    "active-meta",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        2,
+                        4,
+                        1,
+                        1,
+                        7
+                    ],
+                    [
+                        1,
+                        3,
+                        1,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        },
+        "collapsed": {
+            "mapping": {
+                "active-meta": "active",
+                "passive-meta": "passive",
+                "other": "other"
+            },
+            "labels": [
+                "passive",
+                "active",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.3,
+            "classification_report": {
+                "passive": {
+                    "precision": 0.6,
+                    "recall": 0.2,
+                    "f1-score": 0.3,
+                    "support": 15.0
+                },
+                "active": {
+                    "precision": 0.375,
+                    "recall": 0.6,
+                    "f1-score": 0.46153846153846156,
+                    "support": 5.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.3,
+                "macro avg": {
+                    "precision": 0.325,
+                    "recall": 0.26666666666666666,
+                    "f1-score": 0.25384615384615383,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.54375,
+                    "recall": 0.3,
+                    "f1-score": 0.3403846153846154,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        3,
+                        5,
+                        7
+                    ],
+                    [
+                        2,
+                        3,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        }
+    },
+    "instagram": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/test/instagram/instagram_test_class_ids_verduyn2020_ES_NL_gpt-oss-20b.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotation/test/instagram/instagram_verduyn2020_test.xlsx",
+        "n_json_rows": 20,
+        "n_csv_rows": 20,
+        "n_matched": 20,
+        "n_unmatched_json": 0,
+        "n_unmatched_csv": 0,
+        "exact": {
+            "labels": [
+                "passive",
+                "active",
+                "passive-meta",
+                "active-meta",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.3,
+            "classification_report": {
+                "passive": {
+                    "precision": 0.5,
+                    "recall": 0.07692307692307693,
+                    "f1-score": 0.13333333333333333,
+                    "support": 13.0
+                },
+                "active": {
+                    "precision": 0.625,
+                    "recall": 0.7142857142857143,
+                    "f1-score": 0.6666666666666666,
+                    "support": 7.0
+                },
+                "passive-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "active-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.3,
+                "macro avg": {
+                    "precision": 0.225,
+                    "recall": 0.15824175824175826,
+                    "f1-score": 0.15999999999999998,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.54375,
+                    "recall": 0.3,
+                    "f1-score": 0.31999999999999995,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "passive-meta",
+                    "active-meta",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        1,
+                        3,
+                        1,
+                        1,
+                        7
+                    ],
+                    [
+                        1,
+                        5,
+                        0,
+                        1,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        },
+        "collapsed": {
+            "mapping": {
+                "active-meta": "active",
+                "passive-meta": "passive",
+                "other": "other"
+            },
+            "labels": [
+                "passive",
+                "active",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.4,
+            "classification_report": {
+                "passive": {
+                    "precision": 0.6666666666666666,
+                    "recall": 0.15384615384615385,
+                    "f1-score": 0.25,
+                    "support": 13.0
+                },
+                "active": {
+                    "precision": 0.6,
+                    "recall": 0.8571428571428571,
+                    "f1-score": 0.7058823529411765,
+                    "support": 7.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.4,
+                "macro avg": {
+                    "precision": 0.4222222222222222,
+                    "recall": 0.33699633699633696,
+                    "f1-score": 0.3186274509803922,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.6433333333333333,
+                    "recall": 0.4,
+                    "f1-score": 0.40955882352941175,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        2,
+                        4,
+                        7
+                    ],
+                    [
+                        1,
+                        6,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        }
+    },
+    "youtube": {
+        "json_file": "/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/test/youtube/youtube_test_class_ids_verduyn2020_ES_NL_gpt-oss-20b.json",
+        "csv_file": "/projects/prjs2007/data_donation/ddd_annotation/annotation/test/youtube/youtube_verduyn2020_test.xlsx",
+        "n_json_rows": 20,
+        "n_csv_rows": 20,
+        "n_matched": 20,
+        "n_unmatched_json": 0,
+        "n_unmatched_csv": 0,
+        "exact": {
+            "labels": [
+                "passive",
+                "active",
+                "passive-meta",
+                "active-meta",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.25,
+            "classification_report": {
+                "passive": {
+                    "precision": 0.5,
+                    "recall": 0.45454545454545453,
+                    "f1-score": 0.47619047619047616,
+                    "support": 11.0
+                },
+                "active": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 9.0
+                },
+                "passive-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "active-meta": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.25,
+                "macro avg": {
+                    "precision": 0.1,
+                    "recall": 0.09090909090909091,
+                    "f1-score": 0.09523809523809523,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.275,
+                    "recall": 0.25,
+                    "f1-score": 0.2619047619047619,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "passive-meta",
+                    "active-meta",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        5,
+                        1,
+                        0,
+                        0,
+                        5
+                    ],
+                    [
+                        5,
+                        0,
+                        2,
+                        0,
+                        2
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        },
+        "collapsed": {
+            "mapping": {
+                "active-meta": "active",
+                "passive-meta": "passive",
+                "other": "other"
+            },
+            "labels": [
+                "passive",
+                "active",
+                "other"
+            ],
+            "n_evaluated": 20,
+            "n_invalid": 0,
+            "accuracy": 0.25,
+            "classification_report": {
+                "passive": {
+                    "precision": 0.4166666666666667,
+                    "recall": 0.45454545454545453,
+                    "f1-score": 0.43478260869565216,
+                    "support": 11.0
+                },
+                "active": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 9.0
+                },
+                "other": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.25,
+                "macro avg": {
+                    "precision": 0.1388888888888889,
+                    "recall": 0.15151515151515152,
+                    "f1-score": 0.14492753623188406,
+                    "support": 20.0
+                },
+                "weighted avg": {
+                    "precision": 0.22916666666666669,
+                    "recall": 0.25,
+                    "f1-score": 0.2391304347826087,
+                    "support": 20.0
+                }
+            },
+            "confusion_matrix": {
+                "labels": [
+                    "passive",
+                    "active",
+                    "other"
+                ],
+                "matrix": [
+                    [
+                        5,
+                        1,
+                        5
+                    ],
+                    [
+                        7,
+                        0,
+                        2
+                    ],
+                    [
+                        0,
+                        0,
+                        0
+                    ]
+                ]
+            }
+        }
+    }
+}

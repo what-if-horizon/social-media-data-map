@@ -214,27 +214,73 @@ def prompt_dt_wu_2010():
 
 def prompt_dt_verduyn_2020():
     return """
-    You are given two categories from a taxonomy of social media use: active and passive usage 
-    Use these categories to classify the data entry (path consisting of a filepath and a JSON path) from a social media takeout
-    Provide a rationale for choosing the categorie in 50 words
-        
-    Taxonomy of social media usage:
-    1. Active:
-        - Definition: activities that facilitate direct exchanges with others including:
-            -  targeted one-on-one exchanges (e.g. sending a private message on Facebook)
-            -  broadcasting (e.g. posting a status update on Facebook)
-        - Usage information is mainly produced
+    You are given two categories from a taxonomy of social media use: active and passive usage.
 
-    2. Passive = monitoring the online life ofother users without engaging in direct exchanges with them (e.g. scrolling through newsfeeds or looking at other users’ profiles).
-        - Usage information is mainly consumed
+    Use the following taxonomy to classify the data entry into exactly one category.
+
+    Taxonomy of social media usage:
+
+    1. Active
+
+    Definition:
+    Activities that facilitate direct exchanges with others, including:
+
+    - Targeted one-on-one exchanges
+    (e.g. sending a private message on Facebook)
+
+    - Broadcasting
+    (e.g. posting a status update on Facebook)
+
+    Usage information is mainly produced.
+
+    2. Active-meta
+    Definition: 
+    Meta data related to active activities (eg. timestamps). When the data traces back to real content do NOT mark as meta data.
+
+
+    3. Passive
+
+    Definition:
+    Monitoring the online life of other users without engaging in direct exchanges
+    (e.g. scrolling through newsfeeds or looking at other users’ profiles).
+
+    Usage information is mainly consumed.
+
+    4.  Passive-meta
+    Definition: Meta data related to passive activities (eg. timestamps). When the data traces back to real content do NOT mark as meta data.
+
+    5. Other
+    ONLY use when the entry does not match passive or active
+    Inlcudes:
+     -  settings 
+     -  manifest
+     -  ai interactions 
 
     Path to data entry:
-        {data_1}
-    
+    {data_1}
+
+
+    Classification instructions:
+
+    - Classify the data entry according to the taxonomy above.
+    - Consider the meaning of the complete data entry rather than individual words or path components in isolation.
+    - Do not infer an interaction that is not supported by the data entry.
+    - Base the classification only on the information available in the data entry.
+    - If the data entry is ambiguous, select the category that is best supported by the available evidence and explain the ambiguity in the rationale.
+    - The category must be exactly "active", "active-meta", "passive", "passive-meta" or "other"
+    - Provide a rationale of approximately 50 words explaining the evidence for the selected category.
+
+
     Answer format:
-        [{{ "category": "Name of the chosen data category (passive or active)",
-            "rationale": "Reason for choosing the categorie in 50 words}}]
-     
+
+    [
+        {{
+            "category": "active, active-meta, passive, passive-meta, or other",
+            "rationale": "Approximately 50 words explaining why the data entry belongs to the selected category."
+        }}
+    ]
+
+    Return only the JSON object shown above. Do not include markdown, code fences, additional explanation, or additional fields.
     """
 
 def prompt_judge_dt_schneider_2010():

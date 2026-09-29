@@ -406,8 +406,9 @@ def process_chunk(chunk, refs, agent, platform, model, tmp_file):
     return results, failures
 
 
-def run_id_std(platform_file, output_dir, id_dir, country_list, model, num_agents, sample = None):
+def run_id_std(platform_file, output_dir, id_dir, country_list, model, num_agents):
     id_dir, output_dir =Path(id_dir), Path(output_dir)
+    num_agents = int(num_agents)
     country_str = "_".join(country_list)
 
     
@@ -431,8 +432,6 @@ def run_id_std(platform_file, output_dir, id_dir, country_list, model, num_agent
     ref_set = set(df_ref["final_path"])
     df_all = df_all[~df_all["final_path"].isin(ref_set)].drop_duplicates("final_path")
 
-    if sample != None:
-        df_all = df_all.sample(n = sample, random_state=42)
 
     refs = str(df_ref["final_path"].tolist())
 

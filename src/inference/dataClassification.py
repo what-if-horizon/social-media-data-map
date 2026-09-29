@@ -9,6 +9,7 @@ import random
 from tqdm import tqdm
 from pathlib import Path
 from datetime import datetime
+import re
 
 
 
@@ -142,22 +143,31 @@ def test_classification_dev(input_file, output_dir_data, output_dir_results, cou
 
 
 
-def run_classification_seq(platform_file, output_dir, data_tax, country_list, model, sample = None):
-
+def run_classification_seq(
+    input_dir,
+    output_dir,
+    data_tax,
+    country_list,
+    model,
+    sample=None,
+):
     """
-    data_tax: The data can be classified according to different data taxonomies
-    - 'schneider2010': Schneier, B. (2010). A taxonomy of social networking data. IEEE Security & Privacy, 8(4), 88-88.
-    - 'wu2010' : Wu, L., Majedi, M., Ghazinour, K., & Barker, K. (2010, March). Analysis of social networking privacy policies. In Proceedings of the 2010 EDBT/ICDT Workshops (pp. 1-5).
-    
+    input_dir:
+        Directory containing one subdirectory per platform.
 
-    country_list: list of countries included in the analysis (eg ['ES', 'NL']
-        - 'ES' = Spain
-        - 'NL' = Netherlands
-        - 'LT' = Lituania
-        - 'RO' = Romania
-    
+    Each platform directory should contain the input CSV files.
+
+    data_tax:
+        'schneider2010'
+        'wu2010'
+        'verduyn2020'
+
+    country_list:
+        e.g. ['ES', 'NL']
+
+    sample:
+        If not None, randomly sample this many rows per CSV.
     """
-
 
     templates = {
         "schneider2010": p.prompt_dt_schneider_2010(),
@@ -168,151 +178,212 @@ def run_classification_seq(platform_file, output_dir, data_tax, country_list, mo
     template = templates[data_tax]
     country_str = "_".join(country_list)
 
-   
+    input_dir = Path(input_dir)
     output_dir = Path(output_dir)
 
-   
-
-    platform_file_name = platform_file.stem
-    platform = platform_file_name.split("_")[0]
-    file_number = platform_file_name.split("_")[-1]
-
-    print(
-        f"\n{'='*80}\n"
-        f"[{datetime.now()}] START PLATFORM: {platform}\n"
-        f"{'='*80}",
-        flush=True
-    )
-
-    output_file = (
-        output_dir / platform / f"{platform}_{file_number}_class_ids_{data_tax}_{country_str}_{model}.json"
-    )
-
-    # Find input file
-    #all_paths = next(input_dir.glob(f"{platform}*"))
-    df = pd.read_csv(platform_file)
-
-    if sample is not None:
-        df = df.sample(n=sample, random_state=42)
-
     # --------------------------------------------------
-    # Load existing results if the job is being resumed
+    # Loop over platform directories
     # --------------------------------------------------
 
-    if output_file.exists():
-        with open(output_file) as f:
-            output_list = json.load(f)
+    for platform_dir in input_dir.iterdir():
 
-        processed_paths = {
-            item["path"]
-            for item in output_list
-        }
+        if not platform_dir.is_dir():
+            continue
+
+        platform = platform_dir.name
+
+        # Get CSV files in this platform directory
+        csv_files = sorted(platform_dir.glob("*.csv"))
+
+        if not csv_files:
+            print(
+                f"[WARNING] No CSV files found for {platform}",
+                flush=True
+            )
+            continue
 
         print(
-            f"[{datetime.now()}] Resuming  {platform} no. {file_number}: "
-            f"{len(output_list)} rows already processed",
+            f"\n{'='*80}\n"
+            f"[{datetime.now()}] PLATFORM: {platform} "
+            f"({len(csv_files)} files)\n"
+            f"{'='*80}",
             flush=True
         )
 
-    else:
-        output_list = []
-        processed_paths = set()
+        # --------------------------------------------------
+        # Process each CSV
+        # --------------------------------------------------
 
-    # --------------------------------------------------
-    # Process rows
-    # --------------------------------------------------
+        for platform_file in csv_files:
 
-    df_to_process = df[
-        ~df["final_path"].isin(processed_paths)
-    ]
+            platform_file_name = platform_file.stem
+            file_number = platform_file_name.split("_")[-1]
 
-    print(
-        f"[{datetime.now()}] Processing "
-        f"{len(df_to_process)} remaining rows for {platform} no. {file_number}",
-        flush=True
-    )
+            print(
+                f"\n[{datetime.now()}] START: "
+                f"{platform_file.name}",
+                flush=True
+            )
 
-    try:
-        for _, row in tqdm(
-        df_to_process.iterrows(),
-        total=len(df_to_process)):
+            output_file = (
+                output_dir
+                / platform
+                / (
+                    f"{platform}_{file_number}_"
+                    f"class_ids_{data_tax}_{country_str}_{model}.json"
+                )
+            )
 
-            path = row["final_path"]
+            output_file.parent.mkdir(
+                parents=True,
+                exist_ok=True
+            )
 
-            for attempt in range(3):
-                try:
-                    print(
-                        f"[{datetime.now()}] WORKING: {path} "
-                        f"(attempt {attempt + 1}/3)",
-                        flush=True
-                    )
+            # --------------------------------------------------
+            # Load input
+            # --------------------------------------------------
 
-                    output = gI.generate_output(
-                        data_1=path,
-                        template=template
-                    )
+            df = pd.read_csv(platform_file)
 
-                    output = json.loads(output)
+            if sample is not None:
+                df = df.sample(
+                    n=min(sample, len(df)),
+                    random_state=42
+                )
 
-                    node = {
-                        "path": path
-                    }
-                    node.update(output)
+            # --------------------------------------------------
+            # Load existing results if resuming
+            # --------------------------------------------------
 
-                    output_list.append(node)
+            if output_file.exists():
 
-                    # Save immediately after successful row
-                    with open(output_file, "w") as f:
-                        json.dump(
-                            output_list,
-                            f,
-                            indent=2
-                        )
+                with open(output_file) as f:
+                    output_list = json.load(f)
 
-                    print(
-                        f"[{datetime.now()}] SAVED: {path}",
-                        flush=True
-                    )
+                processed_paths = {
+                    item["path"]
+                    for item in output_list
+                }
 
-                    # Success -> move to next row
-                    break
+                print(
+                    f"[{datetime.now()}] Resuming "
+                    f"{platform} no. {file_number}: "
+                    f"{len(output_list)} rows already processed",
+                    flush=True
+                )
 
-                except Exception as e:
+            else:
+                output_list = []
+                processed_paths = set()
 
-                    print(
-                        f"[{datetime.now()}] FAILED: {path} "
-                        f"(attempt {attempt + 1}/3): "
-                        f"{type(e).__name__}: {e}",
-                        flush=True
-                    )
+            # --------------------------------------------------
+            # Select remaining rows
+            # --------------------------------------------------
 
-                    if attempt == 2:
-                        print(
-                            f"[{datetime.now()}] GIVING UP: {path}",
-                            flush=True
-                        )
-                        raise
+            df_to_process = df[
+                ~df["final_path"].isin(processed_paths)
+            ]
 
-    except Exception:
+            print(
+                f"[{datetime.now()}] Processing "
+                f"{len(df_to_process)} remaining rows "
+                f"for {platform} no. {file_number}",
+                flush=True
+            )
 
-        print(
-            f"\n[{datetime.now()}] PLATFORM FAILED:  {platform} no. {file_number}",
-            flush=True
-        )
-        print(
-            f"[{datetime.now()}] Partial results available at: "
-            f" {platform} no. {file_number}",
-            flush=True
-        )
+            # --------------------------------------------------
+            # Process rows
+            # --------------------------------------------------
 
-        raise
+            try:
 
-    print(
-        f"\n[{datetime.now()}] COMPLETED PLATFORM: {platform}\n"
-        f"Results: {output_file}",
-        flush=True
-    )
+                for _, row in tqdm(
+                    df_to_process.iterrows(),
+                    total=len(df_to_process)
+                ):
 
+                    path = row["final_path"]
+
+                    for attempt in range(3):
+
+                        try:
+
+                            print(
+                                f"[{datetime.now()}] WORKING: {path} "
+                                f"(attempt {attempt + 1}/3)",
+                                flush=True
+                            )
+
+                            output = gI.generate_output(
+                                data_1=path,
+                                template=template
+                            )
+
+                            output = json.loads(output)
+
+                            node = {
+                                "path": path
+                            }
+
+                            node.update(output)
+
+                            output_list.append(node)
+
+                            # Save immediately
+                            with open(output_file, "w") as f:
+                                json.dump(
+                                    output_list,
+                                    f,
+                                    indent=2
+                                )
+
+                            print(
+                                f"[{datetime.now()}] SAVED: {path}",
+                                flush=True
+                            )
+
+                            break
+
+                        except Exception as e:
+
+                            print(
+                                f"[{datetime.now()}] FAILED: {path} "
+                                f"(attempt {attempt + 1}/3): "
+                                f"{type(e).__name__}: {e}",
+                                flush=True
+                            )
+
+                            if attempt == 2:
+
+                                print(
+                                    f"[{datetime.now()}] GIVING UP: {path}",
+                                    flush=True
+                                )
+
+                                raise
+
+            except Exception:
+
+                print(
+                    f"\n[{datetime.now()}] FILE FAILED: "
+                    f"{platform_file}",
+                    flush=True
+                )
+
+                print(
+                    f"[{datetime.now()}] Partial results available at: "
+                    f"{output_file}",
+                    flush=True
+                )
+
+                raise
+
+            print(
+                f"\n[{datetime.now()}] COMPLETED: "
+                f"{platform_file.name}\n"
+                f"Results: {output_file}",
+                flush=True
+            )
 
 def process_chunk(
     chunk,
@@ -321,6 +392,7 @@ def process_chunk(
     platform,
     file_number,
     tmp_file,
+    judge=False,
 ):
     from src.inference import generateInference as gI
 
@@ -334,7 +406,15 @@ def process_chunk(
             desc=f"{platform} {file_number} agent {agent}",
             position=agent,
         ):
-            path = row["final_path"]
+
+            if judge:
+                path = row["path"]
+                data_1 = row["path"]
+                data_2 = row["category"]
+            else:
+                path = row["final_path"]
+                data_1 = row["final_path"]
+                data_2 = None
 
             for attempt in range(3):
                 try:
@@ -344,24 +424,33 @@ def process_chunk(
                         flush=True,
                     )
 
-                    output = gI.generate_output(
-                        data_1=path,
-                        template=template,
-                        agent_no=agent,
-                    )
+                    if data_2 is not None:
+                        output = gI.generate_output(
+                            data_1=data_1,
+                            data_2=data_2,
+                            template=template,
+                            agent_no=agent,
+                        )
+                    else:
+                        output = gI.generate_output(
+                            data_1=data_1,
+                            template=template,
+                            agent_no=agent,
+                        )
 
                     output = json.loads(output)
 
-                    node = {
-                        "path": path,
-                    }
+                    node = dict(row)
                     node.update(output)
 
                     results.append(node)
 
                     # Checkpoint immediately
                     f.write(
-                        json.dumps(node, ensure_ascii=False) + "\n"
+                        json.dumps(
+                            node,
+                            ensure_ascii=False,
+                        ) + "\n"
                     )
                     f.flush()
 
@@ -418,6 +507,7 @@ def run_classification(
     country_str = "_".join(country_list)
 
     output_dir = Path(output_dir)
+    num_agents = int(num_agents)
 
     platform_file_name = platform_file.stem
     platform = platform_file_name.split("_")[0]
@@ -530,6 +620,7 @@ def run_classification(
                 platform,
                 file_number,
                 tmp_file,
+                False,
             )
         )
 
@@ -664,187 +755,438 @@ def test_classification_dev(input_file, output_dir_data, output_dir_results, cou
 
 
 
-def test_classification(input_dir, output_dir_data, output_dir_results, country_list):
+def test_classification_seq(input_file, output_dir_data, output_dir_results, country_list):
 
     country_str = "_".join(country_list)
 
-    for platform_dir in input_dir.iterdir():
 
-        platform = platform_dir.name
+    json_name = input_file.stem
+    platform =  json_name.split("_")[0]
+    file_number = re.search(r"_(\d+)", json_name).group(1)
 
-        for file in platform_dir.iterdir():
+    
 
-            if "schneider2010" in file.name:
-                template = p.prompt_judge_dt_schneider_2010()
-                file_name = "schneider2010"
+    if "schneider2010" in input_file.name:
+        template = p.prompt_judge_dt_schneider_2010()
+        file_name = "schneider2010"
 
-            elif "wu2010" in file.name:
-                template = p.prompt_judge_dt_wu2010()
-                file_name = "wu2010"
+    elif "wu2010" in input_file.name:
+        template = p.prompt_judge_dt_wu2010()
+        file_name = "wu2010"
 
-            elif "verduyn2020" in file.name:
-                template = p.prompt_dt_verduyn_2020()
-                file_name = "verduyn2020"
+    elif "verduyn2020" in input_file.name:
+        template = p.prompt_dt_verduyn_2020()
+        file_name = "verduyn2020"
 
-            else:
-                continue
+    
 
-            output_file = f"{platform}_{file_name}_{country_str}"
+    output_file = f"{platform}_{file_number}_{file_name}_{country_str}"
 
-            data_output_path = (
-                output_dir_data / f"{output_file}_llm_judge.json"
-            )
+    data_output_path = (
+        output_dir_data / f"{output_file}_llm_judge.json"
+    )
 
-            result_output_path = (
-                output_dir_results / f"{output_file}_results.json"
-            )
+    result_output_path = (
+        output_dir_results / f"{output_file}_results.json"
+    )
 
-            # --------------------------------------------------
-            # Load original data
-            # --------------------------------------------------
+    # --------------------------------------------------
+    # Load original data
+    # --------------------------------------------------
 
-            with open(file, "r") as f:
-                data = json.load(f)
+    with open(input_file, "r") as f:
+        data = json.load(f)
 
-            # --------------------------------------------------
-            # Resume existing results if available
-            # --------------------------------------------------
+    # --------------------------------------------------
+    # Resume existing results if available
+    # --------------------------------------------------
 
-            if data_output_path.exists():
+    if data_output_path.exists():
+
+        print(
+            f"[{datetime.now()}] Resuming from "
+            f"{data_output_path}",
+            flush=True
+        )
+
+        with open(data_output_path, "r") as f:
+            data = json.load(f)
+
+    total = len(data)
+
+    # --------------------------------------------------
+    # Process
+    # --------------------------------------------------
+
+    for i, r in enumerate(
+        tqdm(
+            data,
+            desc=f"Processing results for platform: {platform}"
+        )
+    ):
+
+        # Skip rows that were already judged
+        if "judgement" in r:
+            continue
+
+        #path = r.get("path", f"row {i}")
+        path = r['path']
+        answer = r['category']
+
+        for attempt in range(3):
+
+            try:
 
                 print(
-                    f"[{datetime.now()}] Resuming from "
-                    f"{data_output_path}",
+                    f"[{datetime.now()}] "
+                    f"WORKING {i + 1}/{total}: {path} "
+                    f"(attempt {attempt + 1}/3)",
                     flush=True
                 )
 
-                with open(data_output_path, "r") as f:
-                    data = json.load(f)
-
-            total = len(data)
-
-            # --------------------------------------------------
-            # Process
-            # --------------------------------------------------
-
-            for i, r in enumerate(
-                tqdm(
-                    data,
-                    desc=f"Processing results for platform: {platform}"
-                )
-            ):
-
-                # Skip rows that were already judged
-                if "judgement" in r:
-                    continue
-
-                path = r.get("path", f"row {i}")
-
-                for attempt in range(3):
-
-                    try:
-
-                        print(
-                            f"[{datetime.now()}] "
-                            f"WORKING {i + 1}/{total}: {path} "
-                            f"(attempt {attempt + 1}/3)",
-                            flush=True
-                        )
-
-                        input_result = json.dumps(r)
-
-                        output = gI.generate_output(
-                            data_1=input_result,
-                            template=template
-                        )
-
-                        output = json.loads(output)
-
-                        r.update(output)
-
-                        # --------------------------------------
-                        # SAVE IMMEDIATELY
-                        # --------------------------------------
-
-                        with open(data_output_path, "w") as f:
-                            json.dump(
-                                data,
-                                f,
-                                indent=2
-                            )
-
-                        print(
-                            f"[{datetime.now()}] SAVED: {path}",
-                            flush=True
-                        )
-
-                        # Successful -> next row
-                        break
-
-                    except Exception as e:
-
-                        print(
-                            f"[{datetime.now()}] FAILED: {path} "
-                            f"(attempt {attempt + 1}/3): "
-                            f"{type(e).__name__}: {e}",
-                            flush=True
-                        )
-
-                        if attempt == 2:
-                            print(
-                                f"[{datetime.now()}] "
-                                f"GIVING UP: {path}",
-                                flush=True
-                            )
-
-            # --------------------------------------------------
-            # Calculate final statistics from saved data
-            # --------------------------------------------------
-
-            correct_total = sum(
-                r.get("judgement") == "CORRECT"
-                for r in data
-            )
-
-            incorrect_total = sum(
-                r.get("judgement") == "INCORRECT"
-                for r in data
-            )
-
-            judged_total = correct_total + incorrect_total
-
-            node = {
-                "platform": platform,
-                "total_cases": total,
-                "total_judged": judged_total,
-                "total_correct": correct_total,
-                "total_incorrect": incorrect_total,
-                "percentage_total_correct": (
-                    f"{100 * correct_total / judged_total}%"
-                    if judged_total else "0%"
-                ),
-                "percentage_total_incorrect": (
-                    f"{100 * incorrect_total / judged_total}%"
-                    if judged_total else "0%"
-                ),
-            }
-
-            print(json.dumps(node, indent=2))
-
-            # Save final summary
-            with open(result_output_path, "w") as f:
-                json.dump(
-                    [node],
-                    f,
-                    indent=2
+                output = gI.generate_output(
+                    data_1=path,
+                    data_2 =answer,
+                    template=template
                 )
 
-    
-    
+                output = json.loads(output)
+
+                r.update(output)
+
+                # --------------------------------------
+                # SAVE IMMEDIATELY
+                # --------------------------------------
+
+                with open(data_output_path, "w") as f:
+                    json.dump(
+                        data,
+                        f,
+                        indent=2
+                    )
+
+                print(
+                    f"[{datetime.now()}] SAVED: {path}",
+                    flush=True
+                )
+
+                # Successful -> next row
+                break
+
+            except Exception as e:
+
+                print(
+                    f"[{datetime.now()}] FAILED: {path} "
+                    f"(attempt {attempt + 1}/3): "
+                    f"{type(e).__name__}: {e}",
+                    flush=True
+                )
+
+                if attempt == 2:
+                    print(
+                        f"[{datetime.now()}] "
+                        f"GIVING UP: {path}",
+                        flush=True
+                    )
+
+    # --------------------------------------------------
+    # Calculate final statistics from saved data
+    # --------------------------------------------------
+
+    correct_total = sum(
+        r.get("judgement") == "CORRECT"
+        for r in data
+    )
+
+    incorrect_total = sum(
+        r.get("judgement") == "INCORRECT"
+        for r in data
+    )
+
+    judged_total = correct_total + incorrect_total
+
+    node = {
+        "platform": platform,
+        "total_cases": total,
+        "total_judged": judged_total,
+        "total_correct": correct_total,
+        "total_incorrect": incorrect_total,
+        "percentage_total_correct": (
+            f"{100 * correct_total / judged_total}%"
+            if judged_total else "0%"
+        ),
+        "percentage_total_incorrect": (
+            f"{100 * incorrect_total / judged_total}%"
+            if judged_total else "0%"
+        ),
+    }
+
+    print(json.dumps(node, indent=2))
+
+    # Save final summary
+    with open(result_output_path, "w") as f:
+        json.dump(
+            [node],
+            f,
+            indent=2
+        )
 
 
-    
-    
+def test_classification(
+    input_file,
+    output_dir_data,
+    output_dir_results,
+    country_list,
+    num_agents,
+):
+    country_str = "_".join(country_list)
+
+    json_name = input_file.stem
+    platform = json_name.split("_")[0]
+    file_number = re.search(
+        r"_(\d+)",
+        json_name
+    ).group(1)
+
+    if "schneider2010" in input_file.name:
+        template = p.prompt_judge_dt_schneider_2010()
+        file_name = "schneider2010"
+
+    elif "wu2010" in input_file.name:
+        template = p.prompt_judge_dt_wu2010()
+        file_name = "wu2010"
+
+    elif "verduyn2020" in input_file.name:
+        template = p.prompt_dt_verduyn_2020()
+        file_name = "verduyn2020"
+
+    else:
+        raise ValueError(
+            f"Could not determine taxonomy from {input_file.name}"
+        )
+
+    output_file = (
+        f"{platform}_{file_number}_{file_name}_{country_str}"
+    )
+
+    data_output_path = (
+        output_dir_data
+        / f"{output_file}_llm_judge.json"
+    )
+
+    result_output_path = (
+        output_dir_results
+        / f"{output_file}_results.json"
+    )
+
+    # --------------------------------------------------
+    # Load original data
+    # --------------------------------------------------
+
+    with open(input_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # --------------------------------------------------
+    # Resume existing results if available
+    # --------------------------------------------------
+
+    if data_output_path.exists():
+
+        print(
+            f"[{datetime.now()}] Resuming from "
+            f"{data_output_path}",
+            flush=True,
+        )
+
+        with open(
+            data_output_path,
+            "r",
+            encoding="utf-8",
+        ) as f:
+            data = json.load(f)
+
+    # --------------------------------------------------
+    # Remove already judged rows
+    # --------------------------------------------------
+
+    data_to_process = [
+        r for r in data
+        if "judgement" not in r
+    ]
+
+    total = len(data)
+
+    print(
+        f"[{datetime.now()}] Processing "
+        f"{len(data_to_process)} remaining rows "
+        f"for {platform} {file_number}",
+        flush=True,
+    )
+
+    if data_to_process:
+
+        df = pd.DataFrame(data_to_process)
+
+        # --------------------------------------------------
+        # Split across agents
+        # --------------------------------------------------
+
+        chunks = [
+            df.iloc[i::num_agents]
+            for i in range(num_agents)
+        ]
+
+        chunks = [
+            (agent, chunk)
+            for agent, chunk in enumerate(chunks)
+            if not chunk.empty
+        ]
+
+        jobs = []
+
+        for agent, chunk in chunks:
+
+            tmp_file = (
+                output_dir_data
+                / f"agent_{agent}_{platform}_{file_number}.jsonl"
+            )
+
+            jobs.append(
+                (
+                    chunk,
+                    template,
+                    agent,
+                    platform,
+                    file_number,
+                    tmp_file,
+                    True
+                )
+            )
+
+        # --------------------------------------------------
+        # Run agents in parallel
+        # --------------------------------------------------
+
+        from multiprocessing import get_context
+
+        with get_context("spawn").Pool(
+            processes=len(jobs)
+        ) as pool:
+
+            results = pool.starmap(
+                process_chunk,
+                jobs,
+                chunksize=1,
+            )
+
+        # --------------------------------------------------
+        # Combine results
+        # --------------------------------------------------
+
+        new_results = [
+            item
+            for agent_results in results
+            for item in agent_results
+        ]
+
+        data_by_path = {
+            r["path"]: r
+            for r in data
+        }
+
+        for result in new_results:
+            data_by_path[result["path"]] = result
+
+        data = list(data_by_path.values())
+
+        # --------------------------------------------------
+        # Save final data
+        # --------------------------------------------------
+
+        with open(
+            data_output_path,
+            "w",
+            encoding="utf-8",
+        ) as f:
+            json.dump(
+                data,
+                f,
+                indent=2,
+                ensure_ascii=False,
+            )
+
+        # --------------------------------------------------
+        # Remove temporary agent files
+        # --------------------------------------------------
+
+        for _, _, _, _, _, tmp_file in jobs:
+            tmp_file.unlink(missing_ok=True)
+
+    # --------------------------------------------------
+    # Calculate final statistics
+    # --------------------------------------------------
+
+    correct_total = sum(
+        r.get("judgement") == "CORRECT"
+        for r in data
+    )
+
+    incorrect_total = sum(
+        r.get("judgement") == "INCORRECT"
+        for r in data
+    )
+
+    judged_total = (
+        correct_total
+        + incorrect_total
+    )
+
+    node = {
+        "platform": platform,
+        "file_number": file_number,
+        "total_cases": total,
+        "total_judged": judged_total,
+        "total_correct": correct_total,
+        "total_incorrect": incorrect_total,
+        "percentage_total_correct": (
+            f"{100 * correct_total / judged_total}%"
+            if judged_total
+            else "0%"
+        ),
+        "percentage_total_incorrect": (
+            f"{100 * incorrect_total / judged_total}%"
+            if judged_total
+            else "0%"
+        ),
+    }
+
+    print(
+        json.dumps(
+            node,
+            indent=2,
+        )
+    )
+
+    # --------------------------------------------------
+    # Save final summary
+    # --------------------------------------------------
+
+    with open(
+        result_output_path,
+        "w",
+        encoding="utf-8",
+    ) as f:
+        json.dump(
+            [node],
+            f,
+            indent=2,
+        )
+
+
+
+
+
+
     
 
 
