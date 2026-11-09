@@ -1,4 +1,4 @@
-from src.inference import prompts as p
+from src.inference.legacy import prompts as p
 from src.agents.initAgents import AgentManager
 import re
 import json

@@ -1,0 +1,41 @@
+max_model_len: auto
+gpu_memory_utilization: 0.90
+environment: /venvs/social-media-data-map/bin/activate
+models:
+  - id: gpt-gpu0
+    name: openai/gpt-oss-20b
+    gpus: [0]
+    tensor_parallel: 1
+    port: 8002
+    temperature: 0.0
+    presence_penalty: 0.0
+    max_tokens: 2048
+    top_p: 1.0
+  - id: gpt-gpu1
+    name: openai/gpt-oss-20b
+    gpus: [1]
+    tensor_parallel: 1
+    port: 8003
+    temperature: 0.0
+    presence_penalty: 0.0
+    max_tokens: 2048
+    top_p: 1.0ç
+  - id: gpt-gpu3
+    name: openai/gpt-oss-20b
+    gpus: [2]
+    tensor_parallel: 1
+    port: 8004
+    temperature: 0.0
+    presence_penalty: 0.0
+    max_tokens: 2048
+    top_p: 1.0
+  - id: gpt-gpu4
+    name: openai/gpt-oss-20b
+    gpus: [3]
+    tensor_parallel: 1
+    port: 8004
+    temperature: 0.0
+    presence_penalty: 0.0
+    max_tokens: 2048
+    top_p: 1.0
+  
