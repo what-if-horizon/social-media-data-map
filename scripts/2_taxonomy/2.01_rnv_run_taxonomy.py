@@ -1,5 +1,5 @@
 """
-Taxonomy classification of merged-structure paths (DATA_TAX prompt, e.g. kmetty2026).
+Taxonomy labelling of merged-structure paths (DATA_TAX prompt, e.g. kmetty2026).
 
 Runs as one process per vLLM server, started by launchers/parallel_worker.sh
 (via `make taxonomy-<platform>`). It receives its bucket of CSV files on the

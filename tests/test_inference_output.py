@@ -1,4 +1,4 @@
-"""Does the classification output look right? Run on the output of 2.01:
+"""Does the taxonomy output look right? Run on the output of 2.01:
 
     pytest tests/test_inference_output.py --inference-dir <dir> [--input-dir <dir>] [--results-json out.json]
 
@@ -19,7 +19,7 @@ LABELS = valid_labels(prompts.kmetty2026())
 
 def test_there_are_outputs(inference_dir):
     files = glob.glob(os.path.join(inference_dir, "*", "*.json"))
-    assert files, f"no classification outputs in {inference_dir}/<platform>/"
+    assert files, f"no taxonomy outputs in {inference_dir}/<platform>/"
 
 
 def test_every_input_platform_has_output(inference_dir, input_dir):

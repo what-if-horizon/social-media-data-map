@@ -1,7 +1,7 @@
-"""LLM judge for the taxonomy classification (scripts/2_classification/2.02_rnv_run_judge.py).
+"""LLM judge for the taxonomy (scripts/2_taxonomy/2.02_rnv_run_judge.py).
 
-The judge is a different model from the one that classified. It sees the same taxonomy, the path and the
-classifier's three predictions, and says whether the top prediction is correct.
+The judge is a different model from the one that produced the taxonomy output. It sees the same taxonomy, the path and the
+taxonomy model's three predictions, and says whether the top prediction is correct.
 """
 
 from src.inference.taxonomy import extract_json_dict
@@ -37,14 +37,14 @@ Return only valid JSON, with no text before or after it:
 """
 
 
-def taxonomy_section(classifier_prompt: str) -> str:
-    """The topology and decision rules, cut out of the classifier prompt so the two cannot drift apart."""
-    start = classifier_prompt.index(_HEAD)
-    end = classifier_prompt.index(_TAIL)
-    return classifier_prompt[start:end].strip()
+def taxonomy_section(taxonomy_prompt: str) -> str:
+    """The topology and decision rules, cut out of the taxonomy prompt so the two cannot drift apart."""
+    start = taxonomy_prompt.index(_HEAD)
+    end = taxonomy_prompt.index(_TAIL)
+    return taxonomy_prompt[start:end].strip()
 
 
-def build_judge_prompt(classifier_prompt: str, record: dict) -> str:
+def build_judge_prompt(taxonomy_prompt: str, record: dict) -> str:
     preds = record.get("predictions")
     if preds:
         lines = [f'{i}. "{p.get("label")}" ({p.get("confidence")})' for i, p in enumerate(preds, 1)]
@@ -52,7 +52,7 @@ def build_judge_prompt(classifier_prompt: str, record: dict) -> str:
     else:
         shown = "The classifier produced no valid output. Classify the path yourself."
     # Plain replace: the template and the topology contain JSON braces, so str.format is not usable
-    return (_TEMPLATE.replace("{TAXONOMY}", taxonomy_section(classifier_prompt))
+    return (_TEMPLATE.replace("{TAXONOMY}", taxonomy_section(taxonomy_prompt))
                      .replace("{PATH}", str(record["path"]))
                      .replace("{PREDICTIONS}", shown))
 

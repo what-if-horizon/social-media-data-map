@@ -13,7 +13,7 @@ import re
 
 
 
-def run_classification_seq(
+def run_taxonomy_seq(
     input_dir,
     output_dir,
     data_tax,
@@ -349,7 +349,7 @@ def process_chunk(
     return results
 
 
-def run_classification(
+def run_taxonomy(
     platform_file,
     output_dir,
     data_tax,
@@ -563,7 +563,7 @@ def run_classification(
 #####################################################################
 # LLM AS JUDGE
 #######################################################################
-def test_classification_dev(input_file, output_dir_data, output_dir_results, country_list):
+def test_taxonomy_dev(input_file, output_dir_data, output_dir_results, country_list):
 
     if 'schneider2010' in input_file:
         template = p.prompt_judge_dt_schneider_2010()
@@ -626,7 +626,7 @@ def test_classification_dev(input_file, output_dir_data, output_dir_results, cou
 
 
 
-def test_classification_seq(input_file, output_dir_data, output_dir_results, country_list):
+def test_taxonomy_seq(input_file, output_dir_data, output_dir_results, country_list):
 
     country_str = "_".join(country_list)
 
@@ -803,7 +803,7 @@ def test_classification_seq(input_file, output_dir_data, output_dir_results, cou
         )
 
 
-def test_classification(
+def test_taxonomy(
     input_file,
     output_dir_data,
     output_dir_results,

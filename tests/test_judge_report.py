@@ -60,6 +60,6 @@ def test_report_builds_with_and_without_parts():
                           {"path": "b", "verdict": None, "model_top1": None, "error": "invalid output"}]}
     human = {"platforms": {"facebook": evaluate(inference["facebook"], {"a": "Login data"}, LABELS)},
              "pooled": evaluate(inference["facebook"], {"a": "Login data"}, LABELS)}
-    page = build_report("test", pytest_result, inference, judge, human, {"classifier": "m"})
+    page = build_report("test", pytest_result, inference, judge, human, {"taxonomy model": "m"})
     assert "&lt;bad&gt;" in page and "<bad>" not in page          # escaped
     assert "Confusion matrix" in page and "no valid verdict" in page

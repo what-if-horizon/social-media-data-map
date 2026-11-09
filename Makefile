@@ -102,13 +102,13 @@ annotation_sample: ## Sample for annotation
 #make taxonomy-youtube                                   # one platform with its configured resources
 #make taxonomy                                           # submit all five as separate jobs
 #make path_std-youtube / make path_std                   # path standardisation (1.02)
-#make taxonomy-eval-youtube SPLIT=test                   # classify the annotation sample (test|validation)
+#make taxonomy-eval-youtube SPLIT=test                   # run the taxonomy on the annotation sample (test|validation)
 # Any job can be overridden on the command line, e.g. make taxonomy-youtube NODES=2 TIME=01:00:00
 
 # ---- shared settings ----
 MODEL_CONFIG := gpt-oss-20b_tp1x4tp.yaml
 MODEL_NAME   := $(basename $(MODEL_CONFIG))
-# DATA_TAX must be a key in PROMPTS in scripts/2_classification/2.01_rnv_run_data_classification.py; both go into output file names
+# DATA_TAX must be a key in PROMPTS in scripts/2_taxonomy/2.01_rnv_run_taxonomy.py; both go into output file names
 # (no inline comments after these: make would keep the trailing spaces in the value)
 DATA_TAX     := kmetty2026
 COUNTRIES    := ES_NL
@@ -119,9 +119,13 @@ ANNOTATION_ROOT := $(ROOT_DIR)/ddd_annotation
 # smoke | test | validation
 SPLIT        ?= validation
 SAMPLE_ROOT  := $(ANNOTATION_ROOT)/sample
-INFERENCE_DIR := $(ANNOTATION_ROOT)/inference/02_path_classification/$(SPLIT)
+# Folder names under the data root / ANNOTATION_ROOT. These are existing storage folders; to rename them, mv the
+# folders on /projects and change them here (the scripts read INFERENCE_SUBDIR from the environment).
+INFERENCE_SUBDIR := 02_path_classification
+TAXONOMY_OUT := $(ROOT_DIR)/$(DATA_DIR)/$(INFERENCE_SUBDIR)/021_classified_paths
+INFERENCE_DIR := $(ANNOTATION_ROOT)/inference/$(INFERENCE_SUBDIR)/$(SPLIT)
 JUDGE_DIR    := $(ANNOTATION_ROOT)/inference/03_judge/$(SPLIT)
-REPORT_DIR   := results/02_data_classification/reports
+REPORT_DIR   := results/02_taxonomy/reports
 # The judge must be a different model than MODEL_CONFIG
 MODEL_CONFIG_JUDGE := qwen_2_5_7b_tp1x4.yaml
 PYTHON       ?= python
@@ -138,7 +142,7 @@ CPUS_PER_GPU  := 16
 # Variables are <job>_NODES_<platform> and <job>_TIME_<platform>.
 PLATFORMS := facebook instagram tiktok youtube x
 
-# Taxonomy classification (production)
+# Taxonomy (production)
 taxonomy_NODES_facebook  := 1
 taxonomy_TIME_facebook   := 00:30:00
 taxonomy_NODES_instagram := 1
@@ -163,7 +167,7 @@ path_std_TIME_youtube    := 00:30:00
 path_std_NODES_x         := 1
 path_std_TIME_x          := 00:30:00
 
-# Taxonomy classification of the annotation sample (small)
+# Taxonomy of the annotation sample (small)
 taxonomy_eval_NODES_facebook  := 1
 taxonomy_eval_TIME_facebook   := 00:15:00
 taxonomy_eval_NODES_instagram := 1
@@ -189,9 +193,9 @@ judge_TIME_x          := 00:15:00
 
 # ---- jobs: arguments for llm-run; @P@ is replaced by the platform ----
 # Output name placeholders: {platform} {n} {stem} (see src/inference/parallel.py)
-taxonomy_ARGS = MODULE_PATH=scripts/2_classification/2.01_rnv_run_data_classification.py \
+taxonomy_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
 	SOURCE_FOLDER=$(SOURCE_ROOT)/@P@ \
-	OUTPUT_FOLDER=$(ROOT_DIR)/$(DATA_DIR)/02_path_classification/021_classified_paths/@P@ \
+	OUTPUT_FOLDER=$(TAXONOMY_OUT)/@P@ \
 	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
 	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
 
@@ -201,13 +205,13 @@ path_std_ARGS = MODULE_PATH=scripts/1_path_standardisation/1.02_rnv_run_path_sta
 	OUTPUT_PATTERN='{platform}_{n}_std_ids_$(COUNTRIES)_$(MODEL_NAME).json' \
 	EXTRA_EXPORT=',REF_DIR=$(REF_DIR)'
 
-taxonomy_eval_ARGS = MODULE_PATH=scripts/2_classification/2.01_rnv_run_data_classification.py \
+taxonomy_eval_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
 	SOURCE_FOLDER=$(ANNOTATION_ROOT)/sample/$(SPLIT)/@P@ \
-	OUTPUT_FOLDER=$(ANNOTATION_ROOT)/inference/02_path_classification/$(SPLIT)/@P@ \
+	OUTPUT_FOLDER=$(INFERENCE_DIR)/@P@ \
 	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
 	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
 
-judge_ARGS = MODULE_PATH=scripts/2_classification/2.02_rnv_run_judge.py \
+judge_ARGS = MODULE_PATH=scripts/2_taxonomy/2.02_rnv_run_judge.py \
 	MODEL_CONFIG=$(MODEL_CONFIG_JUDGE) INPUT_GLOB='*.json' \
 	SOURCE_FOLDER=$(INFERENCE_DIR)/@P@ \
 	OUTPUT_FOLDER=$(JUDGE_DIR)/@P@ \
@@ -247,14 +251,14 @@ $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy-eval,taxonomy_eval,$(p)
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,judge,judge,$(p))))
 
 .PHONY: taxonomy path_std taxonomy-eval
-taxonomy: $(addprefix taxonomy-,$(PLATFORMS)) ## Submit taxonomy classification for all platforms
+taxonomy: $(addprefix taxonomy-,$(PLATFORMS)) ## Submit the taxonomy for all platforms
 path_std: $(addprefix path_std-,$(PLATFORMS)) ## Submit path standardisation (1.02) for all platforms
-taxonomy-eval: $(addprefix taxonomy-eval-,$(PLATFORMS)) ## Classify a sample (SPLIT=smoke|test|validation)
+taxonomy-eval: $(addprefix taxonomy-eval-,$(PLATFORMS)) ## Run the taxonomy on a sample (SPLIT=smoke|test|validation)
 
 .PHONY: judge judge-check-model
 judge-check-model:
-	@test "$(MODEL_CONFIG)" != "$(MODEL_CONFIG_JUDGE)" || (echo "ERROR: the judge must be a different model than the classifier ($(MODEL_CONFIG))" && exit 1)
-judge: judge-check-model $(addprefix judge-,$(PLATFORMS)) ## Run the LLM judge on the classifications (SPLIT=smoke|test|validation)
+	@test "$(MODEL_CONFIG)" != "$(MODEL_CONFIG_JUDGE)" || (echo "ERROR: the judge must be a different model than the taxonomy model ($(MODEL_CONFIG))" && exit 1)
+judge: judge-check-model $(addprefix judge-,$(PLATFORMS)) ## Run the LLM judge on the taxonomy output (SPLIT=smoke|test|validation)
 
 
 #----------------------------------------------------------------------------------
@@ -272,12 +276,12 @@ cancel: ## Cancel all your jobs (NAME=<job name> for one job only)
 
 
 #----------------------------------------------------------------------------------
-# CLASSIFICATION PHASES: smoke -> test -> validation
+# TAXONOMY PHASES: smoke -> test -> validation
 #----------------------------------------------------------------------------------
 # 1. make smoke-select                       2.00: 5 dissimilar paths per platform (needs EMBEDDING_MODEL in .env)
 #    make smoke-sample-check                 pytest: 5 unique, dissimilar, not in the annotation sample
-#    make data_class_split                   2.03: test/validation sets, without the smoke paths
-# 2. make taxonomy-eval SPLIT=smoke          classify (GPU)
+#    make taxonomy-split                   2.03: test/validation sets, without the smoke paths
+# 2. make taxonomy-eval SPLIT=smoke          run the taxonomy (GPU)
 #    make inference-check SPLIT=smoke        pytest on the output; on failure the judge is submitted
 #    make report SPLIT=smoke                 HTML report: pytest, judge, (human evaluation)
 # 3. repeat 2 with SPLIT=test, then SPLIT=validation; once the human annotations are in:
@@ -287,21 +291,21 @@ cancel: ## Cancel all your jobs (NAME=<job name> for one job only)
 .PHONY: smoke-select smoke-sample-check inference-check eval-human report test
 smoke-select: ## Select the smoke sample: 5 dissimilar paths per platform
 	@test -n "$(EMBEDDING_MODEL)" || (echo "ERROR: set EMBEDDING_MODEL in .env (sentence-transformers model, see .env.example)" && exit 1)
-	$(call CPU,scripts/2_classification/2.00_rnv_select_smoke_sample.py)
+	$(call CPU,scripts/2_taxonomy/2.00_rnv_select_smoke_sample.py)
 
 smoke-sample-check: ## pytest: smoke sample is small, dissimilar and disjoint from test/validation
 	$(PYTHON) -m pytest tests/test_smoke_sample.py -v --sample-root=$(SAMPLE_ROOT)
 
-inference-check: ## pytest on the classification output; submits the judge if it fails (SPLIT=...)
+inference-check: ## pytest on the taxonomy output; submits the judge if it fails (SPLIT=...)
 	@mkdir -p $(REPORT_DIR)
 	$(PYTHON) -m pytest tests/test_inference_output.py -v --inference-dir=$(INFERENCE_DIR) --input-dir=$(SAMPLE_ROOT)/$(SPLIT) --results-json=$(REPORT_DIR)/$(SPLIT)_pytest.json \
 		|| (echo ">>> pytest failed: submitting the judge ($(MODEL_CONFIG_JUDGE))" && $(MAKE) --no-print-directory judge SPLIT=$(SPLIT) && exit 1)
 
 eval-human: ## Accuracy against the human annotations (SPLIT=test|validation)
-	$(call CPU,scripts/2_classification/2.06_rnv_evaluate_human_annotations.py,--split $(SPLIT))
+	$(call CPU,scripts/2_taxonomy/2.06_rnv_evaluate_human_annotations.py,--split $(SPLIT))
 
 report: ## Build the HTML report (SPLIT=smoke|test|validation)
-	$(call CPU,scripts/2_classification/2.07_rnv_build_report.py,--split $(SPLIT))
+	$(call CPU,scripts/2_taxonomy/2.07_rnv_build_report.py,--split $(SPLIT))
 
 test: ## Run the unit tests (the data checks need their options and skip otherwise)
 	$(PYTHON) -m pytest tests -v
@@ -316,11 +320,11 @@ id_std_val: ## Validate the id standardisation test run
 id_std_viz: ## Visualise id standardisation validation
 	$(call CPU,scripts/1_path_standardisation/1.01.02_rnv_visualisation_validation_id_standardisation.py)
 
-data_class_split: ## Split into test/validation (without the smoke sample)
-	$(call CPU,scripts/2_classification/2.03_rnv_split_data_data_classification.py)
+taxonomy-split: ## Split into test/validation (without the smoke sample)
+	$(call CPU,scripts/2_taxonomy/2.03_rnv_split_data_taxonomy.py)
 
-data_class_test_val: ## Validate the classification test run
-	$(call CPU,scripts/2_classification/2.04_rnv_test_validate_data_classification.py)
+taxonomy-accuracy: ## Validate the taxonomy test run
+	$(call CPU,scripts/2_taxonomy/2.04_rnv_test_validate_taxonomy.py)
 
-data_class_viz: ## Visualise classification results
-	$(call CPU,scripts/2_classification/2.05_rnv_visualisation_results_data_classification.py)
+taxonomy-viz: ## Visualise taxonomy results
+	$(call CPU,scripts/2_taxonomy/2.05_rnv_visualisation_results_taxonomy.py)

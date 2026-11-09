@@ -1,7 +1,7 @@
-"""HTML report for the taxonomy classification (scripts/2_classification/2.07_rnv_build_report.py).
+"""HTML report for the taxonomy (scripts/2_taxonomy/2.07_rnv_build_report.py).
 
 One self-contained HTML file per phase (smoke, test, validation) with: the pytest result on the inference
-outputs, a summary of the classification, the LLM judge, and, when human annotations were evaluated, the
+outputs, a summary of the taxonomy output, the LLM judge, and, when human annotations were evaluated, the
 accuracy against them. Charts are plain HTML/CSS (no external libraries), with light and dark themes.
 """
 
@@ -98,7 +98,7 @@ def section_inference(inference):
     valid = [r for r in records if r.get("predictions")]
     top1 = Counter(r["predictions"][0]["label"] for r in valid)
     conf = [r["predictions"][0]["confidence"] for r in valid]
-    out = [f'<div class="cards">{card(len(records), "paths classified")}{card(len(valid), "with valid output")}'
+    out = [f'<div class="cards">{card(len(records), "paths labelled")}{card(len(valid), "with valid output")}'
            f'{card(len(records) - len(valid), "without valid output")}{card(len(inference), "platforms")}</div>',
            "<h3>Top-1 label</h3>", bars(top1.most_common(), total=len(valid)),
            "<h3>Confidence of the top-1 label</h3>", histogram(conf),
@@ -123,7 +123,7 @@ def section_judge(judge, inference):
     flagged = [(pl, r) for pl, rows in sorted(judge.items()) for r in rows if r.get("verdict") != "correct"]
     out.append(f"<h3>Paths the judge did not mark correct ({len(flagged)})</h3>")
     if flagged:
-        out.append("<table><tr><th>Platform</th><th>Path</th><th>Classifier top-1</th><th>Verdict</th>"
+        out.append("<table><tr><th>Platform</th><th>Path</th><th>Taxonomy model top-1</th><th>Verdict</th>"
                    "<th>Judge label</th><th>Judge rationale</th></tr>")
         for pl, r in flagged:
             out.append(f'<tr><td>{esc(pl)}</td><td>{esc(r["path"])}</td><td>{esc(r.get("model_top1"))}</td>'
@@ -174,12 +174,12 @@ def section_human(human):
 def build_report(phase, pytest_result, inference, judge, human, models=None):
     models = models or {}
     meta = " | ".join(f"{k}: {v}" for k, v in models.items())
-    body = f"""<main><h1>Taxonomy classification: {esc(phase)}</h1>
+    body = f"""<main><h1>Taxonomy report: {esc(phase)}</h1>
 <p class="meta">Generated {datetime.now():%Y-%m-%d %H:%M}{(" | " + esc(meta)) if meta else ""}</p>
 <h2>1. Pytest on the inference output</h2>{section_pytest(pytest_result)}
-<h2>2. Classification summary</h2>{section_inference(inference)}
+<h2>2. Taxonomy summary</h2>{section_inference(inference)}
 <h2>3. LLM judge</h2>{section_judge(judge, inference)}
 <h2>4. Comparison with human annotations</h2>{section_human(human)}</main>"""
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>Classification report {esc(phase)}</title><style>{CSS}</style></head><body>{body}</body></html>')
+            f'<title>Taxonomy report {esc(phase)}</title><style>{CSS}</style></head><body>{body}</body></html>')

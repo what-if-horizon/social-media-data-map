@@ -9,7 +9,7 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 |---|---|
 | `0_ingest/` | Ingest, unique paths, merge, sampling |
 | `1_path_standardisation/` | Map paths to the reference catalogue, validate and plot |
-| `2_classification/` | Taxonomy classification, split, validate, plot |
+| `2_taxonomy/` | Taxonomy labelling, split, judge, validate, report |
 | `legacy/` | Not ported to the current launchers, and partly out of date; see below |
 
 ## Scripts
@@ -25,18 +25,18 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 | `1_path_standardisation/1.02` run_path_standardisation | `path_std-<platform>`, `path_std` | GPU (parallel) | **Path standardisation** |
 | `1_path_standardisation/1.01.01` validate_test_id_standardisation | `id_std_val` | CPU | Validate the id-standardisation test run |
 | `1_path_standardisation/1.01.02` visualisation_validation_id_standardisation | `id_std_viz` | CPU | Plots for the above |
-| `2_classification/2.00` select_smoke_sample | `smoke-select` | CPU | 5 mutually dissimilar paths per platform (embeddings), not in the annotation sample |
-| `2_classification/2.01` run_data_classification | `taxonomy-<platform>`, `taxonomy`, `taxonomy-eval-<platform>` | GPU (parallel) | **Taxonomy classification** (production, and smoke/test/validation via `SPLIT=`) |
-| `2_classification/2.02` run_judge | `judge-<platform>`, `judge` | GPU (parallel) | LLM judge (a different model) on the classifications |
-| `2_classification/2.03` split_data_data_classification | `data_class_split` | CPU | Split into test/validation, without the smoke paths |
-| `2_classification/2.04` test_validate_data_classification | `data_class_test_val` | CPU | Accuracy against annotations (verduyn2020) |
-| `2_classification/2.05` visualisation_results_data_classification | `data_class_viz` | CPU | Plots for the above (verduyn2020) |
-| `2_classification/2.06` evaluate_human_annotations | `eval-human` | CPU | Accuracy of the kmetty2026 classification against human annotations |
-| `2_classification/2.07` build_report | `report` | CPU | HTML report per phase |
+| `2_taxonomy/2.00` select_smoke_sample | `smoke-select` | CPU | 5 mutually dissimilar paths per platform (embeddings), not in the annotation sample |
+| `2_taxonomy/2.01` run_taxonomy | `taxonomy-<platform>`, `taxonomy`, `taxonomy-eval-<platform>` | GPU (parallel) | **Taxonomy** (production, and smoke/test/validation via `SPLIT=`) |
+| `2_taxonomy/2.02` run_judge | `judge-<platform>`, `judge` | GPU (parallel) | LLM judge (a different model) on the taxonomy outputs |
+| `2_taxonomy/2.03` split_data_taxonomy | `taxonomy-split` | CPU | Split into test/validation, without the smoke paths |
+| `2_taxonomy/2.04` test_validate_taxonomy | `taxonomy-accuracy` | CPU | Accuracy against annotations (verduyn2020) |
+| `2_taxonomy/2.05` visualisation_results_taxonomy | `taxonomy-viz` | CPU | Plots for the above (verduyn2020) |
+| `2_taxonomy/2.06` evaluate_human_annotations | `eval-human` | CPU | Accuracy of the kmetty2026 taxonomy against human annotations |
+| `2_taxonomy/2.07` build_report | `report` | CPU | HTML report per phase |
 
 `src/ingest/*_json_to_csv.py` (`flatten_dd`, `flatten_dd_<fb|ig|tt|x|yt>`) also run on the CPU launcher.
 
-## Classification phases
+## Taxonomy phases
 
 Smoke, then test, then validation. `SPLIT=smoke|test|validation` selects the phase; the sample folders are
 `<ANNOTATION_ROOT>/sample/<split>/<platform>/`.
@@ -45,14 +45,14 @@ Smoke, then test, then validation. `SPLIT=smoke|test|validation` selects the pha
    sample, embeds them (`EMBEDDING_MODEL` in `.env`) and keeps 5 whose pairwise cosine similarity is below
    `SMOKE_MAX_SIM` (0.8). `make smoke-sample-check` (pytest) verifies this: 5 unique paths, similarity below the
    threshold, no overlap with `full`, `test` or `validation`.
-2. **Test and validation sets.** `make data_class_split` (2.03) splits the annotation sample, leaving the smoke paths out.
-3. **Classify.** `make taxonomy-eval SPLIT=smoke` (GPU).
+2. **Test and validation sets.** `make taxonomy-split` (2.03) splits the annotation sample, leaving the smoke paths out.
+3. **Run the taxonomy.** `make taxonomy-eval SPLIT=smoke` (GPU).
 4. **Check.** `make inference-check SPLIT=smoke` runs `tests/test_inference_output.py` (pytest) on the output: three
    distinct taxonomy labels, confidences summing to 100 in descending order, a rationale, and one record per input
-   path. If it fails, the LLM judge (`MODEL_CONFIG_JUDGE`, a different model than the classifier) is submitted on
+   path. If it fails, the LLM judge (`MODEL_CONFIG_JUDGE`, a different model than the taxonomy model) is submitted on
    the output and the target exits non-zero. `make judge SPLIT=...` runs the judge on its own.
-5. **Report.** `make report SPLIT=smoke` writes `results/02_data_classification/reports/<split>_report.html`:
-   pytest result, classification summary, judge verdicts and, when available, the comparison with human annotations.
+5. **Report.** `make report SPLIT=smoke` writes `results/02_taxonomy/reports/<split>_report.html`:
+   pytest result, taxonomy summary, judge verdicts and, when available, the comparison with human annotations.
 6. **Test and validation.** Repeat 3-5 with `SPLIT=test` and `SPLIT=validation`. When the annotations are in,
    `make eval-human SPLIT=test` (2.06; label column via `LABEL_COL`, default `label`) adds accuracy, a per-label
    recall chart and the confusion matrix to the report.

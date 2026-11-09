@@ -1,4 +1,4 @@
-"""Compare classifier output with human annotations (scripts/2_classification/2.06)."""
+"""Compare taxonomy output with human annotations (scripts/2_taxonomy/2.06)."""
 
 from collections import Counter
 
@@ -15,9 +15,9 @@ def canonical_label(value, labels):
 
 
 def evaluate(records, gold, labels):
-    """Accuracy and confusion of the classifier against human labels.
+    """Accuracy and confusion of the taxonomy model against human labels.
 
-    records: classification records ({"path", "predictions": [{"label", "confidence"}, ...] or None}).
+    records: taxonomy records ({"path", "predictions": [{"label", "confidence"}, ...] or None}).
     gold:    {path: human label as written by the annotator}.
     Paths without a valid prediction count as wrong; paths whose human label is not in the taxonomy,
     or that have no human label, are excluded and counted separately.

@@ -1,12 +1,12 @@
 """
-Evaluate the taxonomy classification of the test or validation set against human annotations.
+Evaluate the taxonomy of the test or validation set against human annotations.
 
-  python scripts/2_classification/2.06_rnv_evaluate_human_annotations.py --split test
+  python scripts/2_taxonomy/2.06_rnv_evaluate_human_annotations.py --split test
 
 Reads, per platform:
-  inference:   <ANNOTATION_ROOT>/inference/02_path_classification/<split>/<platform>/*.json   (2.01 output)
+  inference:   <ANNOTATION_ROOT>/inference/<INFERENCE_SUBDIR>/<split>/<platform>/*.json   (2.01 output)
   annotations: <ANNOTATION_ROOT>/annotation/<split>/<platform>/*.xlsx   with columns `final_path` and the label column
-and writes results/02_data_classification/reports/<split>_human_eval.json (used by 2.07). Platforms
+and writes results/02_taxonomy/reports/<split>_human_eval.json (used by 2.07). Platforms
 without annotations are skipped with a message, so this can run before all annotations are in.
 """
 
@@ -23,6 +23,7 @@ from src.inference.evaluation import evaluate
 from src.inference.taxonomy import valid_labels
 
 PLATFORMS = ["facebook", "instagram", "tiktok", "youtube", "x"]
+INFERENCE_SUBDIR = os.environ.get("INFERENCE_SUBDIR", "02_path_classification")
 
 
 def main():
@@ -31,7 +32,7 @@ def main():
     parser.add_argument("--label-col", default=os.environ.get("LABEL_COL", "label"),
                         help="Column with the human label in the annotation files (env LABEL_COL, default 'label')")
     parser.add_argument("--annotation-pattern", default="*.xlsx", help="Annotation files per platform folder")
-    parser.add_argument("--report-dir", default="results/02_data_classification/reports")
+    parser.add_argument("--report-dir", default="results/02_taxonomy/reports")
     args = parser.parse_args()
 
     annotation_root = os.environ.get("ANNOTATION_ROOT", os.path.join(os.environ["ROOT_DIR"], "ddd_annotation"))
@@ -41,7 +42,7 @@ def main():
     all_records, all_gold = [], {}
     for platform in PLATFORMS:
         inf_files = sorted(glob.glob(os.path.join(
-            annotation_root, "inference", "02_path_classification", args.split, platform, "*.json")))
+            annotation_root, "inference", INFERENCE_SUBDIR, args.split, platform, "*.json")))
         ann_files = sorted(glob.glob(os.path.join(
             annotation_root, "annotation", args.split, platform, args.annotation_pattern)))
         if not inf_files or not ann_files:

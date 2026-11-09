@@ -635,8 +635,8 @@ def main():
     evaluate_verduyn(
         json_dir=(
             DATA_ROOT + "/"
-            "ddd_annotation/inference/"
-            "02_path_classification/test"
+            "ddd_annotation/inference/" +
+            os.environ.get("INFERENCE_SUBDIR", "02_path_classification") + "/test"
         ),
 
         csv_dir=(
@@ -647,7 +647,7 @@ def main():
         output_file=(
             "/home/nvisscher/GIT/"
             "social-media-data-map/results/"
-            "02_data_classification/"
+            "02_taxonomy/"
             "verduyn2020_accuracy_test.json"
         )
     )
@@ -655,8 +655,8 @@ def main():
     evaluate_verduyn(
             json_dir=(
                 DATA_ROOT + "/"
-                "ddd_annotation/inference/"
-                "02_path_classification/validation"
+                "ddd_annotation/inference/" +
+                os.environ.get("INFERENCE_SUBDIR", "02_path_classification") + "/validation"
             ),
     
             csv_dir=(
@@ -667,7 +667,7 @@ def main():
             output_file=(
                 "/home/nvisscher/GIT/"
                 "social-media-data-map/results/"
-                "02_data_classification/"
+                "02_taxonomy/"
                 "verduyn2020_accuracy_validation.json"
             )
         )

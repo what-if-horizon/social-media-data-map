@@ -9,9 +9,9 @@ import numpy as np
 # SETTINGS
 # ============================================================
 
-INPUT_FILE = Path("/home/nvisscher/GIT/social-media-data-map/results/02_data_classification/verduyn2020_accuracy_validation.json")
+INPUT_FILE = Path("/home/nvisscher/GIT/social-media-data-map/results/02_taxonomy/verduyn2020_accuracy_validation.json")
 
-OUTPUT_DIR = Path("/home/nvisscher/GIT/social-media-data-map/results/02_data_classification/verduyn_visualisations")
+OUTPUT_DIR = Path("/home/nvisscher/GIT/social-media-data-map/results/02_taxonomy/verduyn_visualisations")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 
@@ -60,7 +60,7 @@ ax.bar(
 
 ax.set_ylabel("Accuracy")
 ax.set_xlabel("Platform")
-ax.set_title("Verduyn Classification Accuracy by Platform")
+ax.set_title("Verduyn Taxonomy Accuracy by Platform")
 
 ax.set_xticks(x)
 ax.set_xticklabels(
@@ -125,7 +125,7 @@ for platform in platforms:
 
 ax.set_ylabel("F1 score")
 ax.set_xlabel("Class")
-ax.set_title("Exact Classification: F1 Score by Platform")
+ax.set_title("Exact Taxonomy: F1 Score by Platform")
 
 ax.set_ylim(0, 1)
 
@@ -173,7 +173,7 @@ for platform in platforms:
 
 ax.set_ylabel("F1 score")
 ax.set_xlabel("Class")
-ax.set_title("Collapsed Classification: F1 Score by Platform")
+ax.set_title("Collapsed Taxonomy: F1 Score by Platform")
 
 ax.set_ylim(0, 1)
 
@@ -237,7 +237,7 @@ for platform in platforms:
     ax.set_xlabel("Class")
 
     ax.set_title(
-        f"{platform.capitalize()}: Collapsed Classification Metrics"
+        f"{platform.capitalize()}: Collapsed Taxonomy Metrics"
     )
 
     ax.set_xticks(x)

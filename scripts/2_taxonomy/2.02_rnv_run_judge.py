@@ -1,9 +1,9 @@
 """
-LLM judge for the taxonomy classification.
+LLM judge for the taxonomy output.
 
 Runs as one process per vLLM server, started by launchers/parallel_worker.sh
-(via `make judge SPLIT=...`) with a different model than the classifier. Each input is a
-classification output JSON from 2.01; for every record the judge says whether the top label
+(via `make judge SPLIT=...`) with a different model than the taxonomy model. Each input is a
+taxonomy output JSON from 2.01; for every record the judge says whether the top label
 is correct, plausible or incorrect, and which label it would choose. Output is one JSON per
 input file, named by OUTPUT_PATTERN. Run it when the pytest on the inference outputs fails
 (`make inference-check`), or on its own for a second opinion.
@@ -24,15 +24,15 @@ from src.inference.taxonomy import valid_labels
 MAX_RETRIES = 3
 CONCURRENCY = 100
 
-# The classifier prompt the outputs were produced with (its topology is what the judge applies)
+# The taxonomy prompt the outputs were produced with (its topology is what the judge applies)
 DATA_TAX = os.environ.get("DATA_TAX", "kmetty2026")
 PROMPTS = {"kmetty2026": p.kmetty2026}
 if DATA_TAX not in PROMPTS:
     raise SystemExit(f"Unknown DATA_TAX '{DATA_TAX}', expected one of {list(PROMPTS)}")
 
 
-def judge_one(record, classifier_prompt, labels, agent):
-    prompt = build_judge_prompt(classifier_prompt, record)
+def judge_one(record, taxonomy_prompt, labels, agent):
+    prompt = build_judge_prompt(taxonomy_prompt, record)
     top1 = record["predictions"][0]["label"] if record.get("predictions") else None
     last_raw = None
     for attempt in range(1, MAX_RETRIES + 1):
@@ -47,8 +47,8 @@ def judge_one(record, classifier_prompt, labels, agent):
 
 
 def make_process_file(agent):
-    classifier_prompt = PROMPTS[DATA_TAX]()
-    labels = valid_labels(classifier_prompt)
+    taxonomy_prompt = PROMPTS[DATA_TAX]()
+    labels = valid_labels(taxonomy_prompt)
 
     def process_file(source_file, output_file):
         with open(source_file, encoding="utf-8") as f:
@@ -57,7 +57,7 @@ def make_process_file(agent):
 
         t0 = time.time()
         with ThreadPoolExecutor(max_workers=CONCURRENCY) as pool:
-            results = list(pool.map(lambda r: judge_one(r, classifier_prompt, labels, agent), records))  # order preserved
+            results = list(pool.map(lambda r: judge_one(r, taxonomy_prompt, labels, agent), records))  # order preserved
         n_failed = sum(r["verdict"] is None for r in results)
         print(f" judge done in {time.time() - t0:.0f}s | {n_failed} without a valid verdict", flush=True)
 
@@ -67,4 +67,4 @@ def make_process_file(agent):
 
 
 if __name__ == "__main__":
-    parallel.main(make_process_file, "LLM judge for the taxonomy classification")
+    parallel.main(make_process_file, "LLM judge for the taxonomy output")

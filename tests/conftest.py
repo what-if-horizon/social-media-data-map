@@ -1,4 +1,4 @@
-"""pytest options and a JSON result file for the report (scripts/2_classification/2.07)."""
+"""pytest options and a JSON result file for the report (scripts/2_taxonomy/2.07)."""
 import glob
 import json
 import os
@@ -12,9 +12,9 @@ _results = []
 
 def pytest_addoption(parser):
     parser.addoption("--inference-dir", default=os.environ.get("INFERENCE_DIR"),
-                     help="Folder with <platform>/*.json classification outputs (2.01)")
+                     help="Folder with <platform>/*.json taxonomy outputs (2.01)")
     parser.addoption("--input-dir", default=os.environ.get("INPUT_DIR"),
-                     help="Folder with the <platform>/*.csv that was classified (checks that every path got an output)")
+                     help="Folder with the <platform>/*.csv that was labelled (checks that every path got an output)")
     parser.addoption("--sample-root", default=os.environ.get("SAMPLE_ROOT"),
                      help="<ANNOTATION_ROOT>/sample, holding smoke/, full/, test/ and validation/")
     parser.addoption("--results-json", default=None, help="Write the outcome of every test to this file")

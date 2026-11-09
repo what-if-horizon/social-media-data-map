@@ -1,4 +1,4 @@
-"""Pure helpers for the LLM scripts (2.01 taxonomy classification, 1.02 path standardisation).
+"""Pure helpers for the LLM scripts (2.01 taxonomy, 1.02 path standardisation).
 
 No heavy imports, so they are easy to unit test (tests/test_taxonomy.py).
 """
@@ -53,7 +53,7 @@ def extract_json_dict(raw):
 
 
 def validate_record(rec, labels):
-    """Problems with one classification record from scripts/2_classification/2.01; empty list = valid.
+    """Problems with one taxonomy record from scripts/2_taxonomy/2.01; empty list = valid.
 
     Valid means: exactly three predictions, distinct labels from the taxonomy, confidences between
     0 and 100 that sum to 100 in descending order, and a non-empty rationale.

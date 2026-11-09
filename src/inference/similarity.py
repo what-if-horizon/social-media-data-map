@@ -1,6 +1,6 @@
 """Semantic-similarity helpers for picking a small, diverse set of paths.
 
-numpy only; the embeddings themselves come from scripts/2_classification/2.00_rnv_select_smoke_sample.py.
+numpy only; the embeddings themselves come from scripts/2_taxonomy/2.00_rnv_select_smoke_sample.py.
 """
 
 import numpy as np
