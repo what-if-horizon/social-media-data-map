@@ -1,0 +1,116 @@
+#!/bin/bash
+#SBATCH --job-name=parallel_llm
+#SBATCH --output=logs/parallel_llm_%j.out
+#SBATCH --error=logs/parallel_llm_%j.err
+#SBATCH --ntasks-per-node=1
+
+#--------------------------------------------------
+# Config
+#--------------------------------------------------
+
+MODEL_CONFIG=${MODEL_CONFIG:-qwen_2_5_7b_tp1x4.yaml}
+MODEL_YAML="$PWD/configs/$MODEL_CONFIG"
+
+: "${MODEL_DIR:?MODEL_DIR must be set (see .env)}"
+: "${SOURCE_FOLDER:?SOURCE_FOLDER must be set}"
+: "${OUTPUT_FOLDER:?OUTPUT_FOLDER must be set}"
+: "${OUTPUT_PATTERN:?OUTPUT_PATTERN must be set, e.g. {platform}_{n}_out.json}"
+: "${MODULE_PATH:?MODULE_PATH must be set (python script each server runs on its files)}"
+
+[[ -f "$MODEL_YAML" ]]  || { echo "Config not found: $MODEL_YAML" >&2; exit 1; }
+[[ -f "$MODULE_PATH" ]] || { echo "Module not found: $MODULE_PATH" >&2; exit 1; }
+
+JOB_LOG_DIR="$PWD/logs/${SLURM_JOB_NAME}_${SLURM_JOB_ID}"
+mkdir -p "$JOB_LOG_DIR"
+mkdir -p "$OUTPUT_FOLDER"
+chmod 775 "$OUTPUT_FOLDER"
+export MODEL_YAML JOB_LOG_DIR
+
+#--------------------------------------------------
+# Environment
+#--------------------------------------------------
+
+ENV=$(grep "^environment:" "$MODEL_YAML" | cut -d' ' -f2)
+
+source "$HOME/$ENV"
+
+module purge
+module load 2023
+module load CUDA/12.1.1          # TODO: other launchers use CUDA_HOME=/apps/ACC/CUDA/12.8; check with: module avail CUDA
+
+
+export PYTHONPATH="$PWD:${PYTHONPATH:-}"
+export TIKTOKEN_ENCODINGS_BASE="$PWD/src/agents/tiktoken_encodings"
+export CUDA_HOME="$EBROOTCUDA"
+export LD_LIBRARY_PATH="$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
+
+#--------------------------------------------------
+# Pending files
+#--------------------------------------------------
+
+# Delete leftovers from crashed runs
+rm -f "$OUTPUT_FOLDER"/*.partial "$OUTPUT_FOLDER"/*/*.partial
+
+# Output name for an input file; same rule as output_name() in src/inference/parallel.py,
+# which the python scripts use to write the file.
+# Placeholders: {platform} (name of the folder the file is in), {n} (last "_" part of the stem), {stem}
+#
+# INPUT_GLOB is relative to SOURCE_FOLDER. With a sub-folder level (INPUT_GLOB='*/*.csv', as the smoke run
+# uses to do all platforms in one job) the files are <platform>/<file> and their output goes to
+# OUTPUT_FOLDER/<platform>/.
+output_name() {   # $1 = platform, $2 = input file name
+    local stem="${2%.*}"
+    local name="$OUTPUT_PATTERN"
+    name="${name//\{platform\}/$1}"
+    name="${name//\{n\}/${stem##*_}}"
+    name="${name//\{stem\}/$stem}"
+    echo "$name"
+}
+
+shopt -s nullglob   # no input files -> empty loop, not the literal pattern
+files=()
+for file_path in "$SOURCE_FOLDER"/${INPUT_GLOB:-*.csv}; do
+    rel_path=${file_path#"$SOURCE_FOLDER"/}            # file or <platform>/file
+    rel_dir=$(dirname "$rel_path")
+    if [[ "$rel_dir" == "." ]]; then
+        platform=$(basename "$SOURCE_FOLDER"); out_dir="$OUTPUT_FOLDER"
+    else
+        platform=$(basename "$rel_dir"); out_dir="$OUTPUT_FOLDER/$rel_dir"
+    fi
+    if [[ ! -f "$out_dir/$(output_name "$platform" "$(basename "$rel_path")")" ]]; then
+        files+=("$rel_path")
+    fi
+done
+echo "Pending files: ${#files[@]}"
+
+#--------------------------------------------------
+# Split pending files across nodes
+#--------------------------------------------------
+
+node_files=()
+for i in "${!files[@]}"; do
+    index=$(( i % SLURM_NNODES ))
+    node_files[$index]+="${files[i]} "
+done
+
+#--------------------------------------------------
+# Launch one worker per node
+#--------------------------------------------------
+
+for ((i=0; i<SLURM_NNODES; i++)); do
+    if [[ -n "${node_files[i]}" ]]; then
+        srun --export=ALL --exclusive -N1 -n1 --gres=gpu:${GPUS_PER_NODE:-4} \
+            launchers/parallel_worker.sh "$i" ${node_files[i]} &
+    fi
+done
+
+#--------------------------------------------------
+# Wait for all workers to finish
+#--------------------------------------------------
+
+status=0
+for pid in $(jobs -p); do
+    wait "$pid" || status=1
+done
+echo "All nodes finished."
+exit $status

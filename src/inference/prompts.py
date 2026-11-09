@@ -1,395 +1,112 @@
-import pandas as pd
+def kmetty2026():
 
-def prompt_context():
     return """
-    You are given a JSON path to an observation in a social media data download. Please summarise in 100 words, what the data will be about.
-    
-    JSON path:
-    {data_field_1}
 
-    Answer format:
-    [{{ "summary": "text of summary"}}]
-   
+Reasoning: medium
+
+# Role
+You are an expert annotator of Digital Data Packages (DDPs): the raw data exports that platforms give users on request. The DDPs you will see come from X, Facebook, Instagram, YouTube and TikTok. Your task is to classify the path to a data entry into the DDP topology below and give the three most likely labels with confidence scores.
+
+# Steps
+1. Read carefully the definition of the DDP topology below.
+2. Read the path to a data entry.
+3. Choose the three best-fitting labels for the path and give each a confidence score.
+4. Return the result in the output format.
+
+# DDP topology
+Only the 15 numbered labels below are valid answers. Use the label string exactly as written. The parent categories are given to help you understand the structure; never use them as a label.
+
+## Service-provider-related data
+Definition: represents the foundational technical and analytical infrastructure that platforms automatically record during every-day system use.
+
+1. "Login data"
+   Definition: contain the core variables necessary for user authentication, secure system operations, and identity protection, including usernames, email addresses, and account entry timestamps.
+
+2. "Connection / device telemetry"
+   Definition: represents the automated telemetry captured by platforms during system transactions. In raw digital data packages, this category contains technical variables such as device types, operating systems, hardware configurations, camera models, synced devices, browser headers, and IP addresses.
+
+3. "Application / third-party links"
+   Definition: It includes technical logs and system permissions generated when third-party services integrate with an observed platform. In raw digital data packages, this information appears in specific files tracking external app connections, such as Facebook's "Third party application access," and TikTok's "User Third Platform Information" registries.
+
+4. "Algorithmic and inferred profiles, usage and screen-time metrics"
+   Definition: Platform-generated interest categories; screen-time logs and platform usage metrics, such as time spent on Facebook or TikTok.
+
+## User-related data: Semantically specified
+Definition: Contains user-centric digital trace data with fixed database definitions and clear schema declarations; this data category is separated from semantically unspecified files, such as open-ended texts and raw media streams, because its fields contain pre-structured data definitions.
+
+5. "Mandatory profile fields"
+   Definition: data comprises the foundational identity attributes that digital platforms require of an individual during account creation, typically including legal names, account identifiers, registration timestamps, biological birthdates, and declared genders.
+
+6. "Extended profile (settings)"
+   Definition: contains optional settings and selections with fixed database definitions. This includes structured data fields such as explicit account configurations, notification preferences, listed education histories, and personal asset registries.
+
+7. "Network (ego ties)"
+   Definition: Captures the relational connections that an individual establishes across online social platforms, appearing in DDPs as friend lists, follower registries, and connection tables.
+
+8. "Ratings and interests"
+   Definition: Captures content curation and media consumption properties: traces that function primarily as clear statements of lifestyle, consumer habits, and cultural tastes, such as following an organization or subscribing to a specific YouTube channel.
+
+9. "Contextual tags and mentions"
+   Definition: Distinct layer of digital traces that specifies the properties or relationships of existing items. In raw DDPs, this category includes different user tags and text-based references that contacts attach to content. Common examples include photo and post tags on Facebook and Instagram, user mentions within professional comments on LinkedIn, and direct username mentions inside tweets.
+
+10. "Location and GPS traces"
+    Definition: Continuous geospatial telemetry, such as background smartphone tracking records.
+
+11. "Passive consumption and exposure"
+    Definition: Capture the exact digital content that appears on a user's screen during daily device use. This category includes highly detailed trace datasets such as YouTube watch history and TikTok video recommendation feeds.
+
+## User-related data: Semantically unspecified
+Definition: refers to those digital traces where the platform fixes the container, a JSON string, an HTML block, or a plain-text field, but leaves the content entirely to the user; this category is set apart precisely because its content cannot be read by machines without language processing or human contextual interpretation; hold not only text but also media: photographs, video, and voice notes.
+
+12. "Profile free text / bio"
+    Definition: Alongside its structured fields, it includes free-text elements such as the "bio" a user writes to narrate their identity in their own words, which belong on the unspecified side and are therefore treated here as well. Because these boxes impose no constraints on content, they routinely record highly personal disclosures, including religious affiliation, political orientation, occupational status, and private life circumstances, often interleaved with direct or relational identifiers in a single string.
+
+13. "Private communication"
+    Definition: It covers direct one-to-one messages, group chat logs, voice notes, and shared media across platforms such as Facebook Messenger, Instagram, X, TikTok, LinkedIn, and WhatsApp.
+
+14. "One-to-many communication"
+    Definition: Covers the unstructured text and media a user shares with a broad audience: public status updates, posts, shared links, stories, and above all, the comments left across platforms.
+
+15. "Human-machine dialogue"
+    Definition: Covers search query histories and dialogue logs with generative AI such as ChatGPT and Meta AI. The type differs from the passive-consumption logs in a basic way. Those logs record what a user was exposed to; these record what a user actively asks, formulates, and works through in their own words.
+
+# Decision rules (apply when categories seem to overlap)
+- Network (ego ties) vs. Ratings and interests: the boundary between network data and interest data is blurry. When a user follows an organization or subscribes to a specific YouTube channel, the action generates a database trace that can technically be interpreted as a network connection. However, from an analytical standpoint, these traces function primarily as clear statements of lifestyle, consumer habits, and cultural tastes. Therefore:
+  - Use "Network (ego ties)" strictly for bidirectional or unidirectional interpersonal connections.
+  - Use "Ratings and interests" for content curation and media consumption properties, including following organizations and subscribing to channels.
+  - If a file can contain both (e.g., a following list with both people and organizations), choose the label that fits what the file mainly records and give the other as the second option with a substantial confidence score.
+- Passive consumption and exposure vs. Human-machine dialogue: passive consumption records what a user was exposed to; human-machine dialogue records what a user actively asks or formulates.
+- Semantically specified vs. semantically unspecified: fields with pre-structured data definitions belong to the specified side; free text and media whose content is left entirely to the user belong to the unspecified side.
+
+# Confidence scoring
+- Give exactly three different labels, ranked from most to least likely.
+- Each label gets a score from 0 to 100. The three scores must sum to 100.
+- Scores must be in descending order (first ≥ second ≥ third).
+- Clear cases: put most weight on the first label (e.g., 85 / 10 / 5).
+- Ambiguous cases: spread the weight to reflect real uncertainty (e.g., 50 / 40 / 10).
+- The second and third labels must be the most plausible alternatives, not random labels.
+
+# Output format
+Return only valid JSON, with no text before or after it:
+{"path": "<the input path>", "predictions": [{"label": "<label>", "confidence": <score>}, {"label": "<label>", "confidence": <score>}, {"label": "<label>", "confidence": <score>}], "rationale": "<one or two sentences explaining the top choice with reference to its definition, and why the alternatives are less likely>"}
+
+# Examples
+Input: Instagram/connections/followers_and_following/following.json
+Output: {"path": "Instagram/connections/followers_and_following/following.json", "predictions": [{"label": "Network (ego ties)", "confidence": 65}, {"label": "Ratings and interests", "confidence": 30}, {"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 5}], "rationale": "A following list is a follower registry, which fits Network (ego ties); because followed accounts can be organizations, Ratings and interests is a strong alternative."}
+
+Input: YouTube/history/watch-history.json
+Output: {"path": "YouTube/history/watch-history.json", "predictions": [{"label": "Passive consumption and exposure", "confidence": 90}, {"label": "Ratings and interests", "confidence": 7}, {"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 3}], "rationale": "YouTube watch history is named in the definition of Passive consumption and exposure as content that appeared on the user's screen."}
+
+Input: TikTok/Activity/Search History/SearchList
+Output: {"path": "TikTok/Activity/Search History/SearchList", "predictions": [{"label": "Human-machine dialogue", "confidence": 88}, {"label": "Passive consumption and exposure", "confidence": 8}, {"label": "Ratings and interests", "confidence": 4}], "rationale": "Search query histories fall under Human-machine dialogue because they record what the user actively formulated, not what they were exposed to."}
+
+Input: Facebook/ads_information/other_categories_used_to_reach_you.json
+Output: {"path": "Facebook/ads_information/other_categories_used_to_reach_you.json", "predictions": [{"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 90}, {"label": "Ratings and interests", "confidence": 7}, {"label": "Passive consumption and exposure", "confidence": 3}], "rationale": "These are platform-generated interest categories, not interests the user stated."}
+
+Input: X/data/ip-audit.js
+Output: {"path": "X/data/ip-audit.js", "predictions": [{"label": "Login data", "confidence": 55}, {"label": "Connection / device telemetry", "confidence": 40}, {"label": "Location and GPS traces", "confidence": 5}], "rationale": "The file logs account entry timestamps, which fits Login data, but IP addresses are listed under Connection / device telemetry; it is not continuous geospatial telemetry."}
+
+# Path to classify
+{PATH}
+
 """
-
-
-def prompt_std_ids_test():
-    
-    return """
-        You are given a path consisting of a filepath and a JSON path and a list of IDs.
-        From the list of IDs, choose the ID that explains best the JSON path. 
-        ONLY choose IDs from the list of IDs, do NOT invent them yourself. 
-        If you cannot find an appropriate ID in the list of IDs, return 'NA'
-        
-        path:
-        {data_1}
-
-        List of IDs:
-        {data_2}
-
-        Answer format:
-        [{{ "estimated_id": "estimated id choosen from the list of IDs"}}]
-    
-    """
-
-def prompt_std_ids_retry_test():
-    
-    return """
-        You are given a path consisting of a filepath and a JSON path and a list of IDs.
-        You are also given the wrong answer by the previous LLM as it choose an ID that was not in the list of IDs.
-        From the list of IDs, choose the ID that explains best the JSON path. 
-        ONLY choose IDs from the list of IDs, do NOT invent them yourself. 
-        If you cannot find an appropriate ID in the list of IDs, return 'NA'
-        
-        path:
-        {data_1}
-
-        List of IDs:
-        {data_2}
-
-        Wrong answer by previous LLM:
-        {data_3}
-
-        Answer format:
-        [{{ "estimated_id": "estimated id choosen from the list of IDs"}}]
-    
-    """
-
-def prompt_std_ids_old():
-    
-    return """
-        You are given a path consisting of a filepath and a JSON path and a catalogue of paths.
-        From the catalogue of paths, choose the path that explains best the given path. 
-        The goal is to match paths that actually hold the same data but that are constructed or named differently. 
-        In other words, the paths do NOT need to be identical.
-        ONLY choose paths from the catalogue of paths, do NOT invent them yourself. 
-        If you cannot find an appropriate path in the catalogue of paths, return 'NA'
-        
-        path:
-        {data_1}
-
-        Catalogue of paths:
-        {data_2}
-
-        Answer format:
-        [{{ "estimated_path": "estimated path choosen from the cataloque of paths"}}]
-    
-    """
-
-def prompt_std_ids():
-
-    return """
-        You are matching a given data path to a path from a catalogue of known data paths.
-
-        Your task is to identify which catalogue path refers to the SAME UNDERLYING DATA as the given path, even when the two paths are constructed, organised, or named differently.
-
-        IMPORTANT:
-        - You may ONLY select a path that appears exactly in the Catalogue of paths.
-        - NEVER invent, modify, reconstruct, or combine catalogue paths.
-        - The paths do NOT need to be textually identical.
-        - Differences in directory structure, filenames, naming conventions, prefixes, suffixes, or JSON-path notation do not necessarily mean that the underlying data is different.
-        - Focus on the identity of the data represented by the path rather than superficial string similarity.
-        - Use all available information in the path, including directory names, filenames, file structure, and JSON paths.
-        - Prefer a catalogue path when there is strong evidence that it represents the same underlying data.
-        - If multiple catalogue paths appear plausible, choose the one that provides the strongest evidence of referring to the same underlying data.
-        - If there is insufficient evidence to determine that a catalogue path represents the same underlying data, return "NA".
-        - Do NOT make a guess merely because one catalogue path looks similar.
-        - Return exactly ONE match or "NA".
-
-        Given path:
-        {data_1}
-
-        Catalogue of paths:
-        {data_2}
-
-        Return your answer as valid JSON using exactly this format:
-
-        [
-        {{"estimated_path": "EXACT catalogue path"}}
-        ]
-
-        If there is no appropriate match, return:
-
-        [
-        {{"estimated_path": "NA"}}
-        ]
-
-        The value of "estimated_path" must either be:
-        1. an exact path copied from the Catalogue of paths, or
-        2. "NA".
-        """
-
-
-def prompt_std_ids_retry():
-    
-    return """
-        You are given a path consisting of a filepath and a JSON path and a catalogue of paths.
-        You are also given the wrong answer by the previous LLM as it choose a path that was not in the catalogue of paths.
-        From the catalogue of paths, choose the path that explains best the given path. 
-        ONLY choose paths from the catalogue of paths, do NOT invent them yourself. 
-        If you cannot find an appropriate path in the catalogue of paths, return 'NA'
-        
-        path:
-        {data_1}
-
-        Answer of LLM 1:
-        {data_2}
-
-        Answer of LLM 1:
-        {data_3}
-
-        Catalogue of paths:
-        {data_4}
-
-        Answer format:
-        [{{ "estimated_id": "estimated path choosen from the catalogue of paths"}}]
-    
-    """
-
-def prompt_std_ids_resolve():
-    
-    return """
-        You are given a path consisting of a filepath and a JSON path and a catalogue of paths.
-        You are also given two answers by the previous LLMs that did not agree on the correct path.
-        From the list of IDs, choose the ID that explains best the JSON path. 
-        ONLY choose paths from the catalogue of paths, do NOT invent them yourself. 
-        If you cannot find an appropriate path in the catalogue of paths, return 'NA'
-        
-        path:
-        {data_1}
-
-        Catalogue of paths:
-        {data_2}
-
-        Wrong answer by previous LLM:
-        {data_3}
-
-        Answer format:
-        [{{ "estimated_id": "estimated path choosen from the catalogue of paths"}}]
-    
-    """
-
-def prompt_dt_schneider_2010():
-    return """
-    You are given five categories from a taxonomy of social networking data 
-    Use these categories to classify the data entry (path consisting of a filepath and a JSON path) from a social media takeout
-    Provide a rationale for choosing the categorie in 50 words
-    
-    Taxonomy of social networking data:
-    1. Service data:  User-supplied data before it can access the service. These data are known as identifiable data, because they uniquely identify users on the system. 
-    2. Disclosed data: Data that the user posts in his own page. These data are also known to form the user profile.
-    3. Entrusted data: Data that the user posts the page to other network members. It is similar to Disclosed data, but the difference is that in some cases, after posting the content the user has no control over the data. 
-    4. Incidental data: Data that other network members post about you. It is also similar to Disclosed data, but the difference is that it was not you who originally created the data and in some cases you have no control over them. 
-    5. Behavioral data: Data that the site collects about the user's activities during its use. 
-    6. Derived data: derived data from the data aforementioned. The derived data can be generated using various techniques, such as data mining.
-
-    Path to data entry:
-    {data_1}
-
-    Answer format:
-        [{{ "category": "Name of the chosen data category",
-            "rationale": "Reason for choosing the category in 50 words}}]
-    """
-
-def prompt_dt_wu_2010():
-    return """
-    You are given five categories from a taxonomy of social networking data 
-    Use these categories to classify the data entry (path consisting of a filepath and a JSON path) from a social media takeout
-    Provide a rationale for choosing the categorie in 50 words
-        
-    Taxonomy of social networking data:
-    1. Registration: This layer consists of the information required to identify the data provider uniquely among all the other users of the social network. 
-    2. Networking: This layer consists of the information solicited by the social network to be released to its other users, in order to construct a network of contacts for the data provider.
-    3. Content: This layer consists of the actual content with which the data provider actually participates in the social network.
-    4. Activity: This data consists of web server logs, information from cookies, as well as other means of gathering information about the data provider’s activities on the social networking service.
-   
-    Path to data entry:
-        {data_1}
-    
-    Answer format:
-        [{{ "category": "Name of the chosen data category",
-            "rationale": "Reason for choosing the categorie in 50 words}}]
-     
-    """
-
-def prompt_dt_verduyn_2020():
-    return """
-    You are given two categories from a taxonomy of social media use: active and passive usage.
-
-    Use the following taxonomy to classify the data entry into exactly one category.
-
-    Taxonomy of social media usage:
-
-    1. Active
-
-    Definition:
-    Activities that facilitate direct exchanges with others, including:
-
-    - Targeted one-on-one exchanges
-    (e.g. sending a private message on Facebook)
-
-    - Broadcasting
-    (e.g. posting a status update on Facebook)
-
-    Usage information is mainly produced.
-
-    2. Active-meta
-    Definition: 
-    Meta data related to active activities (eg. timestamps). When the data traces back to real content do NOT mark as meta data.
-
-
-    3. Passive
-
-    Definition:
-    Monitoring the online life of other users without engaging in direct exchanges
-    (e.g. scrolling through newsfeeds or looking at other users’ profiles).
-
-    Usage information is mainly consumed.
-
-    4.  Passive-meta
-    Definition: Meta data related to passive activities (eg. timestamps). When the data traces back to real content do NOT mark as meta data.
-
-    5. Other
-    ONLY use when the entry does not match passive or active
-    Inlcudes:
-     -  settings 
-     -  manifest
-     -  ai interactions 
-
-    Path to data entry:
-    {data_1}
-
-
-    Classification instructions:
-
-    - Classify the data entry according to the taxonomy above.
-    - Consider the meaning of the complete data entry rather than individual words or path components in isolation.
-    - Do not infer an interaction that is not supported by the data entry.
-    - Base the classification only on the information available in the data entry.
-    - If the data entry is ambiguous, select the category that is best supported by the available evidence and explain the ambiguity in the rationale.
-    - The category must be exactly "active", "active-meta", "passive", "passive-meta" or "other"
-    - Provide a rationale of approximately 50 words explaining the evidence for the selected category.
-
-
-    Answer format:
-
-    [
-        {{
-            "category": "active, active-meta, passive, passive-meta, or other",
-            "rationale": "Approximately 50 words explaining why the data entry belongs to the selected category."
-        }}
-    ]
-
-    Return only the JSON object shown above. Do not include markdown, code fences, additional explanation, or additional fields.
-    """
-
-def prompt_judge_dt_schneider_2010():
-    return"""
-    Read the description of the taxonmy of social media networking data, the data entry (path consisting of a filepath and a JSON path) from a social media takeout, the classification and rationale done by another LLM and judge whether this LLM generated teh correct answer
-    
-    Taxonomy of social networking data:
-        1. Service data:  User-supplied data before it can access the service. These data are known as identifiable data, because they uniquely identify users on the system. 
-        2. Disclosed data: Data that the user posts in his own page. These data are also known to form the user profile.
-        3. Entrusted data: Data that the user posts the page to other network members. It is similar to Disclosed data, but the difference is that in some cases, after posting the content the user has no control over the data. 
-        4. Incidental data: Data that other network members post about you. It is also similar to Disclosed data, but the difference is that it was not you who originally created the data and in some cases you have no control over them. 
-        5. Behavioral data: Data that the site collects about the user's activities during its use. 
-        6. Derived data: derived data from the data aforementioned. The derived data can be generated using various techniques, such as data mining.
-    
-    
-    Path to data entry:
-    {data_1}
-
-    Answer from previous LLM:
-    {data_2}
-    
-    Answer format when incorrect:
-    [{{ "judgement": "CORRECT"}}]
-
-    Answer format when incorrect:
-    [{{ "judgement": "INCORRECT",
-    "rationale": "Reason why answer is judged as incorrect}}]
-
-    """
-
-
-def prompt_judge_dt_wu_2010():
-    return"""
-    Read the description of the taxonmy of social media networking data, the data entry (path consisting of a filepath and a JSON path) from a social media takeout, the classification and rationale done by another LLM and judge whether this LLM generated the correct answer
-    
-    Taxonomy of social networking data:
-        1. Registration: This layer consists of the information required to identify the data provider uniquely among all the other users of the social network. 
-        2. Networking: This layer consists of the information solicited by the social network to be released to its other users, in order to construct a network of contacts for the data provider.
-        3. Content: This layer consists of the actual content with which the data provider actually participates in the social network.
-        4. Activity: This data consists of web server logs, information from cookies, as well as other means of gathering information about the data provider’s activities on the social networking service.
-       
-    Path to data entry:
-    {data_1}
-    
-    Answer from previous LLM:
-    {data_2}
-    
-    Answer format when incorrect:
-    {{"judgement": "CORRECT"}}
-
-    Answer format when incorrect:
-    {{"judgement": "INCORRECT",
-    "rationale": "Reason why answer is judged as incorrect}}
-
-    """
-
-
-def prompt_judge_dt_verduyn_2020():
-    return"""
-    Read the description of the taxonmy of social media usage data, the data entry (path consisting of a filepath and a JSON path) from a social media takeout, the classification and rationale done by another LLM and judge whether this LLM generated the correct answer
-    
-    Taxonomy of social media usage:
-        1. Active:
-            - Definition: activities that facilitate direct exchanges with others including:
-                -  targeted one-on-one exchanges (e.g. sending a private message on Facebook)
-                -  broadcasting (e.g. posting a status update on Facebook)
-            - Usage information is mainly produced
-    
-        2. Passive = monitoring the online life ofother users without engaging in direct exchanges with them (e.g. scrolling through newsfeeds or looking at other users’ profiles).
-            - Usage information is mainly consumed
-    
-    Path to data entry:
-    {data_1}
-    
-    Answer from previous LLM:
-    {data_2}
-    
-    Answer format when incorrect:
-    {{"judgement": "CORRECT"}}
-
-    Answer format when incorrect:
-    {{"judgement": "INCORRECT",
-    "rationale": "Reason why answer is judged as incorrect}}
-
-    """
-
-
-
-
-
-# --------------------------------------------------------
-# prepare_prompt()                                 
-#--------------------------------------------------------
-def prepare_prompt(data_1, template,  data_2 = None, data_3 = None, data_4 = None):
-
-    
-    prompt = template.format(
-        data_1 = data_1,
-        data_2 = data_2,
-        data_3 = data_3,
-        data_4 = data_4
-    )
-
-    messages = [
-        {"role": "system", "content": (
-            "You are an expert on social media data.\n"
-            "Reasoning: low"
-        )},
-        {"role": "user", "content": prompt}
-    ]
-
-    return messages

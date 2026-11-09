@@ -266,6 +266,7 @@ dependencies:
       - pydantic-settings==2.13.1
       - pyjwt==2.12.1
       - pysocks==1.7.1
+      - pytest==8.4.2
       - python-dotenv==1.2.2
       - python-json-logger==4.0.0
       - python-multipart==0.0.22

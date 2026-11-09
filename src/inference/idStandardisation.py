@@ -17,69 +17,11 @@ import traceback
 ###############################################################
 # TESTING
 ###############################################################
-def run_id_std_for_testing_old(input_file, output_dir, country_list):
-
-    from src.inference import generateInference as gI
-    from src.inference import prompts as p
-
-    df = pd.read_csv(input_file)
-    results_dict = {}
-
-    country_str = '_'.join(country_list)
-    output_file = f'std_ids_{country_str}'
-
-    for platform in df["platform"].unique():
-
-        df_filtered = df[df['platform'] == platform]
-        cats = str(df_filtered['keepID'].values.tolist())
-        print('CATS', cats)
-
-        ################################################
-        #JUST FOR TESTING!!!!!!!
-        ###############################################
-        #random.seed(100)
-        #df_filtered = df_filtered.sample(n=5)
-        ################################################
-
-        #df = df[:50]
-        output_list = []
-        print('PROCESSING PLATFORM:', platform)
-        for _, row in tqdm(df_filtered.iterrows(), total=len(df_filtered)):
-            if row['id'] == row['keepID']:
-                continue
-
-            try:
-                output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids_test(), data_2=cats)
-                print('OUTPUT', output)
-                output = json.loads(output)
-                #output = output[0]
-                if output["estimated_id"] not in cats:
-                    output = gI.generate_output(data_1 = row['final_path'], template = p.prompt_std_ids_retry(), data_2=cats, data_3=output["estimated_id"])
-
-
-                node = {"path": row['final_path'],
-                        "true_id": row['keepID']}
-                
-                node.update(output)
-                output_list.append(node)
-            except Exception as e:
-                print(f'ERROR {e} for {row['final_path']}') 
-            #print(node)
-
-
-        results_dict[platform] = output_list
-
-            
-
-    json_str = json.dumps(results_dict, indent=2)
-    with open(f'{output_dir}/{output_file}.json', "w") as f:
-        f.write(json_str)
-        
 
 def run_id_std_for_testing(input_file, output_dir, country_list):
 
     from src.inference import generateInference as gI
-    from src.inference import prompts as p
+    from src.inference.legacy import prompts as p
 
     df = pd.read_csv(input_file)
 
@@ -142,7 +84,7 @@ def run_id_std_for_testing(input_file, output_dir, country_list):
         print(f"SAVED: {output_file}")
 
 
-def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_cats, country_list):
+def test_id_standardisation_old(input_file, output_dir_data, output_dir_results, df_cats, country_list):
     df = pd.read_csv(df_cats)
     cats = str(df['keepID'].values.tolist())   
 
@@ -206,6 +148,420 @@ def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_
     with open(f'{output_dir_results}/{output_file_results}.json', "w") as f:
         f.write(results_dict)
 
+
+from pathlib import Path
+import json
+from difflib import SequenceMatcher
+
+import pandas as pd
+
+
+def calculate_metrics(results, cats):
+    """
+    Calculate evaluation metrics for a list of standardisation results.
+    """
+
+    total = len(results)
+    correct = 0
+    incorrect = 0
+
+    similarity_ratios = []
+    present_in_list = 0
+
+    for d in results:
+
+        estimated_id = d["estimated_id"]
+        true_id = d["true_id"]
+
+        if estimated_id == true_id:
+            correct += 1
+            d["result"] = "CORRECT"
+
+        else:
+            incorrect += 1
+            d["result"] = "INCORRECT"
+
+            sim_ratio = SequenceMatcher(
+                None,
+                true_id,
+                estimated_id
+            ).ratio()
+
+            d["sim_ratio"] = sim_ratio
+            similarity_ratios.append(sim_ratio)
+
+            if d["estimated_id"] in cats:
+                d["present_in_list"] = True
+                present_in_list += 1
+            else:
+                d["present_in_list"] = False
+
+    # Avoid division by zero
+    if total > 0:
+        accuracy = correct / total
+        error_rate = incorrect / total
+    else:
+        accuracy = 0
+        error_rate = 0
+
+    if similarity_ratios:
+        mean_similarity = sum(similarity_ratios) / len(similarity_ratios)
+        median_similarity = sorted(similarity_ratios)[
+            len(similarity_ratios) // 2
+        ]
+
+        # Better median calculation for even number of values
+        n = len(similarity_ratios)
+        sorted_ratios = sorted(similarity_ratios)
+
+        if n % 2 == 0:
+            median_similarity = (
+                sorted_ratios[n // 2 - 1] +
+                sorted_ratios[n // 2]
+            ) / 2
+        else:
+            median_similarity = sorted_ratios[n // 2]
+
+    else:
+        mean_similarity = None
+        median_similarity = None
+
+    if incorrect > 0:
+        percentage_present_in_list = (
+            present_in_list / incorrect
+        )
+    else:
+        percentage_present_in_list = None
+
+    metrics = {
+        "total_cases": total,
+        "total_correct": correct,
+        "total_incorrect": incorrect,
+
+        "accuracy": accuracy,
+        "accuracy_percentage": accuracy * 100,
+
+        "error_rate": error_rate,
+        "error_rate_percentage": error_rate * 100,
+
+        "incorrect_mean_similarity": mean_similarity,
+        "incorrect_median_similarity": median_similarity,
+
+        "incorrect_estimated_id_present_in_list": present_in_list,
+        "incorrect_estimated_id_present_in_list_percentage":
+            None if percentage_present_in_list is None
+            else percentage_present_in_list * 100
+    }
+
+    return results, metrics
+
+
+def test_id_standardisation(
+    input_dir,
+    output_dir_data,
+    output_dir_results,
+    df_cats,
+    country_list
+):
+
+    input_dir = Path(input_dir)
+    output_dir_data = Path(output_dir_data)
+    output_dir_results = Path(output_dir_results)
+
+    output_dir_data.mkdir(parents=True, exist_ok=True)
+    output_dir_results.mkdir(parents=True, exist_ok=True)
+
+    # ---------------------------------------------------------
+    # LOAD VALID IDs
+    # ---------------------------------------------------------
+
+    df = pd.read_csv(df_cats)
+    print(df)
+
+    cats = set(
+        df["keepID"]
+        .dropna()
+        .astype(str)
+    )
+
+    # ---------------------------------------------------------
+    # FIND PLATFORM FILES
+    # ---------------------------------------------------------
+
+    json_files = sorted(input_dir.glob("*.json"))
+
+    if not json_files:
+        print(f"No JSON files found in {input_dir}")
+        return
+
+    country_str = "_".join(country_list)
+
+    # ---------------------------------------------------------
+    # STORAGE FOR POOLED RESULTS
+    # ---------------------------------------------------------
+
+    pooled_results = []
+
+    platform_metrics = {}
+
+    # ---------------------------------------------------------
+    # PROCESS EACH PLATFORM FILE
+    # ---------------------------------------------------------
+
+    for input_file in json_files:
+
+        print(f"\nProcessing: {input_file.name}")
+
+        # -----------------------------------------------------
+        # LOAD FILE
+        # -----------------------------------------------------
+
+        with open(input_file, "r") as file:
+            data = json.load(file)
+
+        # -----------------------------------------------------
+        # DETERMINE PLATFORM
+        # -----------------------------------------------------
+
+        # Expected possibilities:
+        #
+        # {
+        #     "tiktok": [...]
+        # }
+        #
+        # or
+        #
+        # [...]
+        #
+
+        if isinstance(data, dict):
+
+            # If the JSON contains a single platform key
+            if len(data) == 1:
+                platform = next(iter(data))
+                results = data[platform]
+
+            else:
+                # If multiple platforms happen to be present
+                for platform, results in data.items():
+
+                    results, metrics = calculate_metrics(results, cats)
+
+                    platform_metrics[platform] = metrics
+                    pooled_results.extend(results)
+
+                    output_data = {
+                        platform: results
+                    }
+
+                    output_file = (
+                        output_dir_data /
+                        f"{platform}_std_ids_test_{country_str}.json"
+                    )
+
+                    with open(output_file, "w") as f:
+                        json.dump(
+                            output_data,
+                            f,
+                            indent=2
+                        )
+
+                continue
+
+        else:
+            # If the file itself contains the list of results
+            platform = input_file.stem
+            results = data
+
+        # -----------------------------------------------------
+        # EVALUATE PLATFORM
+        # -----------------------------------------------------
+
+        results, metrics = calculate_metrics(results, cats)
+
+        platform_metrics[platform] = metrics
+
+        # Add results to pooled evaluation
+        pooled_results.extend(results)
+
+        # -----------------------------------------------------
+        # SAVE ANNOTATED PLATFORM RESULTS
+        # -----------------------------------------------------
+
+        output_data = {
+            platform: results
+        }
+
+        output_file = (
+            output_dir_data /
+            f"{platform}_std_ids_test_{country_str}.json"
+        )
+
+        with open(output_file, "w") as f:
+            json.dump(
+                output_data,
+                f,
+                indent=2
+            )
+
+        # -----------------------------------------------------
+        # PRINT PLATFORM RESULTS
+        # -----------------------------------------------------
+
+        print(
+            f"{platform}: "
+            f"{metrics['total_correct']}/"
+            f"{metrics['total_cases']} "
+            f"({metrics['accuracy_percentage']:.2f}%) correct"
+        )
+
+    # =========================================================
+    # POOLED EVALUATION
+    # =========================================================
+
+    _, pooled_metrics = calculate_metrics(pooled_results, cats)
+
+    # ---------------------------------------------------------
+    # SUMMARY
+    # ---------------------------------------------------------
+
+    summary = {
+        "platforms": platform_metrics,
+        "pooled": pooled_metrics
+    }
+
+    # ---------------------------------------------------------
+    # SAVE SUMMARY
+    # ---------------------------------------------------------
+
+    summary_file = (
+        output_dir_results /
+        f"std_ids_test_results_{country_str}.json"
+    )
+
+    with open(summary_file, "w") as f:
+        json.dump(
+            summary,
+            f,
+            indent=2
+        )
+
+    # =========================================================
+    # PRINT RESULTS
+    # =========================================================
+
+    print("\n" + "=" * 60)
+    print("RESULTS PER PLATFORM")
+    print("=" * 60)
+
+    for platform, metrics in platform_metrics.items():
+
+        print(
+            f"\n{platform}"
+        )
+
+        print(
+            f"  Total cases:    {metrics['total_cases']}"
+        )
+
+        print(
+            f"  Correct:        {metrics['total_correct']}"
+        )
+
+        print(
+            f"  Incorrect:      {metrics['total_incorrect']}"
+        )
+
+        print(
+            f"  Accuracy:       "
+            f"{metrics['accuracy_percentage']:.2f}%"
+        )
+
+        print(
+            f"  Error rate:     "
+            f"{metrics['error_rate_percentage']:.2f}%"
+        )
+
+        if metrics["incorrect_mean_similarity"] is not None:
+
+            print(
+                f"  Mean similarity:"
+                f" {metrics['incorrect_mean_similarity']:.4f}"
+            )
+
+            print(
+                f"  Median similarity:"
+                f" {metrics['incorrect_median_similarity']:.4f}"
+            )
+
+        if (
+            metrics[
+                "incorrect_estimated_id_present_in_list_percentage"
+            ]
+            is not None
+        ):
+
+            print(
+                f"  Incorrect IDs in list:"
+                f" {metrics['incorrect_estimated_id_present_in_list_percentage']:.2f}%"
+            )
+
+    # =========================================================
+    # PRINT POOLED RESULTS
+    # =========================================================
+
+    print("\n" + "=" * 60)
+    print("POOLED ACROSS ALL PLATFORMS")
+    print("=" * 60)
+
+    print(
+        f"Total cases:    "
+        f"{pooled_metrics['total_cases']}"
+    )
+
+    print(
+        f"Correct:        "
+        f"{pooled_metrics['total_correct']}"
+    )
+
+    print(
+        f"Incorrect:      "
+        f"{pooled_metrics['total_incorrect']}"
+    )
+
+    print(
+        f"Accuracy:       "
+        f"{pooled_metrics['accuracy_percentage']:.2f}%"
+    )
+
+    print(
+        f"Error rate:     "
+        f"{pooled_metrics['error_rate_percentage']:.2f}%"
+    )
+
+    if pooled_metrics["incorrect_mean_similarity"] is not None:
+
+        print(
+            f"Mean similarity:"
+            f" {pooled_metrics['incorrect_mean_similarity']:.4f}"
+        )
+
+        print(
+            f"Median similarity:"
+            f" {pooled_metrics['incorrect_median_similarity']:.4f}"
+        )
+
+    if (
+        pooled_metrics[
+            "incorrect_estimated_id_present_in_list_percentage"
+        ]
+        is not None
+    ):
+
+        print(
+            f"Incorrect IDs in list:"
+            f" {pooled_metrics['incorrect_estimated_id_present_in_list_percentage']:.2f}%"
+        )
 ###############################################################
 # PRODUCTION
 ###############################################################
@@ -215,7 +571,7 @@ def test_id_standardisation(input_file, output_dir_data, output_dir_results, df_
 def run_id_std_solo(input_dir, output_dir, id_dir, country_list, model, sample = None, selected_platform = None):
 
     from src.inference import generateInference as gI
-    from src.inference import prompts as p
+    from src.inference.legacy import prompts as p
 
     input_dir = Path(input_dir)
     id_dir = Path(id_dir)
@@ -373,7 +729,7 @@ def parse_json(raw):
 def process_chunk(chunk, refs, agent, platform, model, tmp_file):
     # If agent maps to a GPU, set CUDA_VISIBLE_DEVICES here, before imports.
     from src.inference import generateInference as gI
-    from src.inference import prompts as p
+    from src.inference.legacy import prompts as p
 
     template = p.prompt_std_ids()          # build once, not per row
     results, failures = [], []
@@ -518,7 +874,7 @@ def resolve_disagreements(disagreements_dir, refs, platform, resolved_dir, count
     from tqdm import tqdm
 
     from src.inference import generateInference as gI
-    from src.inference import prompts as p
+    from src.inference.legacy import prompts as p
 
     
     disagreement_dir = Path(disagreements_dir) / platform
