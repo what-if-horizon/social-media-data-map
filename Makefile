@@ -126,19 +126,46 @@ GPUS_PER_NODE := 4
 # gpu_a100/h100 have 18 cores per GPU; 16 leaves headroom
 CPUS_PER_GPU  := 16
 
-# ---- per-platform resources: edit these ----
+# ---- per-job, per-platform resources: edit these ----
+# Variables are <job>_NODES_<platform> and <job>_TIME_<platform>.
 PLATFORMS := facebook instagram tiktok youtube x
 
-NODES_facebook  := 2
-TIME_facebook   := 00:30:00
-NODES_instagram := 2
-TIME_instagram  := 00:30:00
-NODES_tiktok    := 1
-TIME_tiktok     := 00:15:00
-NODES_youtube   := 1
-TIME_youtube    := 00:15:00
-NODES_x         := 1
-TIME_x          := 00:15:00
+# Taxonomy classification (production)
+taxonomy_NODES_facebook  := 2
+taxonomy_TIME_facebook   := 00:30:00
+taxonomy_NODES_instagram := 2
+taxonomy_TIME_instagram  := 00:30:00
+taxonomy_NODES_tiktok    := 1
+taxonomy_TIME_tiktok     := 00:15:00
+taxonomy_NODES_youtube   := 1
+taxonomy_TIME_youtube    := 00:15:00
+taxonomy_NODES_x         := 1
+taxonomy_TIME_x          := 00:15:00
+
+# Path standardisation: every prompt carries the whole reference catalogue, so it is slower per row.
+# TODO: guesses (same nodes, double the time); adjust after the first run.
+path_std_NODES_facebook  := 2
+path_std_TIME_facebook   := 01:00:00
+path_std_NODES_instagram := 2
+path_std_TIME_instagram  := 01:00:00
+path_std_NODES_tiktok    := 1
+path_std_TIME_tiktok     := 00:30:00
+path_std_NODES_youtube   := 1
+path_std_TIME_youtube    := 00:30:00
+path_std_NODES_x         := 1
+path_std_TIME_x          := 00:30:00
+
+# Taxonomy classification of the annotation sample (small)
+taxonomy_eval_NODES_facebook  := 1
+taxonomy_eval_TIME_facebook   := 00:15:00
+taxonomy_eval_NODES_instagram := 1
+taxonomy_eval_TIME_instagram  := 00:15:00
+taxonomy_eval_NODES_tiktok    := 1
+taxonomy_eval_TIME_tiktok     := 00:15:00
+taxonomy_eval_NODES_youtube   := 1
+taxonomy_eval_TIME_youtube    := 00:15:00
+taxonomy_eval_NODES_x         := 1
+taxonomy_eval_TIME_x          := 00:15:00
 
 # ---- jobs: arguments for llm-run; @P@ is replaced by the platform ----
 # Output name placeholders: {platform} {n} {stem} (see src/inference/parallel.py)
@@ -185,7 +212,7 @@ llm-run:
 define LLM_RULE
 .PHONY: $(1)-$(3)
 $(1)-$(3):
-	@$$(MAKE) --no-print-directory llm-run JOB=$(1) SUB=$(3) NODES=$$(NODES_$(3)) TIME=$$(TIME_$(3)) $$(subst @P@,$(3),$$($(2)_ARGS))
+	@$$(MAKE) --no-print-directory llm-run JOB=$(1) SUB=$(3) NODES=$$(or $$(NODES),$$($(2)_NODES_$(3))) TIME=$$(or $$(TIME),$$($(2)_TIME_$(3))) $$(subst @P@,$(3),$$($(2)_ARGS))
 endef
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy,taxonomy,$(p))))
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,path_std,path_std,$(p))))
@@ -195,6 +222,20 @@ $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy-eval,taxonomy_eval,$(p)
 taxonomy: $(addprefix taxonomy-,$(PLATFORMS)) ## Submit taxonomy classification for all platforms
 path_std: $(addprefix path_std-,$(PLATFORMS)) ## Submit path standardisation (1.02) for all platforms
 taxonomy-eval: $(addprefix taxonomy-eval-,$(PLATFORMS)) ## Classify the annotation sample (SPLIT=test|validation)
+
+
+#----------------------------------------------------------------------------------
+# JOB CONTROL
+#----------------------------------------------------------------------------------
+.PHONY: jobs cancel
+jobs: ## Show your queued and running jobs
+	squeue -u $(USER) -o "%.10i %.22j %.9P %.8T %.10M %.10l %.6D %R"
+
+# make cancel                      cancels ALL your jobs
+# make cancel NAME=taxonomy_tiktok cancels only jobs with that name
+cancel: ## Cancel all your jobs (NAME=<job name> for one job only)
+	scancel -u $(USER) $(if $(NAME),--name=$(NAME))
+	@echo "Cancelled $(if $(NAME),jobs named $(NAME),all jobs of $(USER))"
 
 
 .PHONY: test
