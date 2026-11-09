@@ -1,1 +1,13 @@
 logs/*
+notebooks/00_exploration/*
+reports/confidential/*
+# Python
+__pycache__/
+*.pyc
+
+# Local environment / tooling
+.env
+.claude/
+
+# Local experiment leftovers
+data/processed/**/old/
