@@ -1,22 +1,10 @@
-"""Pure helpers for the taxonomy classification (scripts/2.01_rnv_run_data_classification.py).
+"""Pure helpers for the LLM scripts (2.01 taxonomy classification, 1.02 path standardisation).
 
 No heavy imports, so they are easy to unit test (tests/test_taxonomy.py).
 """
 
 import json
-import os
 import re
-
-
-def output_name(platform, filename, data_tax, countries, model_config):
-    """{platform}_{n}_class_ids_{tax}_{countries}_{model}.json
-
-    Must match output_name() in launchers/parallel_llm.sh, which uses the same
-    name to decide which files are already done.
-    """
-    n = os.path.splitext(filename)[0].split("_")[-1]
-    model = re.sub(r"\.yaml$", "", model_config)
-    return f"{platform}_{n}_class_ids_{data_tax}_{countries}_{model}.json"
 
 
 def build_prompt(template, path):
@@ -44,5 +32,21 @@ def parse_prediction(raw, labels):
         preds = obj.get("predictions") if isinstance(obj, dict) else None
         if (isinstance(preds, list) and preds
                 and all(isinstance(x, dict) and x.get("label") in labels for x in preds)):
+            return obj
+    return None
+
+
+def extract_json_dict(raw):
+    """First JSON object found in raw (after any </think>), or None. Also finds objects inside a JSON array."""
+    if not isinstance(raw, str):
+        return None
+    raw = raw.split("</think>", 1)[-1]
+    decoder = json.JSONDecoder()
+    for m in re.finditer(r"\{", raw):
+        try:
+            obj, _ = decoder.raw_decode(raw[m.start():])
+        except Exception:
+            continue
+        if isinstance(obj, dict):
             return obj
     return None

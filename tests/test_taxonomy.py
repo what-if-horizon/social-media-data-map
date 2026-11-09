@@ -4,7 +4,8 @@ import subprocess
 import unittest
 
 from src.inference import prompts
-from src.inference.taxonomy import build_prompt, output_name, parse_prediction, valid_labels
+from src.inference.parallel import output_name
+from src.inference.taxonomy import build_prompt, extract_json_dict, parse_prediction, valid_labels
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE = prompts.kmetty2026()
@@ -40,23 +41,40 @@ class TestParse(unittest.TestCase):
         self.assertIsNone(parse_prediction('{"predictions": []}', LABELS))
 
 
+class TestExtract(unittest.TestCase):
+    def test_object_inside_array(self):
+        raw = 'think </think> [\n{"estimated_path": "a/b"}\n]'
+        self.assertEqual(extract_json_dict(raw), {"estimated_path": "a/b"})
+
+    def test_none(self):
+        self.assertIsNone(extract_json_dict("no json"))
+        self.assertIsNone(extract_json_dict(None))
+
+
 class TestOutputName(unittest.TestCase):
-    ARGS = ("facebook", "facebook_merged_structures_12.csv", "kmetty2026", "ES_NL", "gpt-oss-20b_tp1x4tp.yaml")
-    EXPECTED = "facebook_12_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json"
+    PATTERNS = [
+        "{platform}_{n}_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json",
+        "{platform}_{n}_std_ids_ES_NL_gpt-oss-20b_tp1x4tp.json",
+        "{stem}_out.json",
+    ]
+    FILE = "facebook_merged_structures_12.csv"
 
     def test_python(self):
-        self.assertEqual(output_name(*self.ARGS), self.EXPECTED)
+        self.assertEqual(output_name(self.PATTERNS[0], "facebook", self.FILE),
+                         "facebook_12_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json")
+        self.assertEqual(output_name(self.PATTERNS[2], "facebook", self.FILE), "facebook_merged_structures_12_out.json")
 
     def test_launcher_matches_python(self):
         """Extract output_name() from parallel_llm.sh and run it, so the two cannot drift apart."""
         launcher = os.path.join(ROOT, "launchers", "parallel_llm.sh")
-        script = (
-            'src=$(sed -n "/^output_name() {/,/^}/p" ' + launcher + ');'
-            'PLATFORM=facebook; MODEL_NAME=gpt-oss-20b_tp1x4tp; DATA_TAX=kmetty2026; COUNTRIES=ES_NL;'
-            'eval "$src"; output_name facebook_merged_structures_12.csv'
-        )
-        out = subprocess.run(["bash", "-c", script], capture_output=True, text=True, check=True).stdout.strip()
-        self.assertEqual(out, self.EXPECTED)
+        for pattern in self.PATTERNS:
+            script = (
+                'src=$(sed -n "/^output_name() {/,/^}/p" ' + launcher + ');'
+                'PLATFORM=facebook; OUTPUT_PATTERN="$1";'
+                'eval "$src"; output_name ' + self.FILE
+            )
+            out = subprocess.run(["bash", "-c", script, "_", pattern], capture_output=True, text=True, check=True).stdout.strip()
+            self.assertEqual(out, output_name(pattern, "facebook", self.FILE))
 
 
 if __name__ == "__main__":

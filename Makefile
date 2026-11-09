@@ -8,7 +8,7 @@ export
 .PHONY: help
 help:  ## List the targets
 	@grep -hE '^[a-zA-Z0-9_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-24s %s\n", $$1, $$2}'
-	@echo "  taxonomy-<platform>      Classify one platform (facebook|instagram|tiktok|youtube|x)"
+	@echo "  <job>-<platform>         Per platform: taxonomy-, path_std-, taxonomy-eval- (facebook|instagram|tiktok|youtube|x)"
 
 
 #----------------------------------------------------------------------------------
@@ -78,22 +78,26 @@ annotation_sample: ## Sample for annotation
 
 
 #----------------------------------------------------------------------------------
-# TAXONOMY CLASSIFICATION
+# LLM JOBS (parallel_llm.sh: vLLM servers on N nodes, one job per platform)
 #----------------------------------------------------------------------------------
 #make taxonomy-youtube                                   # one platform with its configured resources
 #make taxonomy                                           # submit all five as separate jobs
-#make taxonomy-run SUB=tiktok NODES=2 TIME=00:45:00      # one-off override
+#make path_std-youtube / make path_std                   # path standardisation (1.02)
+#make taxonomy-eval-youtube SPLIT=test                   # classify the annotation sample (test|validation)
+# Any job can be overridden on the command line, e.g. make taxonomy-youtube NODES=2 TIME=01:00:00
 
 # ---- shared settings ----
-MODULE_PATH  := scripts/2.01_rnv_run_data_classification.py
 MODEL_CONFIG := gpt-oss-20b_tp1x4tp.yaml
-# DATA_TAX must be a key in PROMPTS in the classification script; both go into the output file name
+MODEL_NAME   := $(basename $(MODEL_CONFIG))
+# DATA_TAX must be a key in PROMPTS in scripts/2.01_rnv_run_data_classification.py; both go into output file names
 # (no inline comments after these: make would keep the trailing spaces in the value)
 DATA_TAX     := kmetty2026
 COUNTRIES    := ES_NL
 LAUNCHER     := launchers/parallel_llm.sh
 SOURCE_ROOT  := $(ROOT_DIR)/$(DATA_DIR)/00_ingest/005_merged_structures
-OUTPUT_ROOT  := $(ROOT_DIR)/$(DATA_DIR)/02_path_classification/021_classified_paths
+REF_DIR      := $(ROOT_DIR)/$(DATA_DIR)/00_ingest/004_largest_donation
+ANNOTATION_ROOT := $(ROOT_DIR)/ddd_annotation
+SPLIT        ?= validation
 
 # ---- Snellius settings ----
 # SURF budget account (check with: accinfo)
@@ -119,35 +123,61 @@ TIME_youtube    := 00:15:00
 NODES_x         := 1
 TIME_x          := 00:15:00
 
-.PHONY: taxonomy-run
-taxonomy-run:
+# ---- jobs: arguments for llm-run; @P@ is replaced by the platform ----
+# Output name placeholders: {platform} {n} {stem} (see src/inference/parallel.py)
+taxonomy_ARGS = MODULE_PATH=scripts/2.01_rnv_run_data_classification.py \
+	SOURCE_FOLDER=$(SOURCE_ROOT)/@P@ \
+	OUTPUT_FOLDER=$(ROOT_DIR)/$(DATA_DIR)/02_path_classification/021_classified_paths/@P@ \
+	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
+	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
+
+path_std_ARGS = MODULE_PATH=scripts/1.02_rnv_run_path_standardisation.py \
+	SOURCE_FOLDER=$(SOURCE_ROOT)/@P@ \
+	OUTPUT_FOLDER=$(ROOT_DIR)/$(DATA_DIR)/01_path_standardisation/011_classified_paths/@P@ \
+	OUTPUT_PATTERN='{platform}_{n}_std_ids_$(COUNTRIES)_$(MODEL_NAME).json' \
+	EXTRA_EXPORT=',REF_DIR=$(REF_DIR)'
+
+taxonomy_eval_ARGS = MODULE_PATH=scripts/2.01_rnv_run_data_classification.py \
+	SOURCE_FOLDER=$(ANNOTATION_ROOT)/sample/$(SPLIT)/@P@ \
+	OUTPUT_FOLDER=$(ANNOTATION_ROOT)/inference/02_path_classification/$(SPLIT)/@P@ \
+	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
+	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
+
+# ---- generic submit: needs JOB SUB NODES TIME MODULE_PATH SOURCE_FOLDER OUTPUT_FOLDER OUTPUT_PATTERN ----
+.PHONY: llm-run
+llm-run:
 	@test -n "$(MODEL_DIR)" && test -n "$(ROOT_DIR)" && test -n "$(DATA_DIR)" || (echo "ERROR: MODEL_DIR, ROOT_DIR and DATA_DIR must be set in .env (see .env.example)" && exit 1)
 	@test -n "$(SUB)"   || (echo "ERROR: SUB is required" && exit 1)
 	@test -n "$(NODES)" || (echo "ERROR: NODES is required" && exit 1)
 	@test -n "$(TIME)"  || (echo "ERROR: TIME is required" && exit 1)
-	@echo ">>> [$(SUB)] nodes=$(NODES) time=$(TIME) partition=$(PARTITION)"
-	@echo ">>> Input:  $(SOURCE_ROOT)/$(SUB)"
-	@echo ">>> Output: $(OUTPUT_ROOT)/$(SUB)"
-	@mkdir -p "$(OUTPUT_ROOT)/$(SUB)" logs
+	@echo ">>> [$(JOB) $(SUB)] nodes=$(NODES) time=$(TIME) partition=$(PARTITION)"
+	@echo ">>> Input:  $(SOURCE_FOLDER)"
+	@echo ">>> Output: $(OUTPUT_FOLDER)/$(OUTPUT_PATTERN)"
+	@mkdir -p "$(OUTPUT_FOLDER)" logs
 	sbatch -A $(ACCOUNT) -p $(PARTITION) --time=$(TIME) \
-		--job-name=taxonomy_$(SUB) \
+		--job-name=$(JOB)_$(SUB) \
 		--nodes=$(NODES) --ntasks-per-node=1 \
 		--gpus-per-node=$(GPUS_PER_NODE) \
 		--cpus-per-task=$$(( $(GPUS_PER_NODE) * $(CPUS_PER_GPU) )) \
-		--output="logs/taxonomy_$(SUB)_%j.out" \
-		--error="logs/taxonomy_$(SUB)_%j.err" \
-		--export=ALL,MODEL_DIR=$(MODEL_DIR),MODEL_CONFIG=$(MODEL_CONFIG),SOURCE_FOLDER=$(SOURCE_ROOT)/$(SUB),OUTPUT_FOLDER=$(OUTPUT_ROOT)/$(SUB),MODULE_PATH=$(MODULE_PATH),DATA_TAX=$(DATA_TAX),COUNTRIES=$(COUNTRIES),GPUS_PER_NODE=$(GPUS_PER_NODE) \
+		--output="logs/$(JOB)_$(SUB)_%j.out" \
+		--error="logs/$(JOB)_$(SUB)_%j.err" \
+		--export="ALL,MODEL_DIR=$(MODEL_DIR),MODEL_CONFIG=$(MODEL_CONFIG),SOURCE_FOLDER=$(SOURCE_FOLDER),OUTPUT_FOLDER=$(OUTPUT_FOLDER),MODULE_PATH=$(MODULE_PATH),OUTPUT_PATTERN=$(OUTPUT_PATTERN),GPUS_PER_NODE=$(GPUS_PER_NODE)$(EXTRA_EXPORT)" \
 		$(LAUNCHER)
 
-define TAXONOMY_RULE
-.PHONY: taxonomy-$(1)
-taxonomy-$(1):
-	@$$(MAKE) --no-print-directory taxonomy-run SUB=$(1) NODES=$$(NODES_$(1)) TIME=$$(TIME_$(1))
+# $(1) = target prefix (e.g. taxonomy-eval), $(2) = variable prefix (e.g. taxonomy_eval), $(3) = platform
+define LLM_RULE
+.PHONY: $(1)-$(3)
+$(1)-$(3):
+	@$$(MAKE) --no-print-directory llm-run JOB=$(1) SUB=$(3) NODES=$$(NODES_$(3)) TIME=$$(TIME_$(3)) $$(subst @P@,$(3),$$($(2)_ARGS))
 endef
-$(foreach p,$(PLATFORMS),$(eval $(call TAXONOMY_RULE,$(p))))
+$(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy,taxonomy,$(p))))
+$(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,path_std,path_std,$(p))))
+$(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy-eval,taxonomy_eval,$(p))))
 
-.PHONY: taxonomy
+.PHONY: taxonomy path_std taxonomy-eval
 taxonomy: $(addprefix taxonomy-,$(PLATFORMS)) ## Submit taxonomy classification for all platforms
+path_std: $(addprefix path_std-,$(PLATFORMS)) ## Submit path standardisation (1.02) for all platforms
+taxonomy-eval: $(addprefix taxonomy-eval-,$(PLATFORMS)) ## Classify the annotation sample (SPLIT=test|validation)
 
 
 .PHONY: test

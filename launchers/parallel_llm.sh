@@ -14,8 +14,7 @@ MODEL_YAML="$PWD/configs/$MODEL_CONFIG"
 : "${MODEL_DIR:?MODEL_DIR must be set (see .env)}"
 : "${SOURCE_FOLDER:?SOURCE_FOLDER must be set}"
 : "${OUTPUT_FOLDER:?OUTPUT_FOLDER must be set}"
-: "${DATA_TAX:?DATA_TAX must be set}"
-: "${COUNTRIES:?COUNTRIES must be set}"
+: "${OUTPUT_PATTERN:?OUTPUT_PATTERN must be set, e.g. {platform}_{n}_out.json}"
 : "${MODULE_PATH:?MODULE_PATH must be set (python script each server runs on its files)}"
 
 [[ -f "$MODEL_YAML" ]]  || { echo "Config not found: $MODEL_YAML" >&2; exit 1; }
@@ -52,17 +51,21 @@ export LD_LIBRARY_PATH="$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
 # Delete leftovers from crashed runs
 rm -f "$OUTPUT_FOLDER"/*.partial
 
-# Output name; must match scripts/2.01_rnv_run_data_classification.py
-# {platform}_{n}_class_ids_{tax}_{countries}_{model}.json
+# Output name for an input file; same rule as output_name() in src/inference/parallel.py,
+# which the python scripts use to write the file.
+# Placeholders: {platform} (source folder name), {n} (last "_" part of the stem), {stem}
 PLATFORM=$(basename "$SOURCE_FOLDER")
-MODEL_NAME="${MODEL_CONFIG%.yaml}"
-output_name() {   # $1 = input csv file name
-    local stem="${1%.csv}"
-    echo "${PLATFORM}_${stem##*_}_class_ids_${DATA_TAX}_${COUNTRIES}_${MODEL_NAME}.json"
+output_name() {   # $1 = input file name
+    local stem="${1%.*}"
+    local name="$OUTPUT_PATTERN"
+    name="${name//\{platform\}/$PLATFORM}"
+    name="${name//\{n\}/${stem##*_}}"
+    name="${name//\{stem\}/$stem}"
+    echo "$name"
 }
 
 files=()
-for file_path in "$SOURCE_FOLDER"/*.csv; do
+for file_path in "$SOURCE_FOLDER"/${INPUT_GLOB:-*.csv}; do
     file_name=$(basename "$file_path")
     if [[ ! -f "$OUTPUT_FOLDER/$(output_name "$file_name")" ]]; then
         files+=("$file_name")
