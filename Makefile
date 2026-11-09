@@ -8,7 +8,7 @@ export
 .PHONY: help
 help:  ## List the targets
 	@grep -hE '^[a-zA-Z0-9_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-24s %s\n", $$1, $$2}'
-	@echo "  <job>-<platform>         Per platform: taxonomy-, path_std-, taxonomy-eval- (facebook|instagram|tiktok|youtube|x)"
+	@echo "  <job>-<platform>         Per platform: taxonomy-, path_std-, taxonomy-run- (facebook|instagram|tiktok|youtube|x)"
 	@echo "  CPU jobs: override CPU_TIME, CPU_CPUS, CPU_PARTITION, or LOCAL=1 to run in this shell"
 
 
@@ -102,7 +102,7 @@ annotation_sample: ## Sample for annotation
 #make taxonomy-youtube                                   # one platform with its configured resources
 #make taxonomy                                           # submit all five as separate jobs
 #make path_std-youtube / make path_std                   # path standardisation (1.02)
-#make taxonomy-eval-youtube SPLIT=test                   # run the taxonomy on the annotation sample (test|validation)
+#make taxonomy-run-youtube SPLIT=test                   # run the taxonomy on the annotation sample (test|validation)
 # Any job can be overridden on the command line, e.g. make taxonomy-youtube NODES=2 TIME=01:00:00
 
 # ---- shared settings ----
@@ -168,16 +168,16 @@ path_std_NODES_x         := 1
 path_std_TIME_x          := 00:30:00
 
 # Taxonomy of the annotation sample (small)
-taxonomy_eval_NODES_facebook  := 1
-taxonomy_eval_TIME_facebook   := 00:15:00
-taxonomy_eval_NODES_instagram := 1
-taxonomy_eval_TIME_instagram  := 00:15:00
-taxonomy_eval_NODES_tiktok    := 1
-taxonomy_eval_TIME_tiktok     := 00:15:00
-taxonomy_eval_NODES_youtube   := 1
-taxonomy_eval_TIME_youtube    := 00:15:00
-taxonomy_eval_NODES_x         := 1
-taxonomy_eval_TIME_x          := 00:15:00
+taxonomy_run_NODES_facebook  := 1
+taxonomy_run_TIME_facebook   := 00:15:00
+taxonomy_run_NODES_instagram := 1
+taxonomy_run_TIME_instagram  := 00:15:00
+taxonomy_run_NODES_tiktok    := 1
+taxonomy_run_TIME_tiktok     := 00:15:00
+taxonomy_run_NODES_youtube   := 1
+taxonomy_run_TIME_youtube    := 00:15:00
+taxonomy_run_NODES_x         := 1
+taxonomy_run_TIME_x          := 00:15:00
 
 # LLM judge (small: the smoke sample is 25 paths, test and validation are 100 rows per platform)
 judge_NODES_facebook  := 1
@@ -205,7 +205,7 @@ path_std_ARGS = MODULE_PATH=scripts/1_path_standardisation/1.02_rnv_run_path_sta
 	OUTPUT_PATTERN='{platform}_{n}_std_ids_$(COUNTRIES)_$(MODEL_NAME).json' \
 	EXTRA_EXPORT=',REF_DIR=$(REF_DIR)'
 
-taxonomy_eval_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
+taxonomy_run_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
 	SOURCE_FOLDER=$(ANNOTATION_ROOT)/sample/$(SPLIT)/@P@ \
 	OUTPUT_FOLDER=$(INFERENCE_DIR)/@P@ \
 	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
@@ -222,7 +222,7 @@ judge_ARGS = MODULE_PATH=scripts/2_taxonomy/2.02_rnv_run_judge.py \
 # the output still goes to <platform>/ sub-folders). Starting the vLLM servers takes longer than the work.
 smoke_NODES := 1
 smoke_TIME  := 00:15:00
-taxonomy_eval_smoke_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
+taxonomy_run_smoke_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
 	INPUT_GLOB='*/*.csv' \
 	SOURCE_FOLDER=$(SAMPLE_ROOT)/smoke \
 	OUTPUT_FOLDER=$(INFERENCE_DIR) \
@@ -257,7 +257,7 @@ llm-run:
 		--export="ALL,MODEL_DIR=$(MODEL_DIR),MODEL_CONFIG=$(MODEL_CONFIG),SOURCE_FOLDER=$(SOURCE_FOLDER),OUTPUT_FOLDER=$(OUTPUT_FOLDER),MODULE_PATH=$(MODULE_PATH),OUTPUT_PATTERN=$(OUTPUT_PATTERN),INPUT_GLOB=$(INPUT_GLOB),GPUS_PER_NODE=$(GPUS_PER_NODE)$(EXTRA_EXPORT)" \
 		$(LAUNCHER)
 
-# $(1) = target prefix (e.g. taxonomy-eval), $(2) = variable prefix (e.g. taxonomy_eval), $(3) = platform
+# $(1) = target prefix (e.g. taxonomy-run), $(2) = variable prefix (e.g. taxonomy_run), $(3) = platform
 define LLM_RULE
 .PHONY: $(1)-$(3)
 $(1)-$(3):
@@ -265,18 +265,18 @@ $(1)-$(3):
 endef
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy,taxonomy,$(p))))
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,path_std,path_std,$(p))))
-$(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy-eval,taxonomy_eval,$(p))))
+$(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy-run,taxonomy_run,$(p))))
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,judge,judge,$(p))))
 
-.PHONY: taxonomy path_std taxonomy-eval
+.PHONY: taxonomy path_std taxonomy-run
 taxonomy: $(addprefix taxonomy-,$(PLATFORMS)) ## Submit the taxonomy for all platforms
 path_std: $(addprefix path_std-,$(PLATFORMS)) ## Submit path standardisation (1.02) for all platforms
 ifeq ($(SPLIT),smoke)
 # one job for all platforms
-taxonomy-eval:
-	@$(MAKE) --no-print-directory llm-run JOB=taxonomy-eval SUB=smoke NODES=$(or $(NODES),$(smoke_NODES)) TIME=$(or $(TIME),$(smoke_TIME)) $(taxonomy_eval_smoke_ARGS)
+taxonomy-run:
+	@$(MAKE) --no-print-directory llm-run JOB=taxonomy-run SUB=smoke NODES=$(or $(NODES),$(smoke_NODES)) TIME=$(or $(TIME),$(smoke_TIME)) $(taxonomy_run_smoke_ARGS)
 else
-taxonomy-eval: $(addprefix taxonomy-eval-,$(PLATFORMS)) ## Run the taxonomy on a sample (SPLIT=smoke|test|validation; smoke = one job)
+taxonomy-run: $(addprefix taxonomy-run-,$(PLATFORMS)) ## Run the taxonomy on a sample (SPLIT=smoke|test|validation; smoke = one job)
 endif
 
 .PHONY: judge judge-check-model
@@ -310,7 +310,7 @@ cancel: ## Cancel all your jobs (NAME=<job name> for one job only)
 # 1. make smoke-select                       2.00: 5 dissimilar paths per platform (needs EMBEDDING_MODEL in .env)
 #    make sample-check                       pytest: samples from the merged structures, disjoint; smoke dissimilar
 #    make taxonomy-sample                    2.03: test (20) and validation (80) sets + annotation sheets, without smoke paths
-# 2. make taxonomy-eval SPLIT=smoke          run the taxonomy (GPU; smoke is one job for all platforms)
+# 2. make taxonomy-run SPLIT=smoke          run the taxonomy (GPU; smoke is one job for all platforms)
 #    make inference-check SPLIT=smoke        pytest on the output; on failure the judge is submitted
 #    make report SPLIT=smoke                 HTML report: pytest, judge, (human evaluation)
 # 3. repeat 2 with SPLIT=test, then SPLIT=validation; once the human annotations are in:

@@ -22,7 +22,7 @@ Run everything through the Makefile; `make help` lists the targets. Settings com
 make smoke-select                     # 1. 5 dissimilar paths per platform
 make taxonomy-sample                  # 2. test + validation sets and annotation sheets
 make sample-check                     #    pytest on the three samples
-make taxonomy-eval SPLIT=smoke        # 3. run the taxonomy on the smoke sample (one GPU job; make jobs to follow it)
+make taxonomy-run SPLIT=smoke        # 3. run the taxonomy on the smoke sample (one GPU job; make jobs to follow it)
 make inference-check SPLIT=smoke      # 4. pytest on the output; submits the judge if it fails
 make report SPLIT=smoke               # 5. open results/02_taxonomy/reports/smoke_report.html
 ```
@@ -35,7 +35,7 @@ Then repeat 3-5 with `SPLIT=test` and `SPLIT=validation`; once the annotators ha
 ```
 smoke-select ──► taxonomy-sample ──► sample-check
                                           │
-taxonomy-eval SPLIT=smoke|test|validation ◄┘
+taxonomy-run SPLIT=smoke|test|validation ◄┘
         │
         ▼
 inference-check ── fails ──► judge (other model)
@@ -93,9 +93,9 @@ label that is not in the taxonomy is reported under "unknown human labels" inste
 ### 3. Run the taxonomy
 
 ```bash
-make taxonomy-eval SPLIT=smoke            # all five platforms in ONE GPU job (25 paths)
-make taxonomy-eval SPLIT=test             # one GPU job per platform
-make taxonomy-eval-youtube SPLIT=test     # one platform
+make taxonomy-run SPLIT=smoke            # all five platforms in ONE GPU job (25 paths)
+make taxonomy-run SPLIT=test             # one GPU job per platform
+make taxonomy-run-youtube SPLIT=test     # one platform
 make taxonomy                             # production: all merged structures, no SPLIT
 ```
 
@@ -115,7 +115,7 @@ Files that already exist in the output folder are skipped, so a job can be resub
 `smoke_TIME` in the Makefile) instead of five: starting the vLLM servers takes longer than the work. Its output still
 lands in one sub-folder per platform. The same goes for `make judge SPLIT=smoke`.
 Nodes and time per platform are in the Makefile (`taxonomy_NODES_*`, `taxonomy_TIME_*`, and the same for
-`taxonomy_eval_`); override them with `make taxonomy-eval-x SPLIT=test NODES=2 TIME=00:30:00`.
+`taxonomy_run_`); override them with `make taxonomy-run-x SPLIT=test NODES=2 TIME=00:30:00`.
 
 ### 4. Check the output, and the judge
 
@@ -161,7 +161,7 @@ confusion matrix. Parts that have not been run yet are marked as such, so the re
 | Script | Target | What it does |
 |---|---|---|
 | `2.00_rnv_select_smoke_sample.py` | `smoke-select` | Smoke sample (CPU) |
-| `2.01_rnv_run_taxonomy.py` | `taxonomy`, `taxonomy-<platform>`, `taxonomy-eval`, `taxonomy-eval-<platform>` | Taxonomy labelling (GPU, parallel launcher) |
+| `2.01_rnv_run_taxonomy.py` | `taxonomy`, `taxonomy-<platform>`, `taxonomy-run`, `taxonomy-run-<platform>` | Taxonomy labelling (GPU, parallel launcher) |
 | `2.02_rnv_run_judge.py` | `judge`, `judge-<platform>` | LLM judge (GPU, parallel launcher) |
 | `2.03_rnv_sample_test_validation.py` | `taxonomy-sample` | Test and validation sets + annotation sheets, from the merged structures (CPU) |
 | `2.04_rnv_test_validate_taxonomy.py` | `taxonomy-accuracy` | Accuracy against annotations for the older **verduyn2020** scheme (CPU) |

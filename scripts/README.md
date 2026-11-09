@@ -26,7 +26,7 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 | `1_path_standardisation/1.01.01` validate_test_id_standardisation | `id_std_val` | CPU | Validate the id-standardisation test run |
 | `1_path_standardisation/1.01.02` visualisation_validation_id_standardisation | `id_std_viz` | CPU | Plots for the above |
 | `2_taxonomy/2.00` select_smoke_sample | `smoke-select` | CPU | 5 mutually dissimilar paths per platform (embeddings), not in the annotation sample |
-| `2_taxonomy/2.01` run_taxonomy | `taxonomy-<platform>`, `taxonomy`, `taxonomy-eval-<platform>` | GPU (parallel) | **Taxonomy** (production, and smoke/test/validation via `SPLIT=`) |
+| `2_taxonomy/2.01` run_taxonomy | `taxonomy-<platform>`, `taxonomy`, `taxonomy-run-<platform>` | GPU (parallel) | **Taxonomy** (production, and smoke/test/validation via `SPLIT=`) |
 | `2_taxonomy/2.02` run_judge | `judge-<platform>`, `judge` | GPU (parallel) | LLM judge (a different model) on the taxonomy outputs |
 | `2_taxonomy/2.03` sample_test_validation | `taxonomy-sample` | CPU | Test and validation sets (and annotation sheets) from the merged structures, without the smoke paths |
 | `2_taxonomy/2.04` test_validate_taxonomy | `taxonomy-accuracy` | CPU | Accuracy against annotations (verduyn2020) |
@@ -46,7 +46,7 @@ Smoke, then test, then validation. `SPLIT=smoke|test|validation` selects the pha
    `SMOKE_MAX_SIM` (0.8). `make sample-check` (pytest) verifies this: 5 unique paths, similarity below the
    threshold, and that smoke, test and validation come from the merged structures and share no path.
 2. **Test and validation sets.** `make taxonomy-sample` (2.03) samples both from the merged structures, leaving the smoke paths out, and writes an annotation sheet for each.
-3. **Run the taxonomy.** `make taxonomy-eval SPLIT=smoke` (GPU).
+3. **Run the taxonomy.** `make taxonomy-run SPLIT=smoke` (GPU).
 4. **Check.** `make inference-check SPLIT=smoke` runs `tests/test_inference_output.py` (pytest) on the output: three
    distinct taxonomy labels, confidences summing to 100 in descending order, a rationale, and one record per input
    path. If it fails, the LLM judge (`MODEL_CONFIG_JUDGE`, a different model than the taxonomy model) is submitted on
