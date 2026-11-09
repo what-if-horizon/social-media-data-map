@@ -12,8 +12,8 @@ Writes, per platform:
 
 tests/test_smoke_sample.py checks these files (disjoint from sample/full, dissimilar).
 
-Environment (from .env): ROOT_DIR, DATA_DIR, EMBEDDING_MODEL (path or name of a sentence-transformers model),
-optional ANNOTATION_ROOT, SMOKE_K (5), SMOKE_MAX_SIM (0.8), SMOKE_POOL (2000), SEED (42).
+Settings (src/config.py, from .env): ROOT_DIR, DATA_DIR, EMBEDDING_MODEL (path or name of a sentence-transformers
+model); optional ANNOTATION_ROOT, SMOKE_K (5), SMOKE_MAX_SIM (0.8), SMOKE_POOL (2000), SEED (42).
 """
 
 import glob
@@ -23,17 +23,16 @@ import os
 import pandas as pd
 
 # PYTHONPATH is the repo root (set by the launcher)
+from src import config
 from src.inference.similarity import select_diverse
 
-PLATFORMS = ["facebook", "instagram", "tiktok", "youtube", "x"]
-ROOT_DIR = os.environ["ROOT_DIR"]
-DATA_DIR = os.environ["DATA_DIR"]
-ANNOTATION_ROOT = os.environ.get("ANNOTATION_ROOT", os.path.join(ROOT_DIR, "ddd_annotation"))
-MERGED_ROOT = os.path.join(ROOT_DIR, DATA_DIR, "00_ingest", "005_merged_structures")
-K = int(os.environ.get("SMOKE_K", 5))
-MAX_SIM = float(os.environ.get("SMOKE_MAX_SIM", 0.8))
-POOL = int(os.environ.get("SMOKE_POOL", 2000))
-SEED = int(os.environ.get("SEED", 42))
+PLATFORMS = config.PLATFORMS
+ANNOTATION_ROOT = config.ANNOTATION_ROOT
+MERGED_ROOT = config.MERGED_STRUCTURES_DIR
+K = config.SMOKE_K
+MAX_SIM = config.SMOKE_MAX_SIM
+POOL = config.SMOKE_POOL
+SEED = config.SEED
 
 
 def read_paths(pattern):
@@ -46,7 +45,8 @@ def read_paths(pattern):
 def main():
     from sentence_transformers import SentenceTransformer   # heavy, only needed here
 
-    model_name = os.environ["EMBEDDING_MODEL"]
+    config.require("ROOT_DIR", "DATA_DIR")
+    model_name = config.require("EMBEDDING_MODEL")
     model = SentenceTransformer(model_name)
 
     for platform in PLATFORMS:

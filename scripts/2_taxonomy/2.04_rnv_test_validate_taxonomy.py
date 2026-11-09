@@ -1,9 +1,11 @@
 import os
-DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 from pathlib import Path
 import json
 
 import pandas as pd
+
+# PYTHONPATH is the repo root
+from src import config
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -632,44 +634,13 @@ def evaluate_verduyn(json_dir, csv_dir, output_file):
 
 def main():
 
-    evaluate_verduyn(
-        json_dir=(
-            DATA_ROOT + "/"
-            "ddd_annotation/inference/" +
-            os.environ.get("INFERENCE_SUBDIR", "02_path_classification") + "/test"
-        ),
+    config.require("ROOT_DIR")
 
-        csv_dir=(
-            DATA_ROOT + "/"
-            "ddd_annotation/annotation/test"
-        ),
-
-        output_file=(
-            "/home/nvisscher/GIT/"
-            "social-media-data-map/results/"
-            "02_taxonomy/"
-            "verduyn2020_accuracy_test.json"
-        )
-    )
-
-    evaluate_verduyn(
-            json_dir=(
-                DATA_ROOT + "/"
-                "ddd_annotation/inference/" +
-                os.environ.get("INFERENCE_SUBDIR", "02_path_classification") + "/validation"
-            ),
-    
-            csv_dir=(
-                DATA_ROOT + "/"
-                "ddd_annotation/annotation/validation"
-            ),
-    
-            output_file=(
-                "/home/nvisscher/GIT/"
-                "social-media-data-map/results/"
-                "02_taxonomy/"
-                "verduyn2020_accuracy_validation.json"
-            )
+    for split in ("test", "validation"):
+        evaluate_verduyn(
+            json_dir=config.inference_dir(split),
+            csv_dir=config.annotation_dir(split),
+            output_file=os.path.join(config.RESULTS_DIR, f"verduyn2020_accuracy_{split}.json"),
         )
 
 

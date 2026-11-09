@@ -4,15 +4,18 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
+# PYTHONPATH is the repo root
+from src import config
+
 
 # ============================================================
 # SETTINGS
 # ============================================================
 
-INPUT_FILE = Path("/home/nvisscher/GIT/social-media-data-map/results/02_taxonomy/verduyn2020_accuracy_validation.json")
+INPUT_FILE = Path(config.RESULTS_DIR) / "verduyn2020_accuracy_validation.json"
 
-OUTPUT_DIR = Path("/home/nvisscher/GIT/social-media-data-map/results/02_taxonomy/verduyn_visualisations")
-OUTPUT_DIR.mkdir(exist_ok=True)
+OUTPUT_DIR = Path(config.RESULTS_DIR) / "verduyn_visualisations"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ============================================================

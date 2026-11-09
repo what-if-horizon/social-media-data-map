@@ -145,6 +145,8 @@ Shared code is in `src/inference/`: `taxonomy.py` (prompt filling, label list, o
 
 ## Settings
 
+All scripts read their settings from `src/config.py`, which loads `.env` from the repository root. Order of precedence: environment variables (including what `make` exports, so a Makefile value or `make ... VAR=x` wins) over `.env` over the defaults in `config.py`. The scripts therefore also work when started directly, for example `python scripts/2_taxonomy/2.07_rnv_build_report.py --split smoke`, as long as `.env` is filled in. A missing required setting stops the script with a message naming it.
+
 | Variable | Where | Meaning |
 |---|---|---|
 | `ROOT_DIR`, `DATA_DIR`, `MODEL_DIR` | `.env` | Data root, processed-data folder, models |

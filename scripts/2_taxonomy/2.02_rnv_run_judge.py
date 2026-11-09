@@ -15,6 +15,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 # PYTHONPATH is the repo root (set by the launcher)
+from src import config
 from src.inference import parallel
 from src.inference import prompts as p
 from src.inference import utils as u
@@ -25,7 +26,7 @@ MAX_RETRIES = 3
 CONCURRENCY = 100
 
 # The taxonomy prompt the outputs were produced with (its topology is what the judge applies)
-DATA_TAX = os.environ.get("DATA_TAX", "kmetty2026")
+DATA_TAX = config.DATA_TAX
 PROMPTS = {"kmetty2026": p.kmetty2026}
 if DATA_TAX not in PROMPTS:
     raise SystemExit(f"Unknown DATA_TAX '{DATA_TAX}', expected one of {list(PROMPTS)}")

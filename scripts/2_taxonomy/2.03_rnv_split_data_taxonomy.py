@@ -1,8 +1,10 @@
 import os
-DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 from pathlib import Path
 import pandas as pd
 from sklearn.model_selection import train_test_split
+
+# PYTHONPATH is the repo root
+from src import config
 
 
 def create_splits(
@@ -230,10 +232,11 @@ def create_splits(
 
 
 def main():
+    config.require("ROOT_DIR")
     create_splits(
-    annotation_dir=os.path.join(DATA_ROOT, "ddd_annotation/annotation/full"),
-    sample_dir=os.path.join(DATA_ROOT, "ddd_annotation/sample/full"),
-    output_dir=os.path.join(DATA_ROOT, "ddd_annotation"),
+    annotation_dir=config.annotation_dir("full"),
+    sample_dir=config.sample_dir("full"),
+    output_dir=config.ANNOTATION_ROOT,
     test_size=0.20,
     random_state=42,)
 

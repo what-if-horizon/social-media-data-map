@@ -18,10 +18,10 @@ import json
 import os
 
 # PYTHONPATH is the repo root (set by the launcher)
+from src import config
 from src.inference.report import build_report
 
-PLATFORMS = ["facebook", "instagram", "tiktok", "youtube", "x"]
-INFERENCE_SUBDIR = os.environ.get("INFERENCE_SUBDIR", "02_path_classification")
+PLATFORMS = config.PLATFORMS
 
 
 def load_json(path):
@@ -48,17 +48,17 @@ def load_per_platform(root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--split", required=True, choices=["smoke", "test", "validation"])
-    parser.add_argument("--report-dir", default="results/02_taxonomy/reports")
+    parser.add_argument("--report-dir", default=config.REPORT_DIR)
     args = parser.parse_args()
 
-    annotation_root = os.environ.get("ANNOTATION_ROOT", os.path.join(os.environ["ROOT_DIR"], "ddd_annotation"))
-    inference = load_per_platform(os.path.join(annotation_root, "inference", INFERENCE_SUBDIR, args.split))
-    judge = load_per_platform(os.path.join(annotation_root, "inference", "03_judge", args.split))
+    config.require("ANNOTATION_ROOT")
+    inference = load_per_platform(config.inference_dir(args.split))
+    judge = load_per_platform(config.judge_dir(args.split))
     pytest_result = load_json(os.path.join(args.report_dir, f"{args.split}_pytest.json"))
     human = load_json(os.path.join(args.report_dir, f"{args.split}_human_eval.json"))
 
-    models = {"taxonomy model": os.environ.get("MODEL_CONFIG", "").replace(".yaml", ""),
-              "judge": os.environ.get("MODEL_CONFIG_JUDGE", "").replace(".yaml", "")}
+    models = {"taxonomy model": config.MODEL_CONFIG.replace(".yaml", ""),
+              "judge": config.MODEL_CONFIG_JUDGE.replace(".yaml", "")}
     html = build_report(args.split, pytest_result, inference, judge, human,
                         {k: v for k, v in models.items() if v})
 

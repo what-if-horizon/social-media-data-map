@@ -24,6 +24,7 @@ import pandas as pd
 # PYTHONPATH is the repo root (set by the launcher)
 from src.inference import prompts as p
 from src.inference import utils as u
+from src import config
 from src.inference import parallel
 from src.inference.taxonomy import build_prompt, parse_prediction, valid_labels
 
@@ -31,7 +32,7 @@ COL_PATH = "final_path"
 MAX_RETRIES = 3
 
 # Which prompt to use; the output file name comes from OUTPUT_PATTERN (see src/inference/parallel.py)
-DATA_TAX = os.environ["DATA_TAX"]
+DATA_TAX = config.DATA_TAX
 
 
 CONCURRENCY = 100

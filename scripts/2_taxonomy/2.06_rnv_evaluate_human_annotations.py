@@ -18,33 +18,31 @@ import os
 import pandas as pd
 
 # PYTHONPATH is the repo root (set by the launcher)
+from src import config
 from src.inference import prompts as p
 from src.inference.evaluation import evaluate
 from src.inference.taxonomy import valid_labels
 
-PLATFORMS = ["facebook", "instagram", "tiktok", "youtube", "x"]
-INFERENCE_SUBDIR = os.environ.get("INFERENCE_SUBDIR", "02_path_classification")
+PLATFORMS = config.PLATFORMS
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--split", required=True, choices=["test", "validation"])
-    parser.add_argument("--label-col", default=os.environ.get("LABEL_COL", "label"),
+    parser.add_argument("--label-col", default=config.LABEL_COL,
                         help="Column with the human label in the annotation files (env LABEL_COL, default 'label')")
     parser.add_argument("--annotation-pattern", default="*.xlsx", help="Annotation files per platform folder")
-    parser.add_argument("--report-dir", default="results/02_taxonomy/reports")
+    parser.add_argument("--report-dir", default=config.REPORT_DIR)
     args = parser.parse_args()
 
-    annotation_root = os.environ.get("ANNOTATION_ROOT", os.path.join(os.environ["ROOT_DIR"], "ddd_annotation"))
+    config.require("ANNOTATION_ROOT")
     labels = valid_labels(p.kmetty2026())
 
     result = {"split": args.split, "label_col": args.label_col, "platforms": {}}
     all_records, all_gold = [], {}
     for platform in PLATFORMS:
-        inf_files = sorted(glob.glob(os.path.join(
-            annotation_root, "inference", INFERENCE_SUBDIR, args.split, platform, "*.json")))
-        ann_files = sorted(glob.glob(os.path.join(
-            annotation_root, "annotation", args.split, platform, args.annotation_pattern)))
+        inf_files = sorted(glob.glob(os.path.join(config.inference_dir(args.split), platform, "*.json")))
+        ann_files = sorted(glob.glob(os.path.join(config.annotation_dir(args.split), platform, args.annotation_pattern)))
         if not inf_files or not ann_files:
             print(f"{platform}: skipped (inference files: {len(inf_files)}, annotation files: {len(ann_files)})")
             continue
