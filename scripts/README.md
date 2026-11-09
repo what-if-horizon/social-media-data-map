@@ -1,33 +1,53 @@
 # Scripts
 
-Numbering: `<stage>.<step>[.<substep>]_rnv_<name>.py`. Run them through the Makefile (`make help`).
-Data paths come from `ROOT_DIR` in `.env` (see `.env.example`).
+Run everything through the Makefile (`make help`). Data paths come from `ROOT_DIR` in `.env` (see `.env.example`).
+File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 
-| Script | Make target | What it does |
-|---|---|---|
-| 0.00 ingest_dd_structures | `ingest_dd` | Ingest donated data structures |
-| 0.01 get_unique_paths | `get_unique_paths` | Unique paths per file |
-| 0.02 find_largest_donation | `find_largest_donation` | Largest donation per participant |
-| 0.03 merge_structures | `merge_csv` | Merge structures into `005_merged_structures` |
-| 0.04 sample_for_inference | `sample` | Sample for inference |
-| 0.05 sample_annotation | `annotation_sample` | Sample for annotation |
-| 1.01 test_id_standardisation | (legacy launcher, no target) | Id standardisation test run |
-| 1.01.01 validate_test_id_standardisation | `id_std_val` | Validate the above |
-| 1.01.02 visualisation_validation_id_standardisation | `id_std_viz` | Plots for the above |
-| **1.02 run_path_standardisation** | `path_std-<platform>`, `path_std` | **Path standardisation** (`launchers/parallel_llm.sh`) |
-| 1.02.01 run_path_standardisation_seq | (none) | Sequential variant, superseded by 1.02; can be deleted |
-| 1.03 process_disagreements_path_std | (legacy launcher, no target) | Resolve disagreements |
-| **2.01 run_data_classification** | `taxonomy-<platform>`, `taxonomy` | **Production taxonomy classification** (`launchers/parallel_llm.sh`) |
-| 2.01.01 run_test_data_classification | (none) | Superseded by `taxonomy-eval-<platform> SPLIT=test|validation` (runs 2.01 on the annotation sample); can be deleted |
-| 2.02 test_data_classification_LLM | (no target) | LLM judge on classification output |
-| 2.03 split_data_data_classification | `data_class_split` | Split into test/validation |
-| 2.04 test_validate_data_classification | `data_class_test_val` | Accuracy against annotations |
-| 2.05 visualisation_results_data_classification | `data_class_viz` | Plots for the above |
+## Layout
 
-Scripts on the parallel launcher (2.01, 1.02) are all built on `src/inference/parallel.py`: the Makefile sets
-`OUTPUT_PATTERN` (placeholders `{platform}`, `{n}`, `{stem}`), the launcher uses it to find pending files and the script
-uses it to name its output. Not yet ported (still need an interactive server via `make start_servers`):
-1.01 (id standardisation test), 1.03 (disagreement resolution) and 2.02 (LLM judge); 1.01 and 2.02 are also out of
-date with the code they call.
+| Folder | Stage |
+|---|---|
+| `0_ingest/` | Ingest, unique paths, merge, sampling |
+| `1_path_standardisation/` | Map paths to the reference catalogue, validate and plot |
+| `2_classification/` | Taxonomy classification, split, validate, plot |
+| `legacy/` | Not ported to the current launchers, and partly out of date; see below |
+
+## Scripts
+
+| Script | Make target | Launcher | What it does |
+|---|---|---|---|
+| `0_ingest/0.00` ingest_dd_structures | `ingest_dd` | CPU | Ingest donated data structures |
+| `0_ingest/0.01` get_unique_paths | `get_unique_paths` | CPU | Unique paths per file |
+| `0_ingest/0.02` find_largest_donation | `find_largest_donation` | CPU | Largest donation per participant |
+| `0_ingest/0.03` merge_structures | `merge_csv` | CPU | Merge into `005_merged_structures` |
+| `0_ingest/0.04` sample_for_inference | `sample` | CPU | Sample for inference |
+| `0_ingest/0.05` sample_annotation | `annotation_sample` | CPU | Sample for annotation |
+| `1_path_standardisation/1.02` run_path_standardisation | `path_std-<platform>`, `path_std` | GPU (parallel) | **Path standardisation** |
+| `1_path_standardisation/1.01.01` validate_test_id_standardisation | `id_std_val` | CPU | Validate the id-standardisation test run |
+| `1_path_standardisation/1.01.02` visualisation_validation_id_standardisation | `id_std_viz` | CPU | Plots for the above |
+| `2_classification/2.01` run_data_classification | `taxonomy-<platform>`, `taxonomy`, `taxonomy-eval-<platform>` | GPU (parallel) | **Taxonomy classification** (production and annotation sample) |
+| `2_classification/2.03` split_data_data_classification | `data_class_split` | CPU | Split into test/validation |
+| `2_classification/2.04` test_validate_data_classification | `data_class_test_val` | CPU | Accuracy against annotations |
+| `2_classification/2.05` visualisation_results_data_classification | `data_class_viz` | CPU | Plots for the above |
+
+`src/ingest/*_json_to_csv.py` (`flatten_dd`, `flatten_dd_<fb|ig|tt|x|yt>`) also run on the CPU launcher.
+
+## Launchers
+
+- **GPU, `launchers/parallel_llm.sh` + `parallel_worker.sh`:** vLLM servers on N nodes, one worker process per
+  server. Scripts here (2.01, 1.02) are built on `src/inference/parallel.py`: the Makefile sets `OUTPUT_PATTERN`
+  (placeholders `{platform}`, `{n}`, `{stem}`), the launcher uses it to find pending files and the script uses it
+  to name its output. To port a script, copy the structure of 1.02: a `make_process_file(agent)` that returns
+  `process_file(source_file, output_file)`, and `parallel.main(...)` in `__main__`.
+- **CPU, `launchers/cpu_job.sh`:** `make <target>` submits it with sbatch. Override resources per run with
+  `CPU_TIME`, `CPU_CPUS`, `CPU_PARTITION`, or use `LOCAL=1` to run in the current shell on an interactive node.
+
+## legacy/
+
+Still uses the old sequential or interactive-server workflow, and no longer matches the code it calls:
+
+- `1.01` test_id_standardisation: works per platform inside one CSV; its outputs feed 1.01.01 and 1.01.02.
+- `1.03` process_disagreements_path_std: calls an undefined `non_class_dir`.
+- `2.02` test_data_classification_LLM: hard-coded BSC path and wrong arguments for `test_classification`.
 
 Tests: `make test`.

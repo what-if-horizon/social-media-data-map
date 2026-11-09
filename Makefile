@@ -9,6 +9,25 @@ export
 help:  ## List the targets
 	@grep -hE '^[a-zA-Z0-9_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-24s %s\n", $$1, $$2}'
 	@echo "  <job>-<platform>         Per platform: taxonomy-, path_std-, taxonomy-eval- (facebook|instagram|tiktok|youtube|x)"
+	@echo "  CPU jobs: override CPU_TIME, CPU_CPUS, CPU_PARTITION, or LOCAL=1 to run in this shell"
+
+
+#----------------------------------------------------------------------------------
+# SNELLIUS SETTINGS AND CPU JOBS
+#----------------------------------------------------------------------------------
+# SURF budget account (check with: accinfo)
+ACCOUNT       := vusei17670
+
+# CPU jobs (no GPU): launchers/cpu_job.sh, submitted with sbatch.
+#   make get_unique_paths                              # submit with the defaults below
+#   make merge_csv CPU_TIME=02:00:00 CPU_CPUS=32       # per-run override
+#   make sample LOCAL=1                                # no sbatch: run in this shell (interactive node)
+# Leave CPU_PARTITION empty for the default CPU partition.
+CPU_TIME      ?= 01:00:00
+CPU_CPUS      ?= 16
+CPU_PARTITION ?=
+LOCAL         ?=
+CPU = @mkdir -p logs && $(if $(LOCAL),bash launchers/cpu_job.sh $(1),sbatch -A $(ACCOUNT) $(if $(CPU_PARTITION),-p $(CPU_PARTITION)) --time=$(CPU_TIME) --cpus-per-task=$(CPU_CPUS) --job-name=$(basename $(notdir $(1))) --output=logs/%x_%j.out --error=logs/%x_%j.err launchers/cpu_job.sh $(1))
 
 
 #----------------------------------------------------------------------------------
@@ -36,45 +55,45 @@ start_servers: ## Start vLLM servers for development (MODEL=...)
 # DATA INGEST
 #----------------------------------------------------------------------------------
 ingest_dd: ## Ingest data donation structures
-	bash launchers/run_basic_snellius.sh scripts/0.00_rnv_ingest_dd_structures.py
+	$(call CPU,scripts/0_ingest/0.00_rnv_ingest_dd_structures.py)
 
 flatten_dd_fb:
-	bash launchers/run_basic_snellius.sh src/ingest/FB_json_to_csv.py
+	$(call CPU,src/ingest/FB_json_to_csv.py)
 
 flatten_dd_ig:
-	bash launchers/run_basic_snellius.sh src/ingest/IG_json_to_csv.py
+	$(call CPU,src/ingest/IG_json_to_csv.py)
 
 flatten_dd_tt:
-	bash launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
+	$(call CPU,src/ingest/TT_json_to_csv.py)
 
 flatten_dd_x:
-	bash launchers/run_basic_snellius.sh src/ingest/X_json_to_csv.py
+	$(call CPU,src/ingest/X_json_to_csv.py)
 
 flatten_dd_yt:
-	bash launchers/run_basic_snellius.sh src/ingest/YT_json_to_csv.py
+	$(call CPU,src/ingest/YT_json_to_csv.py)
 
 flatten_dd: ## Flatten all platform JSON exports to CSV
-	bash launchers/run_basic_snellius.sh src/ingest/FB_json_to_csv.py
-	bash launchers/run_basic_snellius.sh src/ingest/IG_json_to_csv.py
-	bash launchers/run_basic_snellius.sh src/ingest/TT_json_to_csv.py
-	bash launchers/run_basic_snellius.sh src/ingest/X_json_to_csv.py
-	bash launchers/run_basic_snellius.sh src/ingest/YT_json_to_csv.py
+	$(call CPU,src/ingest/FB_json_to_csv.py)
+	$(call CPU,src/ingest/IG_json_to_csv.py)
+	$(call CPU,src/ingest/TT_json_to_csv.py)
+	$(call CPU,src/ingest/X_json_to_csv.py)
+	$(call CPU,src/ingest/YT_json_to_csv.py)
 
 
 get_unique_paths: ## Get unique paths
-	bash launchers/run_basic_snellius.sh scripts/0.01_rnv_get_unique_paths.py
+	$(call CPU,scripts/0_ingest/0.01_rnv_get_unique_paths.py)
 
 find_largest_donation: ## Find the largest donation
-	bash launchers/run_basic_snellius.sh scripts/0.02_rnv_find_largest_donation.py
+	$(call CPU,scripts/0_ingest/0.02_rnv_find_largest_donation.py)
 
 merge_csv: ## Merge structures
-	bash launchers/run_basic_snellius.sh scripts/0.03_rnv_merge_structures.py
+	$(call CPU,scripts/0_ingest/0.03_rnv_merge_structures.py)
 
 sample: ## Sample for inference
-	bash launchers/run_basic_snellius.sh scripts/0.04_rnv_sample_for_inference.py
+	$(call CPU,scripts/0_ingest/0.04_rnv_sample_for_inference.py)
 
 annotation_sample: ## Sample for annotation
-	bash launchers/run_basic_snellius.sh scripts/0.05_rnv_sample_annotation.py
+	$(call CPU,scripts/0_ingest/0.05_rnv_sample_annotation.py)
 
 
 #----------------------------------------------------------------------------------
@@ -89,7 +108,7 @@ annotation_sample: ## Sample for annotation
 # ---- shared settings ----
 MODEL_CONFIG := gpt-oss-20b_tp1x4tp.yaml
 MODEL_NAME   := $(basename $(MODEL_CONFIG))
-# DATA_TAX must be a key in PROMPTS in scripts/2.01_rnv_run_data_classification.py; both go into output file names
+# DATA_TAX must be a key in PROMPTS in scripts/2_classification/2.01_rnv_run_data_classification.py; both go into output file names
 # (no inline comments after these: make would keep the trailing spaces in the value)
 DATA_TAX     := kmetty2026
 COUNTRIES    := ES_NL
@@ -99,9 +118,7 @@ REF_DIR      := $(ROOT_DIR)/$(DATA_DIR)/00_ingest/004_largest_donation
 ANNOTATION_ROOT := $(ROOT_DIR)/ddd_annotation
 SPLIT        ?= validation
 
-# ---- Snellius settings ----
-# SURF budget account (check with: accinfo)
-ACCOUNT       := vusei17670
+# ---- GPU settings ----
 # gpu_a100 or gpu_h100
 PARTITION     := gpu_a100
 # matches tp1x4 (4 GPUs per node)
@@ -125,19 +142,19 @@ TIME_x          := 00:15:00
 
 # ---- jobs: arguments for llm-run; @P@ is replaced by the platform ----
 # Output name placeholders: {platform} {n} {stem} (see src/inference/parallel.py)
-taxonomy_ARGS = MODULE_PATH=scripts/2.01_rnv_run_data_classification.py \
+taxonomy_ARGS = MODULE_PATH=scripts/2_classification/2.01_rnv_run_data_classification.py \
 	SOURCE_FOLDER=$(SOURCE_ROOT)/@P@ \
 	OUTPUT_FOLDER=$(ROOT_DIR)/$(DATA_DIR)/02_path_classification/021_classified_paths/@P@ \
 	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
 	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
 
-path_std_ARGS = MODULE_PATH=scripts/1.02_rnv_run_path_standardisation.py \
+path_std_ARGS = MODULE_PATH=scripts/1_path_standardisation/1.02_rnv_run_path_standardisation.py \
 	SOURCE_FOLDER=$(SOURCE_ROOT)/@P@ \
 	OUTPUT_FOLDER=$(ROOT_DIR)/$(DATA_DIR)/01_path_standardisation/011_classified_paths/@P@ \
 	OUTPUT_PATTERN='{platform}_{n}_std_ids_$(COUNTRIES)_$(MODEL_NAME).json' \
 	EXTRA_EXPORT=',REF_DIR=$(REF_DIR)'
 
-taxonomy_eval_ARGS = MODULE_PATH=scripts/2.01_rnv_run_data_classification.py \
+taxonomy_eval_ARGS = MODULE_PATH=scripts/2_classification/2.01_rnv_run_data_classification.py \
 	SOURCE_FOLDER=$(ANNOTATION_ROOT)/sample/$(SPLIT)/@P@ \
 	OUTPUT_FOLDER=$(ANNOTATION_ROOT)/inference/02_path_classification/$(SPLIT)/@P@ \
 	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
@@ -189,16 +206,16 @@ test: ## Run unit tests
 # VALIDATION AND VISUALISATION (CPU only)
 #----------------------------------------------------------------------------------
 id_std_val: ## Validate the id standardisation test run
-	bash launchers/run_basic_snellius.sh scripts/1.01.01_rnv_validate_test_id_standardisation.py
+	$(call CPU,scripts/1_path_standardisation/1.01.01_rnv_validate_test_id_standardisation.py)
 
 id_std_viz: ## Visualise id standardisation validation
-	bash launchers/run_basic_snellius.sh scripts/1.01.02_rnv_visualisation_validation_id_standardisation.py
+	$(call CPU,scripts/1_path_standardisation/1.01.02_rnv_visualisation_validation_id_standardisation.py)
 
 data_class_split: ## Split classification data
-	bash launchers/run_basic_snellius.sh scripts/2.03_rnv_split_data_data_classification.py
+	$(call CPU,scripts/2_classification/2.03_rnv_split_data_data_classification.py)
 
 data_class_test_val: ## Validate the classification test run
-	bash launchers/run_basic_snellius.sh scripts/2.04_rnv_test_validate_data_classification.py
+	$(call CPU,scripts/2_classification/2.04_rnv_test_validate_data_classification.py)
 
 data_class_viz: ## Visualise classification results
-	bash launchers/run_basic_snellius.sh scripts/2.05_rnv_visualisation_results_data_classification.py
+	$(call CPU,scripts/2_classification/2.05_rnv_visualisation_results_data_classification.py)
