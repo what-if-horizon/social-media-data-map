@@ -6,14 +6,42 @@ Labels every data-donation path with the DDP taxonomy (the `kmetty2026` prompt i
 
 Run everything through the Makefile; `make help` lists the targets. Settings come from `.env` (copy `.env.example`).
 
+## Before you start
+
+- Activate the environment: `source ~/venvs/social-media-data-map/bin/activate`. The pytest targets use plain
+  `python`, so they need it (or pass `PYTHON=~/venvs/social-media-data-map/bin/python`). The environment needs
+  `pytest` and `sentence-transformers` (both are in `environments/datamap_env.yml`).
+- Fill in `.env`: `ROOT_DIR`, `DATA_DIR` (`ddd_processed`), `MODEL_DIR`, and `EMBEDDING_MODEL`, a
+  sentence-transformers model on disk (compute nodes have no internet, so download it first, for example
+  `all-MiniLM-L6-v2` into `$MODEL_DIR/sentence-transformers/`).
+- The merged structures must exist: `<ROOT_DIR>/<DATA_DIR>/00_ingest/005_merged_structures/<platform>/*.csv`.
+
+## Quick start
+
+```bash
+make smoke-select                     # 1. 5 dissimilar paths per platform
+make taxonomy-sample                  # 2. test + validation sets and annotation sheets
+make sample-check                     #    pytest on the three samples
+make taxonomy-eval SPLIT=smoke        # 3. run the taxonomy on the smoke sample (GPU jobs; make jobs to follow them)
+make inference-check SPLIT=smoke      # 4. pytest on the output; submits the judge if it fails
+make report SPLIT=smoke               # 5. open results/02_taxonomy/reports/smoke_report.html
+```
+
+Then repeat 3-5 with `SPLIT=test` and `SPLIT=validation`; once the annotators have filled in the sheets, run
+`make eval-human SPLIT=test` (or `validation`) before `make report`. `make cancel` stops all your jobs.
+
 ## The three phases
 
 ```
-smoke-select ──► taxonomy-eval SPLIT=smoke ──► inference-check ──► report        smoke:      5 paths per platform
-                        │                          │ fails
-taxonomy-sample         │                          └─► judge (other model)
-      │                 ▼
-      └──► taxonomy-eval SPLIT=test / validation ──► inference-check ──► eval-human ──► report
+smoke-select ──► taxonomy-sample ──► sample-check
+                                          │
+taxonomy-eval SPLIT=smoke|test|validation ◄┘
+        │
+        ▼
+inference-check ── fails ──► judge (other model)
+        │
+        ▼
+eval-human (test, validation, once annotated) ──► report
 ```
 
 | Phase | Sample | Purpose |
@@ -53,9 +81,14 @@ Samples `TEST_N` (20) and `VALIDATION_N` (80) unique paths per platform at rando
 structures, after removing the smoke paths, and asserts that the three sets are disjoint. Per platform and split it
 writes `<ANNOTATION_ROOT>/sample/<split>/<platform>/<platform>_<split>.csv` and an annotation sheet
 `<ANNOTATION_ROOT>/annotation/<split>/<platform>/<platform>_<split>_to_annotate.xlsx` (columns `final_path` and an
-empty label column). The annotators fill in the sheet in place; 2.06 reads it. Existing files are not overwritten
-unless you pass `--force` (`python scripts/2_taxonomy/2.03_rnv_sample_test_validation.py --force`), because
-re-sampling would no longer match annotations already made.
+empty label column). Existing files are not overwritten unless you pass `--force`
+(`python scripts/2_taxonomy/2.03_rnv_sample_test_validation.py --force`), because re-sampling would no longer
+match annotations already made.
+
+**For the annotators:** fill in the label column of the sheet, in place, with one of the 15 label names exactly as
+written in the prompt (`src/inference/prompts.py`, the numbered list; case and surrounding spaces do not matter).
+One label per path, leave nothing blank for paths that should count. Rows left blank are ignored by 2.06, and a
+label that is not in the taxonomy is reported under "unknown human labels" instead of being counted.
 
 ### 3. Run the taxonomy
 
@@ -132,7 +165,9 @@ confusion matrix. Parts that have not been run yet are marked as such, so the re
 | `2.06_rnv_evaluate_human_annotations.py` | `eval-human` | Accuracy against human labels, kmetty2026 (CPU) |
 | `2.07_rnv_build_report.py` | `report` | HTML report per phase (CPU) |
 
-2.04 and 2.05 belong to the earlier Verduyn active/passive scheme and are not part of the flow above.
+2.04 and 2.05 belong to the earlier Verduyn active/passive scheme and are not part of the flow above. They
+expect their own annotation files and results, which no longer exist in `ddd_annotation`.
+`scripts/0_ingest/0.05_rnv_sample_annotation.py` (`make annotation_sample`) is superseded by 2.03.
 
 ## Tests
 
@@ -149,7 +184,11 @@ Shared code is in `src/inference/`: `taxonomy.py` (prompt filling, label list, o
 
 ## Settings
 
-All scripts read their settings from `src/config.py`, which loads `.env` from the repository root. Order of precedence: environment variables (including what `make` exports, so a Makefile value or `make ... VAR=x` wins) over `.env` over the defaults in `config.py`. The scripts therefore also work when started directly, for example `python scripts/2_taxonomy/2.07_rnv_build_report.py --split smoke`, as long as `.env` is filled in. A missing required setting stops the script with a message naming it.
+All scripts read their settings from `src/config.py`, which loads `.env` from the repository root. Order of
+precedence: environment variables (including what `make` exports, so a Makefile value or `make ... VAR=x` wins),
+then `.env`, then the defaults in `config.py`. The scripts therefore also work when started directly, for example
+`python scripts/2_taxonomy/2.07_rnv_build_report.py --split smoke`, as long as `.env` is filled in. A missing
+required setting stops the script with a message naming it.
 
 | Variable | Where | Meaning |
 |---|---|---|
