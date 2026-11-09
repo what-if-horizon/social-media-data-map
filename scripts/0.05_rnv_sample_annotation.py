@@ -1,8 +1,10 @@
+import os
+DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 from pathlib import Path
 import pandas as pd
 
-input_dir = Path('/projects/prjs2007/data_donation/ddd_processed/00_ingest/005_merged_structures')
-output_dir = Path("/projects/prjs2007/data_donation/ddd_annotation/sample")
+input_dir = Path(os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/005_merged_structures'))
+output_dir = Path(os.path.join(DATA_ROOT, "ddd_annotation/sample"))
 
 output_dir.mkdir(parents=True, exist_ok=True)
 

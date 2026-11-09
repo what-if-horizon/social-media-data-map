@@ -1,3 +1,5 @@
+import os
+DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 from pathlib import Path
 import json
 
@@ -96,6 +98,14 @@ def evaluate_verduyn(json_dir, csv_dir, output_file):
 
         json_df = pd.DataFrame(json_data)
 
+        try:
+            json_df = json_df.rename(
+                        columns={"path": "final_path"}
+                    )
+
+        except:
+            print('final_path column already exists')
+
         # ==================================================
         # Load human annotation XLSX
         # ==================================================
@@ -107,7 +117,7 @@ def evaluate_verduyn(json_dir, csv_dir, output_file):
         # ==================================================
 
         required_json_columns = {
-            "path",
+            "final_path",
             "category",
             "rationale"
         }
@@ -144,7 +154,7 @@ def evaluate_verduyn(json_dir, csv_dir, output_file):
         # ==================================================
 
         json_duplicates = (
-            json_df["path"].duplicated().sum()
+            json_df["final_path"].duplicated().sum()
         )
 
         csv_duplicates = (
@@ -169,9 +179,8 @@ def evaluate_verduyn(json_dir, csv_dir, output_file):
         # Match JSON and XLSX on final_path
         # ==================================================
 
-        json_df = json_df.rename(
-            columns={"path": "final_path"}
-        )
+        #json_df = json_df.rename(
+            #columns={"path": "final_path"})
 
         merged = json_df[
             [
@@ -625,13 +634,13 @@ def main():
 
     evaluate_verduyn(
         json_dir=(
-            "/projects/prjs2007/data_donation/"
+            DATA_ROOT + "/"
             "ddd_annotation/inference/"
             "02_path_classification/test"
         ),
 
         csv_dir=(
-            "/projects/prjs2007/data_donation/"
+            DATA_ROOT + "/"
             "ddd_annotation/annotation/test"
         ),
 
@@ -642,6 +651,26 @@ def main():
             "verduyn2020_accuracy_test.json"
         )
     )
+
+    evaluate_verduyn(
+            json_dir=(
+                DATA_ROOT + "/"
+                "ddd_annotation/inference/"
+                "02_path_classification/validation"
+            ),
+    
+            csv_dir=(
+                DATA_ROOT + "/"
+                "ddd_annotation/annotation/validation"
+            ),
+    
+            output_file=(
+                "/home/nvisscher/GIT/"
+                "social-media-data-map/results/"
+                "02_data_classification/"
+                "verduyn2020_accuracy_validation.json"
+            )
+        )
 
 
 if __name__ == "__main__":

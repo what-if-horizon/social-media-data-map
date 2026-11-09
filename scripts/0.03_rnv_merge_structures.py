@@ -1,12 +1,14 @@
+import os
+DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
 
 
-input_dir = '/projects/prjs2007/data_donation/ddd_processed/00_ingest/003_individual_flattened_structures_unique'
-output_dir = '/projects/prjs2007/data_donation/ddd_processed/00_ingest/005_merged_structures'
-output_dir_20 = '/projects/prjs2007/data_donation/ddd_development_2files/00_ingest/005_merged_structures'
+input_dir = os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/003_individual_flattened_structures_unique')
+output_dir = os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/005_merged_structures')
+output_dir_20 = os.path.join(DATA_ROOT, 'ddd_development_2files/00_ingest/005_merged_structures')
 
 
 

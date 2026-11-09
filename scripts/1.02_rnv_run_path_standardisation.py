@@ -1,3 +1,5 @@
+import os
+DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 
 from src.inference import idStandardisation as iS
 from pathlib import Path
@@ -8,10 +10,10 @@ import re
 #project_root =  os.environ["PWD"]
 
 input_file = input_file = Path(os.environ["INPUT_FILE"])
-#output_dir = '/projects/prjs2007/data_donation/ddd_processed/01_path_standardisation/011_classified_paths'
-#output_dir = '/projects/prjs2007/data_donation/ddd_development/01_path_standardisation/011_classified_paths'
-output_dir = '/projects/prjs2007/data_donation/ddd_development_2files/01_path_standardisation/011_classified_paths'
-id_dir = '/projects/prjs2007/data_donation/ddd_processed/00_ingest/004_largest_donation'
+#output_dir = os.path.join(DATA_ROOT, 'ddd_processed/01_path_standardisation/011_classified_paths')
+#output_dir = os.path.join(DATA_ROOT, 'ddd_development/01_path_standardisation/011_classified_paths')
+output_dir = os.path.join(DATA_ROOT, 'ddd_development_2files/01_path_standardisation/011_classified_paths')
+id_dir = os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/004_largest_donation')
 
 
 country_list =  ['ES', 'NL']

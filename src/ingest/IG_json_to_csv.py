@@ -1,3 +1,5 @@
+import os
+DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 
 
 
@@ -22,9 +24,9 @@ time = datetime.datetime.now()
 print(f'{time} START PROCESSING JSONS INSTAGRAM')
 
 
-input_directory = Path('/projects/prjs2007/data_donation/ddd_processed/00_ingest/001_json_structures/instagram') 
-output_directory =  Path('/projects/prjs2007/data_donation/ddd_processed/00_ingest/002_individual_flattened_structures/instagram')
-final_directory = Path ('/projects/prjs2007/data_donation/ddd_processed/00_ingest/003_merged_structures')
+input_directory = Path(os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/001_json_structures/instagram')) 
+output_directory =  Path(os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/002_individual_flattened_structures/instagram'))
+final_directory = Path (os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/003_merged_structures'))
 
 for file in output_directory.iterdir():
    if file.is_file():

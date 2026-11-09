@@ -1,3 +1,5 @@
+import os
+DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 
 import pandas as pd
 from src.inference import dataClassification as dC
@@ -7,9 +9,10 @@ import os
 import re
 
 
-input_dir = Path('/projects/prjs2007/data_donation/ddd_annotation/sample/test')
-output_dir = '/projects/prjs2007/data_donation/ddd_development_2files/02_path_classification/021_classified_paths'
-output_dir = '/projects/prjs2007/data_donation/ddd_annotation/inference/02_path_classification/test'
+input_dir = Path(os.path.join(DATA_ROOT, 'ddd_annotation/sample/test'))
+#output_dir = os.path.join(DATA_ROOT, 'ddd_development_2files/02_path_classification/021_classified_paths')
+#output_dir = os.path.join(DATA_ROOT, 'ddd_annotation/inference/02_path_classification/test')
+output_dir = os.path.join(DATA_ROOT, 'ddd_annotation/inference/02_path_classification/validation')
 
 
 country_list =  ['ES', 'NL']

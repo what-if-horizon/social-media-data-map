@@ -1,17 +1,19 @@
+import os
+DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 
 from src.inference import idStandardisation as iS
 
 
 #project_root = '/home/bsc/bsc093754/GIT/social-media-data-map/'
 #project_root =  os.environ["PWD"]
-root = '/projects/prjs2007/data_donation/ddd_processed/01_path_standardisation'
+root = os.path.join(DATA_ROOT, 'ddd_processed/01_path_standardisation')
 input_dir =f'{root}/011_classified_paths'
 disagreements_dir = f'{root}/012_disagreements'
 agreements_dir = f'{root}/013_agreements'
 resolved_dir = f'{root}/014_resolved'
 final_dir = f'{root}/015_final_classified_paths'
 
-id_dir = '/projects/prjs2007/data_donation/ddd_processed/00_ingest/004_largest_donation'
+id_dir = os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/004_largest_donation')
 
 country_list =  ['ES', 'NL']
 

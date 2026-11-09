@@ -1,9 +1,11 @@
+import os
+DATA_ROOT = os.environ.get("ROOT_DIR", "/projects/prjs2007/data_donation")
 from pathlib import Path
 import random
 import shutil
 
-source_dir = Path('/projects/prjs2007/data_donation/ddd_processed/00_ingest/005_merged_structures')
-sample_dir = Path('/projects/prjs2007/data_donation/ddd_sample/00_ingest/005_merged_structures')
+source_dir = Path(os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/005_merged_structures'))
+sample_dir = Path(os.path.join(DATA_ROOT, 'ddd_sample/00_ingest/005_merged_structures'))
 
 for platform in source_dir.iterdir():
     if platform.is_dir():
