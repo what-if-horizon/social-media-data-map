@@ -65,7 +65,7 @@ pass them). pytest is in `environments/datamap_env.yml`.
 - **GPU, `launchers/parallel_llm.sh` + `parallel_worker.sh`:** vLLM servers on N nodes, one worker process per
   server. Scripts here (2.01, 1.02) are built on `src/inference/parallel.py`: the Makefile sets `OUTPUT_PATTERN`
   (placeholders `{platform}`, `{n}`, `{stem}`), the launcher uses it to find pending files and the script uses it
-  to name its output. To port a script, copy the structure of 1.02: a `make_process_file(agent)` that returns
+  to name its output. `INPUT_GLOB='*/*.csv'` lets one job cover several platform folders (used for `SPLIT=smoke`). To port a script, copy the structure of 1.02: a `make_process_file(agent)` that returns
   `process_file(source_file, output_file)`, and `parallel.main(...)` in `__main__`.
 - **CPU, `launchers/cpu_job.sh`:** `make <target>` submits it with sbatch. Override resources per run with
   `CPU_TIME`, `CPU_CPUS`, `CPU_PARTITION`, or use `LOCAL=1` to run in the current shell on an interactive node.

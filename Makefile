@@ -218,6 +218,24 @@ judge_ARGS = MODULE_PATH=scripts/2_taxonomy/2.02_rnv_run_judge.py \
 	OUTPUT_PATTERN='{stem}_judge_$(basename $(MODEL_CONFIG_JUDGE)).json' \
 	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
 
+# SPLIT=smoke is only 5 paths per platform, so all platforms run in ONE job (INPUT_GLOB with a platform level;
+# the output still goes to <platform>/ sub-folders). Starting the vLLM servers takes longer than the work.
+smoke_NODES := 1
+smoke_TIME  := 00:15:00
+taxonomy_eval_smoke_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
+	INPUT_GLOB='*/*.csv' \
+	SOURCE_FOLDER=$(SAMPLE_ROOT)/smoke \
+	OUTPUT_FOLDER=$(INFERENCE_DIR) \
+	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
+	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
+
+judge_smoke_ARGS = MODULE_PATH=scripts/2_taxonomy/2.02_rnv_run_judge.py \
+	MODEL_CONFIG=$(MODEL_CONFIG_JUDGE) INPUT_GLOB='*/*.json' \
+	SOURCE_FOLDER=$(INFERENCE_DIR) \
+	OUTPUT_FOLDER=$(JUDGE_DIR) \
+	OUTPUT_PATTERN='{stem}_judge_$(basename $(MODEL_CONFIG_JUDGE)).json' \
+	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
+
 # ---- generic submit: needs JOB SUB NODES TIME MODULE_PATH SOURCE_FOLDER OUTPUT_FOLDER OUTPUT_PATTERN; optional INPUT_GLOB (default *.csv) ----
 .PHONY: llm-run
 llm-run:
@@ -253,12 +271,23 @@ $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,judge,judge,$(p))))
 .PHONY: taxonomy path_std taxonomy-eval
 taxonomy: $(addprefix taxonomy-,$(PLATFORMS)) ## Submit the taxonomy for all platforms
 path_std: $(addprefix path_std-,$(PLATFORMS)) ## Submit path standardisation (1.02) for all platforms
-taxonomy-eval: $(addprefix taxonomy-eval-,$(PLATFORMS)) ## Run the taxonomy on a sample (SPLIT=smoke|test|validation)
+ifeq ($(SPLIT),smoke)
+# one job for all platforms
+taxonomy-eval:
+	@$(MAKE) --no-print-directory llm-run JOB=taxonomy-eval SUB=smoke NODES=$(or $(NODES),$(smoke_NODES)) TIME=$(or $(TIME),$(smoke_TIME)) $(taxonomy_eval_smoke_ARGS)
+else
+taxonomy-eval: $(addprefix taxonomy-eval-,$(PLATFORMS)) ## Run the taxonomy on a sample (SPLIT=smoke|test|validation; smoke = one job)
+endif
 
 .PHONY: judge judge-check-model
 judge-check-model:
 	@test "$(MODEL_CONFIG)" != "$(MODEL_CONFIG_JUDGE)" || (echo "ERROR: the judge must be a different model than the taxonomy model ($(MODEL_CONFIG))" && exit 1)
-judge: judge-check-model $(addprefix judge-,$(PLATFORMS)) ## Run the LLM judge on the taxonomy output (SPLIT=smoke|test|validation)
+ifeq ($(SPLIT),smoke)
+judge: judge-check-model
+	@$(MAKE) --no-print-directory llm-run JOB=judge SUB=smoke NODES=$(or $(NODES),$(smoke_NODES)) TIME=$(or $(TIME),$(smoke_TIME)) $(judge_smoke_ARGS)
+else
+judge: judge-check-model $(addprefix judge-,$(PLATFORMS)) ## Run the LLM judge on the taxonomy output (SPLIT=smoke|test|validation; smoke = one job)
+endif
 
 
 #----------------------------------------------------------------------------------
@@ -281,7 +310,7 @@ cancel: ## Cancel all your jobs (NAME=<job name> for one job only)
 # 1. make smoke-select                       2.00: 5 dissimilar paths per platform (needs EMBEDDING_MODEL in .env)
 #    make sample-check                       pytest: samples from the merged structures, disjoint; smoke dissimilar
 #    make taxonomy-sample                    2.03: test (20) and validation (80) sets + annotation sheets, without smoke paths
-# 2. make taxonomy-eval SPLIT=smoke          run the taxonomy (GPU)
+# 2. make taxonomy-eval SPLIT=smoke          run the taxonomy (GPU; smoke is one job for all platforms)
 #    make inference-check SPLIT=smoke        pytest on the output; on failure the judge is submitted
 #    make report SPLIT=smoke                 HTML report: pytest, judge, (human evaluation)
 # 3. repeat 2 with SPLIT=test, then SPLIT=validation; once the human annotations are in:

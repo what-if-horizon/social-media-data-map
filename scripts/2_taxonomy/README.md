@@ -22,7 +22,7 @@ Run everything through the Makefile; `make help` lists the targets. Settings com
 make smoke-select                     # 1. 5 dissimilar paths per platform
 make taxonomy-sample                  # 2. test + validation sets and annotation sheets
 make sample-check                     #    pytest on the three samples
-make taxonomy-eval SPLIT=smoke        # 3. run the taxonomy on the smoke sample (GPU jobs; make jobs to follow them)
+make taxonomy-eval SPLIT=smoke        # 3. run the taxonomy on the smoke sample (one GPU job; make jobs to follow it)
 make inference-check SPLIT=smoke      # 4. pytest on the output; submits the judge if it fails
 make report SPLIT=smoke               # 5. open results/02_taxonomy/reports/smoke_report.html
 ```
@@ -93,7 +93,8 @@ label that is not in the taxonomy is reported under "unknown human labels" inste
 ### 3. Run the taxonomy
 
 ```bash
-make taxonomy-eval SPLIT=smoke            # all five platforms, GPU jobs
+make taxonomy-eval SPLIT=smoke            # all five platforms in ONE GPU job (25 paths)
+make taxonomy-eval SPLIT=test             # one GPU job per platform
 make taxonomy-eval-youtube SPLIT=test     # one platform
 make taxonomy                             # production: all merged structures, no SPLIT
 ```
@@ -110,6 +111,9 @@ A record looks like:
 
 A path whose output is invalid after three attempts gets `"predictions": null`, an `"error"` and the `"raw_output"`.
 Files that already exist in the output folder are skipped, so a job can be resubmitted after a crash.
+`SPLIT=smoke` is only 5 paths per platform, so it runs as a single job (1 node, 15 minutes, `smoke_NODES` and
+`smoke_TIME` in the Makefile) instead of five: starting the vLLM servers takes longer than the work. Its output still
+lands in one sub-folder per platform. The same goes for `make judge SPLIT=smoke`.
 Nodes and time per platform are in the Makefile (`taxonomy_NODES_*`, `taxonomy_TIME_*`, and the same for
 `taxonomy_eval_`); override them with `make taxonomy-eval-x SPLIT=test NODES=2 TIME=00:30:00`.
 

@@ -70,11 +70,33 @@ class TestOutputName(unittest.TestCase):
         for pattern in self.PATTERNS:
             script = (
                 'src=$(sed -n "/^output_name() {/,/^}/p" ' + launcher + ');'
-                'PLATFORM=facebook; OUTPUT_PATTERN="$1";'
-                'eval "$src"; output_name ' + self.FILE
+                'OUTPUT_PATTERN="$1";'
+                'eval "$src"; output_name facebook ' + self.FILE
             )
             out = subprocess.run(["bash", "-c", script, "_", pattern], capture_output=True, text=True, check=True).stdout.strip()
             self.assertEqual(out, output_name(pattern, "facebook", self.FILE))
+
+
+class TestRunBucketLayout(unittest.TestCase):
+    def test_platform_subfolders(self):
+        """A job over several platforms (INPUT_GLOB='*/*.csv') writes <output>/<platform>/<name>."""
+        import tempfile
+        from src.inference.parallel import run_bucket
+
+        with tempfile.TemporaryDirectory() as out:
+            run_bucket(["facebook/facebook_smoke_5.csv", "x/x_smoke_5.csv"], "/src/smoke", out, "gpu0",
+                       lambda src, dst: open(dst, "w").write("[]"), "{platform}_{n}_out.json")
+            self.assertTrue(os.path.exists(os.path.join(out, "facebook", "facebook_5_out.json")))
+            self.assertTrue(os.path.exists(os.path.join(out, "x", "x_5_out.json")))
+
+    def test_flat_folder_uses_source_folder_name(self):
+        import tempfile
+        from src.inference.parallel import run_bucket
+
+        with tempfile.TemporaryDirectory() as out:
+            run_bucket(["facebook_merged_structures_3.csv"], "/src/facebook", out, "gpu0",
+                       lambda src, dst: open(dst, "w").write("[]"), "{platform}_{n}_out.json")
+            self.assertTrue(os.path.exists(os.path.join(out, "facebook_3_out.json")))
 
 
 if __name__ == "__main__":

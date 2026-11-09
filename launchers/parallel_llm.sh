@@ -49,16 +49,19 @@ export LD_LIBRARY_PATH="$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
 #--------------------------------------------------
 
 # Delete leftovers from crashed runs
-rm -f "$OUTPUT_FOLDER"/*.partial
+rm -f "$OUTPUT_FOLDER"/*.partial "$OUTPUT_FOLDER"/*/*.partial
 
 # Output name for an input file; same rule as output_name() in src/inference/parallel.py,
 # which the python scripts use to write the file.
-# Placeholders: {platform} (source folder name), {n} (last "_" part of the stem), {stem}
-PLATFORM=$(basename "$SOURCE_FOLDER")
-output_name() {   # $1 = input file name
-    local stem="${1%.*}"
+# Placeholders: {platform} (name of the folder the file is in), {n} (last "_" part of the stem), {stem}
+#
+# INPUT_GLOB is relative to SOURCE_FOLDER. With a sub-folder level (INPUT_GLOB='*/*.csv', as the smoke run
+# uses to do all platforms in one job) the files are <platform>/<file> and their output goes to
+# OUTPUT_FOLDER/<platform>/.
+output_name() {   # $1 = platform, $2 = input file name
+    local stem="${2%.*}"
     local name="$OUTPUT_PATTERN"
-    name="${name//\{platform\}/$PLATFORM}"
+    name="${name//\{platform\}/$1}"
     name="${name//\{n\}/${stem##*_}}"
     name="${name//\{stem\}/$stem}"
     echo "$name"
@@ -67,9 +70,15 @@ output_name() {   # $1 = input file name
 shopt -s nullglob   # no input files -> empty loop, not the literal pattern
 files=()
 for file_path in "$SOURCE_FOLDER"/${INPUT_GLOB:-*.csv}; do
-    file_name=$(basename "$file_path")
-    if [[ ! -f "$OUTPUT_FOLDER/$(output_name "$file_name")" ]]; then
-        files+=("$file_name")
+    rel_path=${file_path#"$SOURCE_FOLDER"/}            # file or <platform>/file
+    rel_dir=$(dirname "$rel_path")
+    if [[ "$rel_dir" == "." ]]; then
+        platform=$(basename "$SOURCE_FOLDER"); out_dir="$OUTPUT_FOLDER"
+    else
+        platform=$(basename "$rel_dir"); out_dir="$OUTPUT_FOLDER/$rel_dir"
+    fi
+    if [[ ! -f "$out_dir/$(output_name "$platform" "$(basename "$rel_path")")" ]]; then
+        files+=("$rel_path")
     fi
 done
 echo "Pending files: ${#files[@]}"

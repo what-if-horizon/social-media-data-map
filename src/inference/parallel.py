@@ -41,12 +41,16 @@ def run_bucket(files: List[str], source_folder: str, output_folder: str, agent_i
                process_file: Callable, pattern: str) -> None:
     """Process this server's bucket of files one after another. A failing file is reported and skipped."""
     os.makedirs(output_folder, exist_ok=True)
-    platform = os.path.basename(os.path.normpath(source_folder))
 
     failed = []
     for idx, filename in enumerate(files):
+        # filename is relative to source_folder: "file.csv", or "<platform>/file.csv" when one job covers
+        # several platforms (INPUT_GLOB='*/*.csv'); the output then goes to output_folder/<platform>/
+        rel_dir = os.path.dirname(filename)
+        platform = os.path.basename(rel_dir) if rel_dir else os.path.basename(os.path.normpath(source_folder))
         source_file = os.path.join(source_folder, filename)
-        output_file = os.path.join(output_folder, output_name(pattern, platform, filename))
+        output_file = os.path.join(output_folder, rel_dir, output_name(pattern, platform, os.path.basename(filename)))
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
         try:
             process_file(source_file, output_file)
             print(f"[{agent_id}] {idx + 1}/{len(files)}: wrote {output_file}", flush=True)
