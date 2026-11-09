@@ -50,3 +50,38 @@ def extract_json_dict(raw):
         if isinstance(obj, dict):
             return obj
     return None
+
+
+def validate_record(rec, labels):
+    """Problems with one classification record from scripts/2_classification/2.01; empty list = valid.
+
+    Valid means: exactly three predictions, distinct labels from the taxonomy, confidences between
+    0 and 100 that sum to 100 in descending order, and a non-empty rationale.
+    """
+    if not isinstance(rec, dict):
+        return ["record is not an object"]
+    preds = rec.get("predictions")
+    if preds is None:
+        return [f"no valid prediction ({rec.get('error', 'predictions missing')})"]
+    if not isinstance(preds, list) or len(preds) != 3:
+        return [f"expected 3 predictions, got {len(preds) if isinstance(preds, list) else type(preds).__name__}"]
+
+    problems = []
+    names = [x.get("label") if isinstance(x, dict) else None for x in preds]
+    scores = [x.get("confidence") if isinstance(x, dict) else None for x in preds]
+    for name in names:
+        if name not in labels:
+            problems.append(f"unknown label {name!r}")
+    if len(set(names)) != 3:
+        problems.append("labels are not distinct")
+    if not all(isinstance(c, (int, float)) and not isinstance(c, bool) and 0 <= c <= 100 for c in scores):
+        problems.append(f"confidences must be numbers in [0, 100], got {scores}")
+    else:
+        if abs(sum(scores) - 100) > 1e-6:
+            problems.append(f"confidences sum to {sum(scores)}, expected 100")
+        if scores != sorted(scores, reverse=True):
+            problems.append(f"confidences not in descending order: {scores}")
+    rationale = rec.get("rationale")
+    if not isinstance(rationale, str) or not rationale.strip():
+        problems.append("rationale missing or empty")
+    return problems

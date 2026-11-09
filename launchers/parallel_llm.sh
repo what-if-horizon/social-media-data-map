@@ -64,6 +64,7 @@ output_name() {   # $1 = input file name
     echo "$name"
 }
 
+shopt -s nullglob   # no input files -> empty loop, not the literal pattern
 files=()
 for file_path in "$SOURCE_FOLDER"/${INPUT_GLOB:-*.csv}; do
     file_name=$(basename "$file_path")

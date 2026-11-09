@@ -93,6 +93,22 @@ def create_splits(
             )
 
         # --------------------------------------------------
+        # Keep the smoke sample (2.00) out of test and validation
+        # --------------------------------------------------
+        smoke_files = sorted((output_dir / "sample" / "smoke" / platform).glob("*.csv"))
+        if not smoke_files:
+            print(f"[WARNING] {platform}: no smoke sample found, run 2.00 first")
+        smoke_paths = set()
+        for smoke_file in smoke_files:
+            smoke_paths |= set(pd.read_csv(smoke_file)["final_path"])
+
+        overlap = smoke_paths & set(sample_df["final_path"])
+        if overlap:
+            print(f"[WARNING] {platform}: dropping {len(overlap)} smoke paths from the sample")
+            sample_df = sample_df[~sample_df["final_path"].isin(smoke_paths)]
+        annotation_df = annotation_df[~annotation_df["final_path"].isin(smoke_paths)]
+
+        # --------------------------------------------------
         # Create random 80/20 split from sample
         # --------------------------------------------------
         validation_df, test_df = train_test_split(
@@ -195,6 +211,12 @@ def create_splits(
             / f"{platform}_verduyn2020_test.xlsx",
             index=False,
         )
+
+        # --------------------------------------------------
+        # Test, validation and smoke must be disjoint
+        # --------------------------------------------------
+        assert not (validation_paths & test_paths), f"{platform}: validation and test overlap"
+        assert not (smoke_paths & (validation_paths | test_paths)), f"{platform}: smoke paths in test/validation"
 
         # --------------------------------------------------
         # Report
