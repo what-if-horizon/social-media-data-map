@@ -28,7 +28,7 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 | `2_taxonomy/2.00` select_smoke_sample | `smoke-select` | CPU | 5 mutually dissimilar paths per platform (embeddings), not in the annotation sample |
 | `2_taxonomy/2.01` run_taxonomy | `taxonomy-<platform>`, `taxonomy`, `taxonomy-eval-<platform>` | GPU (parallel) | **Taxonomy** (production, and smoke/test/validation via `SPLIT=`) |
 | `2_taxonomy/2.02` run_judge | `judge-<platform>`, `judge` | GPU (parallel) | LLM judge (a different model) on the taxonomy outputs |
-| `2_taxonomy/2.03` split_data_taxonomy | `taxonomy-split` | CPU | Split into test/validation, without the smoke paths |
+| `2_taxonomy/2.03` sample_test_validation | `taxonomy-sample` | CPU | Test and validation sets (and annotation sheets) from the merged structures, without the smoke paths |
 | `2_taxonomy/2.04` test_validate_taxonomy | `taxonomy-accuracy` | CPU | Accuracy against annotations (verduyn2020) |
 | `2_taxonomy/2.05` visualisation_results_taxonomy | `taxonomy-viz` | CPU | Plots for the above (verduyn2020) |
 | `2_taxonomy/2.06` evaluate_human_annotations | `eval-human` | CPU | Accuracy of the kmetty2026 taxonomy against human annotations |
@@ -41,11 +41,11 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 Smoke, then test, then validation. `SPLIT=smoke|test|validation` selects the phase; the sample folders are
 `<ANNOTATION_ROOT>/sample/<split>/<platform>/`.
 
-1. **Smoke sample.** `make smoke-select` (2.00) draws a pool of paths per platform that are not in the annotation
-   sample, embeds them (`EMBEDDING_MODEL` in `.env`) and keeps 5 whose pairwise cosine similarity is below
-   `SMOKE_MAX_SIM` (0.8). `make smoke-sample-check` (pytest) verifies this: 5 unique paths, similarity below the
-   threshold, no overlap with `full`, `test` or `validation`.
-2. **Test and validation sets.** `make taxonomy-split` (2.03) splits the annotation sample, leaving the smoke paths out.
+1. **Smoke sample.** `make smoke-select` (2.00) draws a pool of paths per platform from the merged structures (`ddd_processed`)
+   that are not in test or validation, embeds them (`EMBEDDING_MODEL` in `.env`) and keeps 5 whose pairwise cosine similarity is below
+   `SMOKE_MAX_SIM` (0.8). `make sample-check` (pytest) verifies this: 5 unique paths, similarity below the
+   threshold, and that smoke, test and validation come from the merged structures and share no path.
+2. **Test and validation sets.** `make taxonomy-sample` (2.03) samples both from the merged structures, leaving the smoke paths out, and writes an annotation sheet for each.
 3. **Run the taxonomy.** `make taxonomy-eval SPLIT=smoke` (GPU).
 4. **Check.** `make inference-check SPLIT=smoke` runs `tests/test_inference_output.py` (pytest) on the output: three
    distinct taxonomy labels, confidences summing to 100 in descending order, a rationale, and one record per input

@@ -1,16 +1,16 @@
 """
 Select the smoke sample: a few paths per platform that are semantically dissimilar.
 
-For every platform a pool of candidate paths is drawn from the merged structures, minus every path
-in the annotation sample (sample/full), so the later test and validation sets cannot contain smoke
-paths. The pool is embedded with a sentence-transformer and K mutually dissimilar paths are chosen
-(farthest-point selection; every pair must have cosine similarity below SMOKE_MAX_SIM).
+For every platform a pool of candidate paths is drawn from the merged structures
+(<ROOT_DIR>/<DATA_DIR>/00_ingest/005_merged_structures, i.e. ddd_processed), minus any path already in the
+test or validation set, so those sets (2.03) cannot share a path with the smoke sample. The pool is embedded with a
+sentence-transformer and K mutually dissimilar paths are chosen (farthest-point selection; every pair must have cosine similarity below SMOKE_MAX_SIM).
 
 Writes, per platform:
   <ANNOTATION_ROOT>/sample/smoke/<platform>/<platform>_smoke_<K>.csv     final_path column
   <ANNOTATION_ROOT>/sample/smoke/<platform>/smoke_similarity.json        model, threshold, similarity matrix
 
-tests/test_smoke_sample.py checks these files (disjoint from sample/full, dissimilar).
+tests/test_smoke_sample.py checks these files (from the merged structures, dissimilar, disjoint from test and validation).
 
 Settings (src/config.py, from .env): ROOT_DIR, DATA_DIR, EMBEDDING_MODEL (path or name of a sentence-transformers
 model); optional ANNOTATION_ROOT, SMOKE_K (5), SMOKE_MAX_SIM (0.8), SMOKE_POOL (2000), SEED (42).
@@ -51,9 +51,11 @@ def main():
 
     for platform in PLATFORMS:
         merged = read_paths(os.path.join(MERGED_ROOT, platform, "*.csv"))
-        annotation_sample = set(read_paths(os.path.join(ANNOTATION_ROOT, "sample", "full", platform, "*.csv")))
-        pool = sorted(set(merged) - annotation_sample)
-        print(f"{platform}: {len(merged)} merged paths, {len(annotation_sample)} in the annotation sample, "
+        taken = set()
+        for split in ("test", "validation"):
+            taken |= set(read_paths(os.path.join(ANNOTATION_ROOT, "sample", split, platform, "*.csv")))
+        pool = sorted(set(merged) - taken)
+        print(f"{platform}: {len(merged)} merged paths, {len(taken)} already in test/validation, "
               f"{len(pool)} candidates", flush=True)
         if len(pool) < K:
             raise SystemExit(f"{platform}: only {len(pool)} candidates")

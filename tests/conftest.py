@@ -16,7 +16,9 @@ def pytest_addoption(parser):
     parser.addoption("--input-dir", default=os.environ.get("INPUT_DIR"),
                      help="Folder with the <platform>/*.csv that was labelled (checks that every path got an output)")
     parser.addoption("--sample-root", default=os.environ.get("SAMPLE_ROOT"),
-                     help="<ANNOTATION_ROOT>/sample, holding smoke/, full/, test/ and validation/")
+                     help="<ANNOTATION_ROOT>/sample, holding smoke/, test/ and validation/")
+    parser.addoption("--merged-dir", default=os.environ.get("MERGED_DIR"),
+                     help="Merged structures (<ROOT_DIR>/ddd_processed/00_ingest/005_merged_structures) the samples must come from")
     parser.addoption("--results-json", default=None, help="Write the outcome of every test to this file")
 
 

@@ -66,6 +66,8 @@ SMOKE_K = int(os.getenv("SMOKE_K", 5))                      # paths per platform
 SMOKE_MAX_SIM = float(os.getenv("SMOKE_MAX_SIM", 0.8))      # all pairs must have cosine similarity below this
 SMOKE_POOL = int(os.getenv("SMOKE_POOL", 2000))             # candidates drawn per platform
 SEED = int(os.getenv("SEED", 42))
+TEST_N = int(os.getenv("TEST_N", 20))                     # paths per platform in the test set (2.03)
+VALIDATION_N = int(os.getenv("VALIDATION_N", 80))          # paths per platform in the validation set (2.03)
 
 PLATFORMS = ["facebook", "instagram", "tiktok", "youtube", "x"]
 

@@ -11,7 +11,7 @@ Run everything through the Makefile; `make help` lists the targets. Settings com
 ```
 smoke-select ──► taxonomy-eval SPLIT=smoke ──► inference-check ──► report        smoke:      5 paths per platform
                         │                          │ fails
-taxonomy-split          │                          └─► judge (other model)
+taxonomy-sample         │                          └─► judge (other model)
       │                 ▼
       └──► taxonomy-eval SPLIT=test / validation ──► inference-check ──► eval-human ──► report
 ```
@@ -19,39 +19,43 @@ taxonomy-split          │                          └─► judge (other mode
 | Phase | Sample | Purpose |
 |---|---|---|
 | `smoke` | 5 mutually dissimilar paths per platform | Quick end-to-end check that the model, prompt and output format work |
-| `test` | 20% of the annotated sample | Tune on this |
-| `validation` | 80% of the annotated sample | Final numbers |
+| `test` | 20 paths per platform (`TEST_N`), to be annotated | Tune on this |
+| `validation` | 80 paths per platform (`VALIDATION_N`), to be annotated | Final numbers |
 
-Smoke paths are never in the annotated sample, so test and validation cannot contain them.
+All three are drawn from the merged structures and share no path.
 
 ### 1. Smoke sample
 
 ```bash
 make smoke-select            # 2.00, CPU job
-make smoke-sample-check      # pytest
+make sample-check            # pytest
 ```
 
-2.00 draws up to `SMOKE_POOL` (2000) candidate paths per platform from the merged structures, minus every path in
-`<ANNOTATION_ROOT>/sample/full`. It embeds them with the sentence-transformers model in `EMBEDDING_MODEL`,
+All samples come from the merged structures, `<ROOT_DIR>/<DATA_DIR>/00_ingest/005_merged_structures` (that is,
+`ddd_processed`). 2.00 draws up to `SMOKE_POOL` (2000) candidate paths per platform from there, minus any path
+already in the test or validation set. It embeds them with the sentence-transformers model in `EMBEDDING_MODEL`,
 then picks `SMOKE_K` (5) paths by farthest-point selection and fails if any pair has cosine similarity of
 `SMOKE_MAX_SIM` (0.8) or more. Look at the printed paths once to see that they really are different.
 
 Output, per platform, in `<ANNOTATION_ROOT>/sample/smoke/<platform>/`:
 `<platform>_smoke_5.csv` (column `final_path`) and `smoke_similarity.json` (model, threshold, similarity matrix).
 
-`smoke-sample-check` runs `tests/test_smoke_sample.py`: 5 unique paths, pairwise similarity below the threshold,
-and no overlap with `full`, `test` or `validation`.
+`sample-check` runs `tests/test_samples.py`: every sample path exists in the merged structures; smoke has 5 unique
+paths with pairwise similarity below the threshold; smoke, test and validation share no path.
 
 ### 2. Test and validation sets
 
 ```bash
-make taxonomy-split          # 2.03, CPU job
+make taxonomy-sample         # 2.03, CPU job
 ```
 
-Splits the 100-row sample in `sample/full` (and its annotation file) into `sample/{validation,test}/` and
-`annotation/{validation,test}/`, removes any smoke path first and asserts that the three sets are disjoint.
-It still reads the annotation files ending in `verduyn2020.xlsx`; the split is by path, so it does not depend on
-the label scheme.
+Samples `TEST_N` (20) and `VALIDATION_N` (80) unique paths per platform at random (`SEED`) from the merged
+structures, after removing the smoke paths, and asserts that the three sets are disjoint. Per platform and split it
+writes `<ANNOTATION_ROOT>/sample/<split>/<platform>/<platform>_<split>.csv` and an annotation sheet
+`<ANNOTATION_ROOT>/annotation/<split>/<platform>/<platform>_<split>_to_annotate.xlsx` (columns `final_path` and an
+empty label column). The annotators fill in the sheet in place; 2.06 reads it. Existing files are not overwritten
+unless you pass `--force` (`python scripts/2_taxonomy/2.03_rnv_sample_test_validation.py --force`), because
+re-sampling would no longer match annotations already made.
 
 ### 3. Run the taxonomy
 
@@ -122,7 +126,7 @@ confusion matrix. Parts that have not been run yet are marked as such, so the re
 | `2.00_rnv_select_smoke_sample.py` | `smoke-select` | Smoke sample (CPU) |
 | `2.01_rnv_run_taxonomy.py` | `taxonomy`, `taxonomy-<platform>`, `taxonomy-eval`, `taxonomy-eval-<platform>` | Taxonomy labelling (GPU, parallel launcher) |
 | `2.02_rnv_run_judge.py` | `judge`, `judge-<platform>` | LLM judge (GPU, parallel launcher) |
-| `2.03_rnv_split_data_taxonomy.py` | `taxonomy-split` | Test/validation split without smoke paths (CPU) |
+| `2.03_rnv_sample_test_validation.py` | `taxonomy-sample` | Test and validation sets + annotation sheets, from the merged structures (CPU) |
 | `2.04_rnv_test_validate_taxonomy.py` | `taxonomy-accuracy` | Accuracy against annotations for the older **verduyn2020** scheme (CPU) |
 | `2.05_rnv_visualisation_results_taxonomy.py` | `taxonomy-viz` | Plots for 2.04 (CPU) |
 | `2.06_rnv_evaluate_human_annotations.py` | `eval-human` | Accuracy against human labels, kmetty2026 (CPU) |
@@ -133,11 +137,11 @@ confusion matrix. Parts that have not been run yet are marked as such, so the re
 ## Tests
 
 `make test` runs all unit tests. The data checks skip unless they are given a folder; the Makefile targets
-`smoke-sample-check` and `inference-check` pass the right ones. To run them by hand:
+`sample-check` and `inference-check` pass the right ones. To run them by hand:
 
 ```bash
 pytest tests/test_inference_output.py --inference-dir <dir> [--input-dir <dir>] [--results-json out.json]
-pytest tests/test_smoke_sample.py --sample-root <ANNOTATION_ROOT>/sample
+pytest tests/test_samples.py --sample-root <ANNOTATION_ROOT>/sample --merged-dir <merged structures>
 ```
 
 Shared code is in `src/inference/`: `taxonomy.py` (prompt filling, label list, output parsing and validation),
@@ -153,7 +157,7 @@ All scripts read their settings from `src/config.py`, which loads `.env` from th
 | `EMBEDDING_MODEL` | `.env` | Sentence-transformers model for 2.00 |
 | `LABEL_COL` | `.env` or environment | Human label column in the annotation files (2.06) |
 | `ANNOTATION_ROOT` | Makefile (`$(ROOT_DIR)/ddd_annotation`) | Annotation sample, annotations and inference outputs |
-| `SMOKE_K`, `SMOKE_MAX_SIM`, `SMOKE_POOL`, `SEED` | environment | Smoke sample size, similarity limit, candidate pool, random seed |
+| `SMOKE_K`, `SMOKE_MAX_SIM`, `SMOKE_POOL`, `TEST_N`, `VALIDATION_N`, `SEED` | `.env` | Smoke sample size, similarity limit, candidate pool, test and validation sizes, random seed |
 | `MODEL_CONFIG`, `MODEL_CONFIG_JUDGE` | Makefile | Config in `configs/` for the taxonomy model and the judge |
 | `DATA_TAX`, `COUNTRIES` | Makefile | Prompt to use (`kmetty2026`) and the tag used in output file names |
 | `INFERENCE_SUBDIR` | Makefile | Existing storage folder for outputs (`02_path_classification`) |

@@ -54,6 +54,8 @@ def main():
         ann = pd.concat([pd.read_excel(f) for f in ann_files])
         if args.label_col not in ann.columns:
             raise SystemExit(f"{platform}: column {args.label_col!r} not in annotation files {ann_files}")
+        ann = ann.dropna(subset=[args.label_col])      # sheets that are not annotated yet
+        ann = ann[ann[args.label_col].astype(str).str.strip() != ""]
         gold = dict(zip(ann["final_path"], ann[args.label_col]))
 
         result["platforms"][platform] = evaluate(records, gold, labels)

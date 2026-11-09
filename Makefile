@@ -279,8 +279,8 @@ cancel: ## Cancel all your jobs (NAME=<job name> for one job only)
 # TAXONOMY PHASES: smoke -> test -> validation
 #----------------------------------------------------------------------------------
 # 1. make smoke-select                       2.00: 5 dissimilar paths per platform (needs EMBEDDING_MODEL in .env)
-#    make smoke-sample-check                 pytest: 5 unique, dissimilar, not in the annotation sample
-#    make taxonomy-split                   2.03: test/validation sets, without the smoke paths
+#    make sample-check                       pytest: samples from the merged structures, disjoint; smoke dissimilar
+#    make taxonomy-sample                    2.03: test (20) and validation (80) sets + annotation sheets, without smoke paths
 # 2. make taxonomy-eval SPLIT=smoke          run the taxonomy (GPU)
 #    make inference-check SPLIT=smoke        pytest on the output; on failure the judge is submitted
 #    make report SPLIT=smoke                 HTML report: pytest, judge, (human evaluation)
@@ -288,13 +288,13 @@ cancel: ## Cancel all your jobs (NAME=<job name> for one job only)
 #    make eval-human SPLIT=test              2.06: accuracy against the annotations
 #    make report SPLIT=test
 
-.PHONY: smoke-select smoke-sample-check inference-check eval-human report test
+.PHONY: smoke-select sample-check inference-check eval-human report test
 smoke-select: ## Select the smoke sample: 5 dissimilar paths per platform
 	@test -n "$(EMBEDDING_MODEL)" || (echo "ERROR: set EMBEDDING_MODEL in .env (sentence-transformers model, see .env.example)" && exit 1)
 	$(call CPU,scripts/2_taxonomy/2.00_rnv_select_smoke_sample.py)
 
-smoke-sample-check: ## pytest: smoke sample is small, dissimilar and disjoint from test/validation
-	$(PYTHON) -m pytest tests/test_smoke_sample.py -v --sample-root=$(SAMPLE_ROOT)
+sample-check: ## pytest: samples come from the merged structures, are disjoint; smoke is small and dissimilar
+	$(PYTHON) -m pytest tests/test_samples.py -v --sample-root=$(SAMPLE_ROOT) --merged-dir=$(SOURCE_ROOT)
 
 inference-check: ## pytest on the taxonomy output; submits the judge if it fails (SPLIT=...)
 	@mkdir -p $(REPORT_DIR)
@@ -320,8 +320,8 @@ id_std_val: ## Validate the id standardisation test run
 id_std_viz: ## Visualise id standardisation validation
 	$(call CPU,scripts/1_path_standardisation/1.01.02_rnv_visualisation_validation_id_standardisation.py)
 
-taxonomy-split: ## Split into test/validation (without the smoke sample)
-	$(call CPU,scripts/2_taxonomy/2.03_rnv_split_data_taxonomy.py)
+taxonomy-sample: ## Sample the test and validation sets from the merged structures (without the smoke sample)
+	$(call CPU,scripts/2_taxonomy/2.03_rnv_sample_test_validation.py)
 
 taxonomy-accuracy: ## Validate the taxonomy test run
 	$(call CPU,scripts/2_taxonomy/2.04_rnv_test_validate_taxonomy.py)
