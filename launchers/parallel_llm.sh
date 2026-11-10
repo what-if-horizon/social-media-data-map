@@ -101,7 +101,7 @@ for ((i=0; i<SLURM_NNODES; i++)); do
     if [[ -n "${node_files[i]}" ]]; then
         # --gpus-per-node like the sbatch line in the Makefile: srun refuses it together with --gres
         srun --export=ALL --exclusive -N1 -n1 --gpus-per-node=${GPUS_PER_NODE:-4} \
-            launchers/parallel_worker.sh "$i" ${node_files[i]} &
+            bash launchers/parallel_worker.sh "$i" ${node_files[i]} &
     fi
 done
 
