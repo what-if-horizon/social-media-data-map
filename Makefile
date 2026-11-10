@@ -281,14 +281,7 @@ endif
 
 .PHONY: judge judge-check-model
 judge-check-model:
-	@if [ "$(MODEL_CONFIG)" = "$(MODEL_CONFIG_JUDGE)" ]; then \
-		if [ -n "$(ALLOW_SAME_JUDGE)" ]; then \
-			echo "WARNING: the judge is the taxonomy model ($(MODEL_CONFIG)). Fine to test the pipeline, but not an independent check."; \
-		else \
-			echo "ERROR: the judge must be a different model than the taxonomy model ($(MODEL_CONFIG)). To test the pipeline with one model: make judge ... MODEL_CONFIG_JUDGE=$(MODEL_CONFIG) ALLOW_SAME_JUDGE=1"; \
-			exit 1; \
-		fi; \
-	fi
+	@test "$(MODEL_CONFIG)" != "$(MODEL_CONFIG_JUDGE)" || (echo "ERROR: the judge must be a different model than the taxonomy model ($(MODEL_CONFIG))" && exit 1)
 ifeq ($(SPLIT),smoke)
 judge: judge-check-model
 	@$(MAKE) --no-print-directory llm-run JOB=judge SUB=smoke NODES=$(or $(NODES),$(smoke_NODES)) TIME=$(or $(TIME),$(smoke_TIME)) $(judge_smoke_ARGS)
