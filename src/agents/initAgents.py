@@ -196,7 +196,8 @@ class AgentManager:
             # Model name from YAML
             model_name = entry["name"]
 
-            model_num = entry["model_num"]
+            # Key of the agent: `id` (parallel launcher configs) or `model_num` (older configs)
+            model_num = entry["id"] if "id" in entry else entry["model_num"]
 
             temperature = entry['temperature']
 
