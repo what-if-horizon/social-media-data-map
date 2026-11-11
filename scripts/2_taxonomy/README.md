@@ -156,6 +156,23 @@ the pytest result, a summary of the output (top-1 labels, confidence), the judge
 paths it did not mark correct, and, if the human evaluation exists, accuracy per platform, recall per label and a
 confusion matrix. Parts that have not been run yet are marked as such, so the report can be built at any stage.
 
+## Example paths for the annotation instructions
+
+```bash
+make examples-pool              # 2.08: ~500 random paths per platform (EXAMPLES_POOL_N), without smoke/test/validation
+make taxonomy-run SPLIT=pool    # the model labels them (one GPU job, all platforms)
+make examples                   # 2.08: EXAMPLES_K (3) random paths per platform and category
+```
+
+The model's top-1 label decides the category (any confidence), so the categories are suggestions, not human labels:
+check them before they go into the instructions. Output in `<ANNOTATION_ROOT>/annotation/examples/`:
+`annotation_examples.xlsx` (sheet `examples`: category, platform, path, model confidence, second label, rationale;
+sheet `coverage`: how many pool paths each platform/category had) and `annotation_examples.md` (grouped by category,
+then platform, to paste into the instructions). Where the pool has fewer than 3 paths for a platform/category, all
+of them are listed and the gap is printed. The selected paths are also saved in `sample/examples/`, and
+`make taxonomy-sample` keeps them out of the test and validation sets, so annotators are never asked to annotate
+their own examples.
+
 ## Scripts
 
 | Script | Target | What it does |
@@ -168,6 +185,7 @@ confusion matrix. Parts that have not been run yet are marked as such, so the re
 | `2.05_rnv_visualisation_results_taxonomy.py` | `taxonomy-viz` | Plots for 2.04 (CPU) |
 | `2.06_rnv_evaluate_human_annotations.py` | `eval-human` | Accuracy against human labels, kmetty2026 (CPU) |
 | `2.07_rnv_build_report.py` | `report` | HTML report per phase (CPU) |
+| `2.08_rnv_annotation_examples.py` | `examples-pool`, `examples` | Example paths per platform and category (CPU) |
 
 2.04 and 2.05 belong to the earlier Verduyn active/passive scheme and are not part of the flow above. They
 expect their own annotation files and results, which no longer exist in `ddd_annotation`.

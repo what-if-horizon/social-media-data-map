@@ -222,9 +222,12 @@ judge_ARGS = MODULE_PATH=scripts/2_taxonomy/2.02_rnv_run_judge.py \
 # the output still goes to <platform>/ sub-folders). Starting the vLLM servers takes longer than the work.
 smoke_NODES := 1
 smoke_TIME  := 00:15:00
+# SPLIT=pool (the paths the model labels for the annotation examples, 2.08) is also one job: ~500 paths per platform
+pool_NODES  := 1
+pool_TIME   := 00:30:00
 taxonomy_run_smoke_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
 	INPUT_GLOB='*/*.csv' \
-	SOURCE_FOLDER=$(SAMPLE_ROOT)/smoke \
+	SOURCE_FOLDER=$(SAMPLE_ROOT)/$(SPLIT) \
 	OUTPUT_FOLDER=$(INFERENCE_DIR) \
 	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
 	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
@@ -271,12 +274,12 @@ $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,judge,judge,$(p))))
 .PHONY: taxonomy path_std taxonomy-run
 taxonomy: $(addprefix taxonomy-,$(PLATFORMS)) ## Submit the taxonomy for all platforms
 path_std: $(addprefix path_std-,$(PLATFORMS)) ## Submit path standardisation (1.02) for all platforms
-ifeq ($(SPLIT),smoke)
+ifneq ($(filter smoke pool,$(SPLIT)),)
 # one job for all platforms
 taxonomy-run:
-	@$(MAKE) --no-print-directory llm-run JOB=taxonomy-run SUB=smoke NODES=$(or $(NODES),$(smoke_NODES)) TIME=$(or $(TIME),$(smoke_TIME)) $(taxonomy_run_smoke_ARGS)
+	@$(MAKE) --no-print-directory llm-run JOB=taxonomy-run SUB=$(SPLIT) NODES=$(or $(NODES),$($(SPLIT)_NODES)) TIME=$(or $(TIME),$($(SPLIT)_TIME)) $(taxonomy_run_smoke_ARGS)
 else
-taxonomy-run: $(addprefix taxonomy-run-,$(PLATFORMS)) ## Run the taxonomy on a sample (SPLIT=smoke|test|validation; smoke = one job)
+taxonomy-run: $(addprefix taxonomy-run-,$(PLATFORMS)) ## Run the taxonomy on a sample (SPLIT=smoke|pool|test|validation; smoke and pool = one job)
 endif
 
 .PHONY: judge judge-check-model
@@ -351,6 +354,15 @@ id_std_viz: ## Visualise id standardisation validation
 
 taxonomy-sample: ## Sample the test and validation sets from the merged structures (without the smoke sample)
 	$(call CPU,scripts/2_taxonomy/2.03_rnv_sample_test_validation.py)
+
+# Example paths per platform and category for the annotation instructions (2.08):
+#   make examples-pool  ->  make taxonomy-run SPLIT=pool  ->  make examples
+.PHONY: examples-pool examples
+examples-pool: ## Draw ~500 random paths per platform for the model to label (annotation examples)
+	$(call CPU,scripts/2_taxonomy/2.08_rnv_annotation_examples.py,pool)
+
+examples: ## Pick 3 random example paths per platform and category from the labelled pool
+	$(call CPU,scripts/2_taxonomy/2.08_rnv_annotation_examples.py,examples)
 
 taxonomy-accuracy: ## Validate the taxonomy test run
 	$(call CPU,scripts/2_taxonomy/2.04_rnv_test_validate_taxonomy.py)

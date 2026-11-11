@@ -7,6 +7,11 @@ import json
 import re
 
 
+def label_list(template):
+    """The numbered labels of the prompt in their order, e.g. ['Login data', 'Connection / device telemetry', ...]."""
+    return re.findall(r'^\s*\d+\.\s+"(.+?)"\s*$', template, flags=re.MULTILINE)
+
+
 def build_prompt(template, path):
     # str.format would choke on the JSON braces in the prompt, so plain replace
     return template.replace("{PATH}", path)

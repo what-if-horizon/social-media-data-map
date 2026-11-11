@@ -33,6 +33,7 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 | `2_taxonomy/2.05` visualisation_results_taxonomy | `taxonomy-viz` | CPU | Plots for the above (verduyn2020) |
 | `2_taxonomy/2.06` evaluate_human_annotations | `eval-human` | CPU | Accuracy of the kmetty2026 taxonomy against human annotations |
 | `2_taxonomy/2.07` build_report | `report` | CPU | HTML report per phase |
+| `2_taxonomy/2.08` annotation_examples | `examples-pool`, `examples` | CPU | 3 example paths per platform and category, for the annotation instructions |
 
 `src/ingest/*_json_to_csv.py` (`flatten_dd`, `flatten_dd_<fb|ig|tt|x|yt>`) also run on the CPU launcher.
 

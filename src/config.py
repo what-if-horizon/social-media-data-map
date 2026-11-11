@@ -69,6 +69,9 @@ SEED = int(os.getenv("SEED", 42))
 TEST_N = int(os.getenv("TEST_N", 20))                     # paths per platform in the test set (2.03)
 VALIDATION_N = int(os.getenv("VALIDATION_N", 80))          # paths per platform in the validation set (2.03)
 
+EXAMPLES_POOL_N = int(os.getenv("EXAMPLES_POOL_N", 500))   # paths per platform the model labels for the examples (2.08)
+EXAMPLES_K = int(os.getenv("EXAMPLES_K", 3))                # example paths per platform and category (2.08)
+
 PLATFORMS = ["facebook", "instagram", "tiktok", "youtube", "x"]
 
 
