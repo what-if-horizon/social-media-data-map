@@ -417,6 +417,28 @@ annotation-run: ## Run the taxonomy (kmetty2026_simple, 5 labels) on test + vali
 		OUTPUT_PATTERN='{platform}_{n}_class_ids_$(ANNOTATION_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
 		EXTRA_EXPORT=',DATA_TAX=$(ANNOTATION_TAX)'
 
+.PHONY: annotation-interface-smoke
+annotation-interface-smoke: ## Test version of the interface from the smoke sample (20 paths) -> annotation/annotation_interface_smoke.html
+	PYTHONPATH=. $(PYTHON) scripts/2_taxonomy/2.09_rnv_build_annotation_interface.py --smoke
+
+# Paths of annotation-run without a valid prediction (2.10): prepare (CPU, seconds) -> annotation-retry (one GPU job) -> merge.
+.PHONY: annotation-retry-prepare annotation-retry annotation-retry-merge
+annotation-retry-prepare: ## Collect the failed paths of annotation-run into sample_retry/
+	PYTHONPATH=. $(PYTHON) scripts/2_taxonomy/2.10_rnv_retry_failed_annotation.py prepare
+
+annotation-retry: ## Re-run the failed paths (one GPU job; run annotation-retry-prepare first)
+	@test -d $(ANNOTATION_ROOT)/sample_retry || (echo "ERROR: run make annotation-retry-prepare first" && exit 1)
+	@$(MAKE) --no-print-directory llm-run JOB=annotation-retry SUB=all NODES=$(or $(NODES),1) TIME=$(or $(TIME),00:20:00) \
+		MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
+		INPUT_GLOB='$(ANNOTATION_GLOB)' \
+		SOURCE_FOLDER=$(ANNOTATION_ROOT)/sample_retry \
+		OUTPUT_FOLDER=$(ANNOTATION_ROOT)/inference/02_path_classification_$(ANNOTATION_TAX)_retry \
+		OUTPUT_PATTERN='{platform}_{n}_class_ids_$(ANNOTATION_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
+		EXTRA_EXPORT=',DATA_TAX=$(ANNOTATION_TAX)'
+
+annotation-retry-merge: ## Merge the valid retry answers into the annotation-run output
+	PYTHONPATH=. $(PYTHON) scripts/2_taxonomy/2.10_rnv_retry_failed_annotation.py merge
+
 # Annotation interface for the participants (2.09): needs taxonomy-sample and annotation-run.
 .PHONY: annotation-interface
 annotation-interface: ## Build annotation/annotation_interface.html from the test + validation samples and the model output (ALLOW_MISSING=1 to build without predictions)

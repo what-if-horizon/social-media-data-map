@@ -19,6 +19,17 @@ tests in tests/test_clean_paths.py describe what each rule may and may not chang
 
 import re
 
+# Files that only describe the export itself (metadata), not data of the user. Their paths are dropped in the ingest
+# (0.01), per platform. X: data/manifest.js lists the archive (account id, generation date, the files and their counts).
+METADATA_FILES = {"x": re.compile(r"(?:^|/)manifest\.js(?:/|$)", re.IGNORECASE)}
+
+
+def is_metadata_path(platform: str, path) -> bool:
+    """True for a path inside a metadata file of the export (see METADATA_FILES); such paths are not data."""
+    pattern = METADATA_FILES.get(str(platform).lower())
+    return bool(pattern and isinstance(path, str) and pattern.search(path))
+
+
 # Wrapper folders at the start of a path. Applied repeatedly, anchored at the start.
 WRAPPERS = [
     re.compile(r"^ig/"),                                                  # ig/<export>

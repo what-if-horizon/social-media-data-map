@@ -9,7 +9,7 @@ You are an expert annotator of Digital Data Packages (DDPs): the raw data export
 
 # Steps
 1. Read carefully the definition of the DDP topology below.
-2. Read the path to a data entry.
+2. Read the platform the data comes from and the path to a data entry. The same path can mean different things on different platforms.
 3. Choose the three best-fitting labels for the path and give each a confidence score.
 4. Return the result in the output format.
 
@@ -91,20 +91,28 @@ Return only valid JSON, with no text before or after it:
 {"path": "<the input path>", "predictions": [{"label": "<label>", "confidence": <score>}, {"label": "<label>", "confidence": <score>}, {"label": "<label>", "confidence": <score>}], "rationale": "<one or two sentences explaining the top choice with reference to its definition, and why the alternatives are less likely>"}
 
 # Examples
+Platform: Instagram
 Input: Instagram/connections/followers_and_following/following.json
 Output: {"path": "Instagram/connections/followers_and_following/following.json", "predictions": [{"label": "Network (ego ties)", "confidence": 65}, {"label": "Ratings and interests", "confidence": 30}, {"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 5}], "rationale": "A following list is a follower registry, which fits Network (ego ties); because followed accounts can be organizations, Ratings and interests is a strong alternative."}
 
+Platform: YouTube
 Input: YouTube/history/watch-history.json
 Output: {"path": "YouTube/history/watch-history.json", "predictions": [{"label": "Passive consumption and exposure", "confidence": 90}, {"label": "Ratings and interests", "confidence": 7}, {"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 3}], "rationale": "YouTube watch history is named in the definition of Passive consumption and exposure as content that appeared on the user's screen."}
 
+Platform: TikTok
 Input: TikTok/Activity/Search History/SearchList
 Output: {"path": "TikTok/Activity/Search History/SearchList", "predictions": [{"label": "Human-machine dialogue", "confidence": 88}, {"label": "Passive consumption and exposure", "confidence": 8}, {"label": "Ratings and interests", "confidence": 4}], "rationale": "Search query histories fall under Human-machine dialogue because they record what the user actively formulated, not what they were exposed to."}
 
+Platform: Facebook
 Input: Facebook/ads_information/other_categories_used_to_reach_you.json
 Output: {"path": "Facebook/ads_information/other_categories_used_to_reach_you.json", "predictions": [{"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 90}, {"label": "Ratings and interests", "confidence": 7}, {"label": "Passive consumption and exposure", "confidence": 3}], "rationale": "These are platform-generated interest categories, not interests the user stated."}
 
+Platform: X
 Input: X/data/ip-audit.js
 Output: {"path": "X/data/ip-audit.js", "predictions": [{"label": "Login data", "confidence": 55}, {"label": "Connection / device telemetry", "confidence": 40}, {"label": "Location and GPS traces", "confidence": 5}], "rationale": "The file logs account entry timestamps, which fits Login data, but IP addresses are listed under Connection / device telemetry; it is not continuous geospatial telemetry."}
+
+# Platform
+{PLATFORM}
 
 # Path to classify
 {PATH}
@@ -204,18 +212,23 @@ Return only valid JSON, with no text before or after it:
 {"path": "<the input path>", "predictions": [{"label": "<label>", "confidence": <score>}, {"label": "<label>", "confidence": <score>}, {"label": "<label>", "confidence": <score>}, {"label": "<label>", "confidence": <score>}, {"label": "<label>", "confidence": <score>}], "rationale": "<one or two sentences explaining the top choice with reference to its definition, and why the alternatives are less likely>"}
 
 # Examples
+Platform: Instagram
 Input: Instagram/connections/followers_and_following/following.json
 Output: {"path": "Instagram/connections/followers_and_following/following.json", "predictions": [{"label": "Network (ego ties)", "confidence": 60}, {"label": "Ratings and interests", "confidence": 28}, {"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 6}, {"label": "Passive consumption and exposure", "confidence": 4}, {"label": "Extended profile (settings)", "confidence": 2}], "rationale": "A following list is a follower registry, which fits Network (ego ties); because followed accounts can be organizations, Ratings and interests is a strong alternative."}
 
+Platform: YouTube
 Input: YouTube/history/watch-history.json
 Output: {"path": "YouTube/history/watch-history.json", "predictions": [{"label": "Passive consumption and exposure", "confidence": 85}, {"label": "Ratings and interests", "confidence": 7}, {"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 4}, {"label": "Human-machine dialogue", "confidence": 2}, {"label": "One-to-many communication", "confidence": 2}], "rationale": "YouTube watch history is named in the definition of Passive consumption and exposure as content that appeared on the user's screen."}
 
+Platform: TikTok
 Input: TikTok/Activity/Search History/SearchList
 Output: {"path": "TikTok/Activity/Search History/SearchList", "predictions": [{"label": "Human-machine dialogue", "confidence": 85}, {"label": "Passive consumption and exposure", "confidence": 7}, {"label": "Ratings and interests", "confidence": 4}, {"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 2}, {"label": "One-to-many communication", "confidence": 2}], "rationale": "Search query histories fall under Human-machine dialogue because they record what the user actively formulated, not what they were exposed to."}
 
+Platform: Facebook
 Input: Facebook/ads_information/other_categories_used_to_reach_you.json
 Output: {"path": "Facebook/ads_information/other_categories_used_to_reach_you.json", "predictions": [{"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 85}, {"label": "Ratings and interests", "confidence": 7}, {"label": "Passive consumption and exposure", "confidence": 4}, {"label": "Extended profile (settings)", "confidence": 2}, {"label": "Application / third-party links", "confidence": 2}], "rationale": "These are platform-generated interest categories, not interests the user stated."}
 
+Platform: X
 Input: X/data/ip-audit.js
 Output: {"path": "X/data/ip-audit.js", "predictions": [{"label": "Login data", "confidence": 50}, {"label": "Connection / device telemetry", "confidence": 38}, {"label": "Location and GPS traces", "confidence": 6}, {"label": "Algorithmic and inferred profiles, usage and screen-time metrics", "confidence": 4}, {"label": "Application / third-party links", "confidence": 2}], "rationale": "The file logs account entry timestamps, which fits Login data, but IP addresses are listed under Connection / device telemetry; it is not continuous geospatial telemetry."}
 
@@ -223,11 +236,11 @@ Output: {"path": "X/data/ip-audit.js", "predictions": [{"label": "Login data", "
 
 
 def kmetty2026_simple():
-    """Simplified definitions of the annotation instructions, and five ranked labels instead of three."""
+    """Simplified definitions of the annotation instructions, and five ranked labels instead of three. The platform line comes from kmetty2026."""
     base = kmetty2026()
     start = base.index("# DDP topology")
     scoring = base.index("# Confidence scoring")
-    path = base.index("# Path to classify")
+    path = base.index("# Platform\n{PLATFORM}")
     out = base[:start] + _TOPOLOGY_SIMPLE + _DECISION_RULES_SIMPLE + _SCORING_TOP5 + base[path:]
     for a, b in (("give the three most likely labels", "give the five most likely labels"),
                  ("Choose the three best-fitting labels", "Choose the five best-fitting labels")):

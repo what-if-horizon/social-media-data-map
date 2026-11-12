@@ -28,8 +28,9 @@ def test_validate_record():
 def test_judge_prompt_uses_the_same_taxonomy():
     section = taxonomy_section(PROMPT)
     assert '"Login data"' in section and "# Confidence scoring" not in section
-    out = build_judge_prompt(PROMPT, rec(path="x/y.json"))
+    out = build_judge_prompt(PROMPT, rec(path="x/y.json"), "TikTok")
     assert section in out and "x/y.json" in out and "{PATH}" not in out and "{PREDICTIONS}" not in out
+    assert "# Platform\nTikTok\n" in out and "{PLATFORM}" not in out
     assert "no valid output" in build_judge_prompt(PROMPT, {"path": "z", "predictions": None})
 
 

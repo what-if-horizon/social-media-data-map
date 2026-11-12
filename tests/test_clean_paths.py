@@ -1,7 +1,7 @@
 """The path cleaning of the ingest pipeline (src/ingest/cleanPaths.py): what each rule changes, and what it must not."""
 import pytest
 
-from src.ingest.cleanPaths import clean_path, drop_part_number, match_key, split_unit, strip_wrappers
+from src.ingest.cleanPaths import clean_path, drop_part_number, is_metadata_path, match_key, split_unit, strip_wrappers
 
 
 @pytest.mark.parametrize("raw,expected", [
@@ -75,3 +75,16 @@ def test_match_key_compares_loosely_but_clean_path_stays_readable():
 def test_split_unit(path, unit, field):
     assert split_unit(path) == (unit, field)
     assert "/".join(x for x in (unit, field) if x) == path    # nothing lost
+
+
+@pytest.mark.parametrize("plat,path,expected", [
+    ("x", "data/manifest.js/userInfo/accountId", True),
+    ("x", "data/manifest.js", True),
+    ("x", "x-archive/data/Manifest.js/dataTypes/tweets/files/count", True),
+    ("x", "data/tweets.js/tweet/full_text", False),
+    ("x", "data/manifest.json/x", False),            # a different file
+    ("x", "data/my_manifest.js/x", False),           # only the file called manifest.js
+    ("facebook", "data/manifest.js/userInfo/accountId", False),   # the rule is per platform
+])
+def test_metadata_paths(plat, path, expected):
+    assert is_metadata_path(plat, path) is expected

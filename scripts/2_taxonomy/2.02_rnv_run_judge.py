@@ -20,6 +20,7 @@ from src.inference import parallel
 from src.inference import prompts as p
 from src.inference import utils as u
 from src.inference.judge import build_judge_prompt, parse_verdict
+from src.inference.taxonomy import platform_name
 from src.inference.taxonomy import valid_labels
 
 MAX_RETRIES = 3
@@ -32,8 +33,8 @@ if DATA_TAX not in PROMPTS:
     raise SystemExit(f"Unknown DATA_TAX '{DATA_TAX}', expected one of {list(PROMPTS)}")
 
 
-def judge_one(record, taxonomy_prompt, labels, agent):
-    prompt = build_judge_prompt(taxonomy_prompt, record)
+def judge_one(record, taxonomy_prompt, labels, agent, platform=None):
+    prompt = build_judge_prompt(taxonomy_prompt, record, platform)
     top1 = record["predictions"][0]["label"] if record.get("predictions") else None
     last_raw = None
     for attempt in range(1, MAX_RETRIES + 1):
@@ -55,10 +56,12 @@ def make_process_file(agent):
         with open(source_file, encoding="utf-8") as f:
             records = json.load(f)
         print(f" {os.path.basename(source_file)}: judging {len(records)} records", flush=True)
+        # the platform is the folder the taxonomy output is in (<...>/<split>/<platform>/<file>.json)
+        platform = platform_name(os.path.basename(os.path.dirname(os.path.abspath(source_file))))
 
         t0 = time.time()
         with ThreadPoolExecutor(max_workers=CONCURRENCY) as pool:
-            results = list(pool.map(lambda r: judge_one(r, taxonomy_prompt, labels, agent), records))  # order preserved
+            results = list(pool.map(lambda r: judge_one(r, taxonomy_prompt, labels, agent, platform), records))  # order preserved
         n_failed = sum(r["verdict"] is None for r in results)
         print(f" judge done in {time.time() - t0:.0f}s | {n_failed} without a valid verdict", flush=True)
 

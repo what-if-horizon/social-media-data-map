@@ -26,10 +26,14 @@ from src.inference import prompts as p
 from src.inference import utils as u
 from src import config
 from src.inference import parallel
-from src.inference.taxonomy import build_prompt, parse_prediction, valid_labels
+from src.inference.taxonomy import build_prompt, parse_prediction, platform_name, valid_labels
 
 COL_PATH = "final_path"
 MAX_RETRIES = 3
+# Attempt 1 is deterministic with the max_tokens of the model config. With temperature 0 and a fixed seed an identical
+# retry gives the same answer, and a reasoning model that ran out of tokens (content None, or JSON cut off) would run
+# out again. So attempts 2 and 3 use a larger token budget, a little temperature and another seed.
+RETRY_OVERRIDES = {"max_tokens": 8192, "temperature": 0.3}
 
 # Which prompt to use; the output file name comes from OUTPUT_PATTERN (see src/inference/parallel.py)
 DATA_TAX = config.DATA_TAX
@@ -46,7 +50,8 @@ if DATA_TAX not in PROMPTS:
 def run_llm_validated(prompt, agent, labels, max_retries=MAX_RETRIES):
     last_raw = None
     for attempt in range(1, max_retries + 1):
-        last_raw = u.run_llm(prompt, agent)
+        overrides = {} if attempt == 1 else {**RETRY_OVERRIDES, "seed": 42 + attempt}
+        last_raw = u.run_llm(prompt, agent, **overrides)
         parsed = parse_prediction(last_raw, labels)
         if parsed is not None:
             return {"raw": last_raw, "parsed": parsed, "ok": True, "attempts": attempt}
@@ -67,7 +72,9 @@ def generate_predictions(source_file, output_file, agent, template, dataset_name
     df = df.drop(columns=[c for c in df.columns if c.startswith("Unnamed")])
 
     paths = df[COL_PATH].fillna("").astype(str).tolist()
-    prompts = [build_prompt(template, path) for path in paths]
+    # The platform is the folder the source file is in (<...>/<platform>/<file>.csv); prompts with {PLATFORM} tell the model
+    platform = platform_name(os.path.basename(os.path.dirname(os.path.abspath(source_file))))
+    prompts = [build_prompt(template, path, platform) for path in paths]
     print(f" {len(prompts)} prompts prepared, running LLM...", flush=True)
 
     t0 = time.time()

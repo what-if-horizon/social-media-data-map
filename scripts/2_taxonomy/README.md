@@ -161,7 +161,11 @@ confusion matrix. Parts that have not been run yet are marked as such, so the re
 ```bash
 make annotation-run                 # 2.01 with kmetty2026_simple (five labels) on test + validation, no YouTube: ONE GPU job
 make inference-check SPLIT=test DATA_TAX=kmetty2026_simple      # optional: pytest (also for validation)
+make annotation-retry-prepare       # optional (2.10): paths without a valid prediction; prints how many
+make annotation-retry               # one GPU job on those paths (attempts 2-3 get more tokens and some temperature)
+make annotation-retry-merge         # valid answers replace the failed records (originals kept as .json.before_retry)
 make annotation-interface           # 2.09
+make annotation-interface-smoke     # test page from the smoke sample (20 paths, no YouTube): annotation_interface_smoke.html
 ```
 
 2.09 writes `annotation/annotation_interface.html`: one page for the participants with the test and validation
@@ -200,6 +204,7 @@ their own examples.
 | `2.06_rnv_evaluate_human_annotations.py` | `eval-human` | Accuracy against human labels, kmetty2026 (CPU) |
 | `2.07_rnv_build_report.py` | `report` | HTML report per phase (CPU) |
 | `2.08_rnv_annotation_examples.py` | `examples-pool`, `examples` | Example paths per platform and category (CPU) |
+| `2.10_rnv_retry_failed_annotation.py` | `annotation-retry-prepare`, `annotation-retry`, `annotation-retry-merge` | Re-run the annotation paths without a valid prediction (CPU + GPU) |
 | `2.09_rnv_build_annotation_interface.py` | `annotation-interface` | HTML annotation interface from test + validation and the model output (CPU) |
 
 2.04 and 2.05 belong to the earlier Verduyn active/passive scheme and are not part of the flow above. They

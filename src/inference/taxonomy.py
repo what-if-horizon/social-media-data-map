@@ -12,9 +12,18 @@ def label_list(template):
     return re.findall(r'^\s*\d+\.\s+"(.+?)"\s*$', template, flags=re.MULTILINE)
 
 
-def build_prompt(template, path):
-    # str.format would choke on the JSON braces in the prompt, so plain replace
-    return template.replace("{PATH}", path)
+PLATFORM_NAMES = {"facebook": "Facebook", "instagram": "Instagram", "tiktok": "TikTok", "x": "X", "youtube": "YouTube"}
+
+
+def platform_name(folder):
+    """Display name for a platform folder (sample/<split>/<platform>/): 'tiktok' -> 'TikTok'. Unknown folders as they are."""
+    return PLATFORM_NAMES.get(str(folder).lower(), str(folder))
+
+
+def build_prompt(template, path, platform=None):
+    # str.format would choke on the JSON braces in the prompt, so plain replace.
+    # {PLATFORM} exists only in prompts that tell the model the platform (kmetty2026_simple).
+    return template.replace("{PLATFORM}", platform or "unknown").replace("{PATH}", path)
 
 
 def valid_labels(template):

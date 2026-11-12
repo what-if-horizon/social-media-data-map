@@ -9,6 +9,7 @@ part is random per platform and split. The split (test or validation) is not in 
   make taxonomy-sample                       # 2.03: test + validation samples
   make annotation-run                        # 2.01 with kmetty2026_simple on test + validation, no YouTube (GPU jobs)
   make annotation-interface                  # 2.09: this script
+  make annotation-interface-smoke            # same page from the smoke sample, to try the interface (20 paths)
 
 Paths:       <ANNOTATION_ROOT>/sample/<split>/<platform>/<platform>_<split>.csv   (column final_path)
 Predictions: <ANNOTATION_ROOT>/inference/02_path_classification_kmetty2026_simple/<split>/<platform>/*.json
@@ -39,22 +40,32 @@ TOP_N = 5
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--allow-missing", action="store_true", help="build even if some paths have no predictions")
+parser.add_argument("--smoke", action="store_true",
+                    help="test build from the smoke sample (5 paths per platform, no YouTube) -> annotation_interface_smoke.html")
 args = parser.parse_args()
+if args.smoke:
+    SPLITS = ["smoke"]
+    args.allow_missing = True
 
 label_to_id = {m.group(2).strip(): int(m.group(1))
                for m in re.finditer(r"^### (\d+)\. (.+)$", INSTRUCTIONS.read_text(), re.M)}
 assert len(label_to_id) == 15, f"expected 15 labels in {INSTRUCTIONS}, found {len(label_to_id)}"
 
 
-PREDICTIONS_DIR = os.path.join(config.ANNOTATION_ROOT, "inference", "02_path_classification_kmetty2026_simple")
+INFERENCE = os.path.join(config.ANNOTATION_ROOT, "inference")
+# The smoke sample may only have been run with the older kmetty2026 prompt (three labels): use it as a fallback.
+PREDICTIONS_DIRS = [os.path.join(INFERENCE, "02_path_classification_kmetty2026_simple")]
+if args.smoke:
+    PREDICTIONS_DIRS.append(os.path.join(INFERENCE, "02_path_classification"))
 
 
 def load_predictions(split, platform):
     """path -> list of label ids, best first."""
     preds = {}
-    for f in sorted(glob.glob(os.path.join(PREDICTIONS_DIR, split, platform, "*.json"))):
+    files = [f for d in PREDICTIONS_DIRS for f in sorted(glob.glob(os.path.join(d, split, platform, "*.json")))]
+    for f in files:
         for r in json.load(open(f)):
-            if not r.get("predictions"):
+            if not r.get("predictions") or r["path"] in preds:   # the first folder with a valid answer wins
                 continue
             ranked = sorted(r["predictions"], key=lambda p: -p["confidence"])
             ids = [label_to_id[p["label"]] for p in ranked if p["label"] in label_to_id]
@@ -70,7 +81,7 @@ missing = []
 for split in SPLITS:
     for platform, name in NAMES.items():
         preds = load_predictions(split, platform)
-        csv_file = os.path.join(config.sample_dir(split), platform, f"{platform}_{split}.csv")
+        csv_file = sorted(glob.glob(os.path.join(config.sample_dir(split), platform, f"{platform}_{split}*.csv")))[0]  # smoke: x_smoke_5.csv
         with open(csv_file) as fh:
             for row in csv.DictReader(fh):
                 path = row["final_path"]
@@ -109,8 +120,12 @@ for part in (1, 2):
             items.append({"id": f"{platform}_{len(items)}", "part": part, **it})
 print({f"part{pt}": sum(len(v) for v in parts[pt].values()) for pt in parts})
 
-html = HTML.read_text()
+out_file = HTML.with_name("annotation_interface_smoke.html") if args.smoke else HTML
+html = HTML.read_text()   # the main page is the template, also for --smoke
 block = "// BEGIN ITEMS\nconst ITEMS = " + json.dumps(items, indent=1, ensure_ascii=False) + ";\n// END ITEMS"
 html = re.sub(r"// BEGIN ITEMS.*?// END ITEMS", lambda m: block, html, flags=re.S)
-HTML.write_text(html)
-print(f"{len(items)} paths ({len(items) - len(missing)} with predictions) -> {HTML}")
+if args.smoke:   # its own saved progress, and a visible title, so it is not mistaken for the real thing
+    html = html.replace('"ddp_annotation_v1"', '"ddp_annotation_smoke"').replace("<title>DDP path annotation</title>", "<title>DDP path annotation (SMOKE TEST)</title>")
+    html = html.replace("<h1>Annotating paths in Digital Data Packages</h1>", "<h1>SMOKE TEST: Annotating paths in Digital Data Packages</h1>")
+out_file.write_text(html)
+print(f"{len(items)} paths ({len(items) - len(missing)} with predictions) -> {out_file}")

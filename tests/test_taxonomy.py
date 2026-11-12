@@ -125,6 +125,18 @@ class TestSimplePrompt(unittest.TestCase):
     def test_everything_but_topology_and_decision_rules_is_identical(self):
         self.assertEqual(self.around_topology(self.base), self.around_topology(self.simple))
 
+    def test_platform_is_given_to_the_model(self):
+        self.assertIn("# Platform\n{PLATFORM}", self.simple)
+        self.assertNotIn("{PLATFORM}", build_prompt(self.simple, "a/b.json", "TikTok"))
+        self.assertIn("# Platform\nTikTok\n\n# Path to classify\na/b.json", build_prompt(self.simple, "a/b.json", "TikTok"))
+        self.assertIn("# Platform\n{PLATFORM}", self.base)   # both prompts tell the model the platform
+        self.assertIn("Platform: TikTok\nInput: TikTok/", self.base)
+
+    def test_platform_name(self):
+        from src.inference.taxonomy import platform_name
+        self.assertEqual([platform_name(x) for x in ("tiktok", "x", "facebook", "youtube", "other")],
+                         ["TikTok", "X", "Facebook", "YouTube", "other"])
+
     def test_asks_for_five_valid_examples(self):
         import json, re
         from src.inference.taxonomy import validate_record

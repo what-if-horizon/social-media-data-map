@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DDP path annotation (SMOKE TEST)</title>
+<style>
+  :root { --bg:#fafafa; --fg:#1d1d1f; --muted:#666; --card:#fff; --line:#d9d9de; --accent:#2f5fd0; --accent-bg:#e8eefc; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#17171a; --fg:#ececf0; --muted:#9a9aa5; --card:#202025; --line:#3a3a42; --accent:#7ea2ff; --accent-bg:#26324f; }
+  }
+  body { font:16px/1.45 system-ui,sans-serif; background:var(--bg); color:var(--fg); margin:0; padding:24px 16px; }
+  main { max-width:820px; margin:0 auto; }
+  .progress { color:var(--muted); font-size:14px; margin-bottom:8px; }
+  .path { font:15px/1.4 ui-monospace,monospace; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:14px; word-break:break-all; }
+  .platform { font-size:13px; color:var(--muted); margin:16px 0 4px; }
+  h2 { font-size:17px; margin:20px 0 8px; }
+  .opt { display:block; width:100%; text-align:left; background:var(--card); color:var(--fg); border:1px solid var(--line);
+         border-radius:8px; padding:12px 14px; margin:0 0 8px; font:inherit; cursor:pointer; }
+  .opt:hover { border-color:var(--accent); }
+  .opt.sel { border-color:var(--accent); background:var(--accent-bg); }
+  .opt.none { border-style:dashed; color:var(--muted); }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:8px; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; font-size:14px; }
+  th { color:var(--muted); font-weight:600; }
+  tr.row { cursor:pointer; }
+  tr.row:hover { background:var(--accent-bg); }
+  tr.row.sel { background:var(--accent-bg); outline:2px solid var(--accent); outline-offset:-2px; }
+  tr.group td { background:var(--bg); color:var(--muted); font-size:13px; font-weight:400; }
+  tr.group td b { color:var(--fg); }
+  textarea { width:100%; box-sizing:border-box; min-height:70px; font:inherit; padding:10px; border-radius:8px;
+             border:1px solid var(--line); background:var(--card); color:var(--fg); }
+  .nav { display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; }
+  .nav button { font:inherit; padding:10px 18px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--fg); cursor:pointer; }
+  .nav button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .nav button:disabled { opacity:.4; cursor:not-allowed; }
+  #tip { position:fixed; z-index:10; max-width:340px; background:#111; color:#fff; font-size:13px; line-height:1.4;
+         padding:8px 10px; border-radius:6px; pointer-events:none; display:none; box-shadow:0 4px 14px rgba(0,0,0,.3); }
+  #name { font:inherit; padding:10px; width:100%; max-width:360px; box-sizing:border-box; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--fg); }
+  .sticky { position:sticky; top:0; z-index:5; background:var(--bg); padding:8px 0 10px; border-bottom:1px solid var(--line); }
+  #fullTable { scroll-margin-top:140px; }
+  .sticky .platform { margin:6px 0 4px; }
+  .top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+  .top .progress { margin:0; }
+  #showHelp { font:inherit; font-size:14px; padding:6px 12px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--fg); cursor:pointer; }
+  dialog { max-width:720px; width:calc(100% - 32px); border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--fg); padding:8px 20px 20px; }
+  dialog::backdrop { background:rgba(0,0,0,.5); }
+  .banner { background:var(--accent-bg); border:1px solid var(--accent); border-radius:8px; padding:12px 14px; margin-bottom:12px; }
+  h1 { font-size:22px; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main id="intro">
+  <h1>SMOKE TEST: Annotating paths in Digital Data Packages</h1>
+  <p>You will classify paths to data entries in Digital Data Packages (DDPs) from four platforms: X, Facebook, Instagram and TikTok. A language model annotates the same paths, so your labels can be compared with the model's.</p>
+  <div class="instr"></div>
+  <p>The task has two parts, each ordered by platform. In part 1 the model's suggested labels are shown next to the paths; in part 2 you choose from the full list of labels only.</p>
+  <p><b>When you are done</b>, download the CSV and email it to Nienke Visscher (<a href="mailto:nienke.visscher@bsc.es">nienke.visscher@bsc.es</a>). For any questions, contact the same address.</p>
+  <p>Your progress is saved in this browser, so you can close the page and continue later.</p>
+  <h2>Your name</h2>
+  <input id="name" type="text" placeholder="First and last name" autocomplete="name">
+  <div class="nav"><button class="primary" id="start">Start</button></div>
+</main>
+<main id="app" hidden>
+  <div id="banner" class="banner" hidden></div>
+  <div class="sticky">
+    <div class="top"><div class="progress" id="progress"></div><button id="showHelp">Instructions &amp; rules</button></div>
+    <div class="platform" id="platform"></div>
+    <div class="path" id="path"></div>
+  </div>
+
+  <h2 id="heading">Which label fits this path best?</h2>
+  <div id="options"></div>
+
+  <section id="fullTable" hidden>
+    <h2>All categories</h2>
+    <table>
+      <thead><tr><th style="width:36px">#</th><th style="width:30%">Category</th><th>Definition</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </section>
+
+  <div id="cannotBox" hidden>
+    <h2>Why can you not decide?</h2>
+    <textarea id="cannotReason" placeholder="Tell us what information is missing or why the path is unclear."></textarea>
+  </div>
+  <div id="ratBox" hidden>
+    <h2>Rationale (one or two sentences)</h2>
+    <textarea id="rationale" placeholder="Why does this label fit its definition, and why none of the suggestions?"></textarea>
+  </div>
+
+  <div class="nav">
+    <button id="prev">← Previous</button>
+    <button id="next" class="primary">Next →</button>
+    <button id="download">Download results (CSV)</button>
+  </div>
+</main>
+<template id="instrText">
+  <h2>Steps</h2>
+  <ol>
+    <li>Read the path. Use every part of it: platform, folder names, file name and field names.</li>
+    <li>Choose the best fitting label. Hover over an option to see its definition.</li>
+    <li>If none of the suggested labels fits, choose <b>None of the above</b>. A table with all 15 labels and their definitions appears; pick one there.</li>
+    <li>If the path does not give you enough information to decide, choose <b>I cannot decide</b> and explain why in the text box that appears.</li>
+    <li>Only if you chose <b>None of the above</b>: write a rationale of one or two sentences explaining why the label fits its definition and why none of the suggestions did. Otherwise no rationale is needed.</li>
+  </ol>
+  <h2>Overarching categories</h2>
+  <p>The 15 labels are grouped under three overarching categories. These explain the structure; they are never a label themselves.</p>
+  <ul>
+    <li><b>Service-provider-related data:</b> data the platform records automatically about how its systems are used. These are technical and analytical records, not things the user chose to share.</li>
+    <li><b>User-related data: semantically specified:</b> data about the user stored in fixed, predefined fields, so each value has a set meaning (for example a birthdate field or a list of followers). This sets it apart from free text and media, where the user decides what the content is.</li>
+    <li><b>User-related data: semantically unspecified:</b> data where the platform only provides an empty container (a text field, a JSON string or an HTML block) and the user decides what goes in it. You need to read, watch or listen to it to know what it means. It covers both text and media: photos, videos and voice notes.</li>
+  </ul>
+  <h2>Decision rules</h2>
+  <ul>
+    <li><b>Network (ego ties)</b> is strictly for interpersonal connections. <b>Ratings and interests</b> covers following organizations and subscribing to channels. If a file holds both, choose what it mainly records and mention the other in your rationale.</li>
+    <li><b>Passive consumption and exposure</b> is what the user was shown; <b>Human-machine dialogue</b> is what the user typed or asked.</li>
+    <li>Fixed, predefined fields are <i>semantically specified</i>; free text and media are <i>semantically unspecified</i>.</li>
+  </ul>
+</template>
+<dialog id="help">
+  <div class="instr"></div>
+  <p>Questions? Contact Nienke Visscher, <a href="mailto:nienke.visscher@bsc.es">nienke.visscher@bsc.es</a>. When you are done, download the CSV and email it to this address.</p>
+  <div class="nav"><button class="primary" id="closeHelp">Close</button></div>
+</dialog>
+<div id="tip"></div>
+
+<script>
+// ---- DATA: replace ITEMS with the LLM output (top5 = category ids, best first) ----
+const CATEGORIES = [
+ [1,"Login data","Data the platform needs to recognise the user, let them into their account securely and protect their identity. Examples: usernames, email addresses and timestamps of when the account was accessed.","Service-provider-related data"],
+ [2,"Connection / device telemetry","Technical details the platform records automatically about the devices and connections used to reach it. Examples: device type, operating system, hardware, camera model, synced devices, browser information and IP addresses.","Service-provider-related data"],
+ [3,"Application / third-party links","Records of outside apps or services that are connected to the user’s account, and the permissions they were given.","Service-provider-related data"],
+ [4,"Algorithmic and inferred profiles, usage and screen-time metrics","What the platform itself concludes or measures about the user, rather than what the user stated. Examples: interest categories assigned to the user, screen-time logs and usage metrics.","Service-provider-related data"],
+ [5,"Mandatory profile fields","Basic identity details the platform requires when someone creates an account. Examples: legal name, account ID, registration date, date of birth and gender.","User-related data: semantically specified"],
+ [6,"Extended profile (settings)","Optional settings and choices the user made in predefined fields. Examples: account settings, notification preferences, education history and registries of personal assets.","User-related data: semantically specified"],
+ [7,"Network (ego ties)","Connections between the user and other people on the platform. Examples: friend lists, follower and following lists, and connection tables. Use strictly for interpersonal connections.","User-related data: semantically specified"],
+ [8,"Ratings and interests","Traces that show what content the user chooses and likes: lifestyle, consumer habits and cultural taste. Examples: following an organization or subscribing to a YouTube channel.","User-related data: semantically specified"],
+ [9,"Contextual tags and mentions","Tags and mentions attached to existing content that say who or what it relates to. Examples: photo and post tags, user mentions in comments, @username mentions in tweets.","User-related data: semantically specified"],
+ [10,"Location and GPS traces","Ongoing records of where the user’s device was located, such as background location tracking by a smartphone.","User-related data: semantically specified"],
+ [11,"Passive consumption and exposure","Records of the content the platform showed the user. The user saw this content; they did not create it. Examples: YouTube watch history and TikTok recommended video feeds.","User-related data: semantically specified"],
+ [12,"Profile free text / bio","Free text the user wrote about themselves on their profile, such as a bio. Structured profile fields belong under Mandatory profile fields or Extended profile.","User-related data: semantically unspecified"],
+ [13,"Private communication","Messages and media sent to one person or to a closed group. Examples: direct messages, group chats, voice notes and shared media.","User-related data: semantically unspecified"],
+ [14,"One-to-many communication","Free text and media the user shares with a broad audience. Examples: public status updates, posts, shared links, stories and, most of all, comments.","User-related data: semantically unspecified"],
+ [15,"Human-machine dialogue","What the user typed to a system in their own words: search queries and conversations with AI chatbots. Unlike Passive consumption, this records what the user actively asked or wrote.","User-related data: semantically unspecified"],
+];
+// BEGIN ITEMS
+const ITEMS = [
+ {
+  "id": "facebook_0",
+  "part": 1,
+  "platform": "Facebook",
+  "path": "security_and_login_information/record_details.json/admin_records_v2/session/ip_address",
+  "top5": [
+   2,
+   1,
+   4
+  ]
+ },
+ {
+  "id": "facebook_1",
+  "part": 1,
+  "platform": "Facebook",
+  "path": "preferences/preferences/your_preferred_categories.json/label_values/vec/dict/ent_field_name",
+  "top5": [
+   6,
+   8,
+   4
+  ]
+ },
+ {
+  "id": "facebook_2",
+  "part": 1,
+  "platform": "Facebook",
+  "path": "your_facebook_activity/pages/pages_and_profiles_you've_unfollowed.json/pages_unfollowed_v2/title",
+  "top5": [
+   8,
+   7,
+   4
+  ]
+ },
+ {
+  "id": "instagram_3",
+  "part": 1,
+  "platform": "Instagram",
+  "path": "user_data_tiktok.json/Tiktok Live/Go Live Settings/SettingsMap/Allow suggested LIVE hosts to invite you to co-host in LIVE",
+  "top5": [
+   6,
+   1,
+   2
+  ]
+ },
+ {
+  "id": "instagram_4",
+  "part": 1,
+  "platform": "Instagram",
+  "path": "meta-2025-Dec-05-01-59-38/instagram-this_dutch_home-2025-12-05-ePQDb50C/your_instagram_activity/story_interactions/polls.json/story_activities_polls/title",
+  "top5": [
+   14,
+   12,
+   9
+  ]
+ },
+ {
+  "id": "instagram_5",
+  "part": 1,
+  "platform": "Instagram",
+  "path": "security_and_login_information/login_and_profile_creation/logout_activity.json/account_history_logout_history/string_map_data/Agente de usuario/href",
+  "top5": [
+   2,
+   1,
+   10
+  ]
+ },
+ {
+  "id": "tiktok_6",
+  "part": 1,
+  "platform": "TikTok",
+  "path": "Direct Message/Direct Messages/ChatHistory/Chat History with $USERNAME:/From",
+  "top5": [
+   13,
+   14,
+   15
+  ]
+ },
+ {
+  "id": "tiktok_7",
+  "part": 1,
+  "platform": "TikTok",
+  "path": "TikTok Live/Go Live Settings/SettingsMap/Allow suggested LIVE hosts to invite you to co-host in LIVE",
+  "top5": [
+   6,
+   1,
+   2
+  ]
+ },
+ {
+  "id": "tiktok_8",
+  "part": 1,
+  "platform": "TikTok",
+  "path": "Profile/Autofill/Unit",
+  "top5": [
+   6,
+   5,
+   1
+  ]
+ },
+ {
+  "id": "x_9",
+  "part": 1,
+  "platform": "X",
+  "path": "data/saved-search.js/savedSearch/query",
+  "top5": [
+   15,
+   8,
+   6
+  ]
+ },
+ {
+  "id": "x_10",
+  "part": 1,
+  "platform": "X",
+  "path": "data/ads-revenue-sharing.js/adsRevenueSharing/payoutHistory",
+  "top5": [
+   4,
+   6,
+   5
+  ]
+ },
+ {
+  "id": "x_11",
+  "part": 1,
+  "platform": "X",
+  "path": "data/ip-audit.js/ipAudit/loginPortNumber",
+  "top5": [
+   1,
+   2,
+   4
+  ]
+ },
+ {
+  "id": "facebook_12",
+  "part": 2,
+  "platform": "Facebook",
+  "path": "preferences/preferences/dark_mode_settings.json/fbid",
+  "top5": [
+   5,
+   1,
+   6
+  ]
+ },
+ {
+  "id": "facebook_13",
+  "part": 2,
+  "platform": "Facebook",
+  "path": "Takeout/Aplicación Home/HomeApp.json/Home App Data/unassigned_devices/state_changes/state/media/played_time_millis",
+  "top5": [
+   4,
+   11,
+   2
+  ]
+ },
+ {
+  "id": "instagram_14",
+  "part": 2,
+  "platform": "Instagram",
+  "path": "preferences/preferences/reels_preferences.json/label_values/vec",
+  "top5": [
+   6,
+   8,
+   4
+  ]
+ },
+ {
+  "id": "instagram_15",
+  "part": 2,
+  "platform": "Instagram",
+  "path": "preferences/settings/use_cross-app_messaging.json/settings_upgraded_to_cross_app_messaging/string_map_data/Time Upgraded/timestamp",
+  "top5": [
+   6,
+   1,
+   2
+  ]
+ },
+ {
+  "id": "tiktok_16",
+  "part": 2,
+  "platform": "TikTok",
+  "path": "App Settings/Settings/SettingsMap/Filter Comments",
+  "top5": [
+   6,
+   1,
+   2
+  ]
+ },
+ {
+  "id": "tiktok_17",
+  "part": 2,
+  "platform": "TikTok",
+  "path": "Your Activity/Favorite Collection/FavoriteCollectionList/Date",
+  "top5": [
+   8,
+   11,
+   4
+  ]
+ },
+ {
+  "id": "x_18",
+  "part": 2,
+  "platform": "X",
+  "path": "data/community-note-rating.js/communityNoteRating/helpfulnessLevel",
+  "top5": [
+   8,
+   11,
+   4
+  ]
+ },
+ {
+  "id": "x_19",
+  "part": 2,
+  "platform": "X",
+  "path": "data/manifest.js/dataTypes/momentsTweetsMedia/mediaDirectory",
+  "top5": [
+   14,
+   11,
+   8
+  ]
+ }
+];
+// END ITEMS
+// ------------------------------------------------------------------------------------
+
+const GROUPS = {
+ "Service-provider-related data": "Data the platform records automatically about how its systems are used. These are technical and analytical records, not things the user chose to share.",
+ "User-related data: semantically specified": "Data about the user stored in fixed, predefined fields, so each value has a set meaning (for example a birthdate field or a list of followers). This sets it apart from free text and media, where the user decides what the content is.",
+ "User-related data: semantically unspecified": "Data where the platform only provides an empty container (a text field, a JSON string or an HTML block) and the user decides what goes in it. You need to read, watch or listen to it to know what it means. It covers both text and media: photos, videos and voice notes.",
+};
+const cat = Object.fromEntries(CATEGORIES.map(c => [c[0], c]));
+const answers = {};   // id -> {label, viaNone, rationale}
+let i = 0;
+const $ = id => document.getElementById(id);
+const tip = $("tip");
+
+// Shuffle once per item (seeded by index) so the LLM rank order is not visible to the annotator.
+function shuffled(arr, seed) {
+  const a = arr.slice(); let s = seed + 1;
+  for (let k = a.length - 1; k > 0; k--) { s = (s * 9301 + 49297) % 233280; const j = Math.floor(s / 233280 * (k + 1)); [a[k], a[j]] = [a[j], a[k]]; }
+  return a;
+}
+
+function showTip(e, text) {
+  tip.textContent = text; tip.style.display = "block";
+  const x = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8);
+  const y = e.clientY + 18 + tip.offsetHeight > window.innerHeight ? e.clientY - tip.offsetHeight - 10 : e.clientY + 18;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+function hideTip() { tip.style.display = "none"; }
+function addHover(el, id) {
+  el.addEventListener("mousemove", e => showTip(e, cat[id][2]));
+  el.addEventListener("mouseleave", hideTip);
+  el.addEventListener("focus", () => { const r = el.getBoundingClientRect(); showTip({clientX:r.left, clientY:r.bottom - 18}, cat[id][2]); });
+  el.addEventListener("blur", hideTip);
+}
+
+const KEY = "ddp_annotation_smoke";
+function persist() { try { localStorage.setItem(KEY, JSON.stringify({name:$("name").value, i, answers})); } catch (e) {} }
+function choose(label, viaNone) {
+  const a = answers[ITEMS[i].id] || (answers[ITEMS[i].id] = {});
+  a.label = label; a.viaNone = viaNone; a.cannot = false; a.cannotReason = undefined; persist();
+  render(true);
+}
+
+function render(keepTable) {
+  const it = ITEMS[i], a = answers[it.id] || {};
+  hideTip();
+  $("progress").textContent = `Part ${it.part} of 2 · path ${i + 1} of ${ITEMS.length}`;
+  const first2 = it.part === 2 && (i === 0 || ITEMS[i - 1].part === 1);
+  $("banner").hidden = !first2;
+  if (first2) $("banner").textContent = "Part 2: from here on the model's suggestions are no longer shown. Choose from the full list of labels.";
+  $("platform").textContent = it.platform;
+  $("path").textContent = it.path;
+
+  const noPreds = it.part === 2 || it.top5.length === 0;   // part 2: no suggestions, full list only
+  const opts = $("options"); opts.innerHTML = "";
+  (noPreds ? [] : shuffled(it.top5, i)).forEach(id => {
+    const b = document.createElement("button");
+    b.className = "opt" + (a.label === id && !a.viaNone ? " sel" : "");
+    b.textContent = cat[id][1];
+    b.onclick = () => { $("fullTable").hidden = true; const x = answers[it.id] || (answers[it.id] = {}); x.rationale = undefined; choose(id, false); };
+    addHover(b, id);
+    opts.appendChild(b);
+  });
+  const none = document.createElement("button");
+  const showTable = noPreds || (!a.cannot && (a.viaNone || (keepTable && !$("fullTable").hidden)));
+  none.className = "opt none" + (showTable && !a.cannot ? " sel" : "");
+  none.textContent = "None of the above";
+  none.onclick = () => {
+    const x = answers[it.id] || (answers[it.id] = {});
+    if (!x.viaNone) x.label = undefined;   // drop a top-5 pick; keep a table pick
+    x.viaNone = true; x.cannot = false; x.cannotReason = undefined;
+    $("fullTable").hidden = false; render(true);
+    $("fullTable").scrollIntoView({behavior:"smooth"});
+  };
+  if (!noPreds) opts.appendChild(none);
+  const cant = document.createElement("button");
+  cant.className = "opt none" + (a.cannot ? " sel" : "");
+  cant.textContent = "I cannot decide based on this information";
+  cant.onclick = () => {
+    const x = answers[it.id] || (answers[it.id] = {});
+    x.cannot = true; x.label = undefined; x.viaNone = false; x.rationale = undefined; persist();
+    render(false);
+    $("cannotReason").focus();
+  };
+  opts.appendChild(cant);
+
+  $("fullTable").hidden = !showTable;
+  $("heading").textContent = noPreds ? "Pick the label that fits this path best" : "Which label fits this path best?";
+  const tb = $("tbody"); tb.innerHTML = ""; let lastGroup = "";
+  CATEGORIES.forEach(c => {
+    if (c[3] !== lastGroup) { lastGroup = c[3]; const g = tb.insertRow(); g.className = "group"; const td = g.insertCell(); td.colSpan = 3;
+      const b = document.createElement("b"); b.textContent = c[3]; td.appendChild(b);
+      td.appendChild(document.createElement("br")); td.appendChild(document.createTextNode(GROUPS[c[3]])); }
+    const r = tb.insertRow(); r.className = "row" + (a.label === c[0] && !a.cannot ? " sel" : ""); r.tabIndex = 0;
+    r.insertCell().textContent = c[0]; r.insertCell().textContent = c[1]; r.insertCell().textContent = c[2];
+    r.onclick = () => choose(c[0], true);
+    r.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(c[0], true); } };
+  });
+
+  const needRat = !noPreds && !!a.viaNone;           // rationale only after "None of the above"
+  $("ratBox").hidden = !needRat;
+  $("cannotBox").hidden = !a.cannot;
+  $("cannotReason").value = a.cannotReason || "";
+  $("rationale").value = a.rationale || "";
+  $("prev").disabled = i === 0;
+  $("next").textContent = i === ITEMS.length - 1 ? "Finish" : "Next →";
+}
+
+function saveRationale() { if ($("ratBox").hidden) return; const a = answers[ITEMS[i].id] || (answers[ITEMS[i].id] = {}); a.rationale = $("rationale").value; }
+
+function saveCannot() { if ($("cannotBox").hidden) return; const a = answers[ITEMS[i].id] || (answers[ITEMS[i].id] = {}); a.cannotReason = $("cannotReason").value; }
+$("rationale").addEventListener("input", saveRationale);
+$("cannotReason").addEventListener("input", saveCannot);
+$("prev").onclick = () => { saveRationale(); saveCannot(); persist(); i--; $("fullTable").hidden = true; render(); };
+$("next").onclick = () => {
+  saveRationale(); saveCannot(); persist();
+  const a = answers[ITEMS[i].id];
+  if (a && a.cannot) {
+    if (!(a.cannotReason || "").trim()) { alert("Please explain why you cannot decide."); return; }
+  } else if (!a || a.label === undefined) { alert("Please choose a label first."); return; }
+  if (!$("ratBox").hidden && !(a.rationale || "").trim()) { alert("Please write a short rationale (you chose None of the above)."); return; }
+  if (i < ITEMS.length - 1) { i++; $("fullTable").hidden = true; render(); window.scrollTo(0, 0); }
+  else { alert("All paths done. Click 'Download results (CSV)' and email the file to nienke.visscher@bsc.es."); }
+};
+$("download").onclick = () => {
+  const q = s => `"${String(s ?? "").replace(/"/g, '""')}"`;
+  const rows = [["annotator","date","id","platform","part","path","label_id","label","chosen_from_full_table","cannot_decide","llm_top5","rationale","cannot_decide_reason"].join(",")];
+  ITEMS.forEach(it => { const a = answers[it.id] || {};
+    rows.push([$("name").value.trim(), new Date().toISOString().slice(0,10), it.id, it.platform, it.part, it.path, a.label ?? "", a.label ? cat[a.label][1] : "", a.viaNone ? 1 : 0, a.cannot ? 1 : 0, it.top5.join(";"), a.rationale ?? "", a.cannotReason ?? ""].map(q).join(",")); });
+  const url = URL.createObjectURL(new Blob([rows.join("\n")], {type:"text/csv"}));
+  const l = document.createElement("a"); l.href = url; const d = new Date(), pad = n => String(n).padStart(2, "0");
+  const date = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const nm = $("name").value.trim().replace(/[^A-Za-z0-9]+/g, "_").replace(/^_|_$/g, "") || "anonymous";
+  l.download = `annotations_${nm}_${date}.csv`; l.click(); URL.revokeObjectURL(url);
+};
+
+document.querySelectorAll(".instr").forEach(el => el.appendChild($("instrText").content.cloneNode(true)));
+$("showHelp").onclick = () => $("help").showModal();
+$("closeHelp").onclick = () => $("help").close();
+try { const sv = JSON.parse(localStorage.getItem(KEY) || "null");
+  if (sv) { $("name").value = sv.name || ""; Object.assign(answers, sv.answers || {}); i = Math.min(sv.i || 0, ITEMS.length - 1); } } catch (e) {}
+$("start").onclick = () => {
+  if (!$("name").value.trim()) { alert("Please fill in your name."); $("name").focus(); return; }
+  persist(); $("intro").hidden = true; $("app").hidden = false; render(); window.scrollTo(0, 0);
+};
+</script>
+</body>
+</html>
