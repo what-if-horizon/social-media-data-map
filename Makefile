@@ -95,6 +95,9 @@ sample: ## Sample for inference
 annotation_sample: ## Sample for annotation
 	$(call CPU,scripts/0_ingest/0.05_rnv_sample_annotation.py)
 
+clean_paths: ## Add clean_path (no wrapper folders, no part numbers) to the merged structures and the catalogue
+	$(call CPU,scripts/0_ingest/0.06_rnv_clean_paths.py)
+
 
 #----------------------------------------------------------------------------------
 # LLM JOBS (parallel_llm.sh: vLLM servers on N nodes, one job per platform)
@@ -115,8 +118,9 @@ COUNTRIES    := ES_NL
 LAUNCHER     := launchers/parallel_llm.sh
 SOURCE_ROOT  := $(ROOT_DIR)/$(DATA_DIR)/00_ingest/005_merged_structures
 REF_DIR      := $(ROOT_DIR)/$(DATA_DIR)/00_ingest/004_largest_donation
-# Prompt for the path standardisation (key in PROMPTS in scripts/1_path_standardisation/1.02_...py)
-PATH_STD     := path_std2026
+# Method of the path standardisation (1.02): path_shortlist2026 (shortlists, needs `make clean_paths` first) or
+# path_std2026 (whole catalogue in the prompt). Outputs of the two go to different folders.
+PATH_STD     := path_shortlist2026
 ANNOTATION_ROOT := $(ROOT_DIR)/ddd_annotation
 # smoke | test | validation
 SPLIT        ?= validation

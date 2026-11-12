@@ -314,3 +314,115 @@ Output: {"path": "user_data_tiktok.json/Tiktok Live/Go Live Settings/SettingsMap
 {PATH}
 
 """
+
+
+
+# ---------------------------------------------------------------------------------------------
+# Shortlist version of the path standardisation (src/inference/pathshortlist.py): instead of the whole
+# catalogue (path_std2026), the model sees a numbered shortlist of candidates and answers with a number.
+# Step 1 matches a FILE (path_file2026), step 2 a FIELD inside a matched file (path_field2026).
+# Placeholders {CANDIDATES} and {QUERY} are filled with str.replace; {QUERY} is last.
+# ---------------------------------------------------------------------------------------------
+
+def path_file2026():
+
+    return """
+
+Reasoning: medium
+
+# Role
+You are an expert on Digital Data Packages (DDPs): the raw data exports that platforms give users on request. The DDPs you will see come from X, Facebook, Instagram, YouTube and TikTok. An export is a set of files, each with fields. The export of one platform is built differently for different people.
+
+Your task is to decide whether a file of a DDP is the same file as one of the candidate files from a catalogue of known files of the same platform.
+
+# What "the same file" means
+Two files are the same file when they hold the same kind of data: the platform wrote the same information in both exports and only the name or place of the file looks different. They can look different because of:
+- Language. Folder, file and field names are translated in the exports of people with another language setting (for example English, Spanish, Dutch, Catalan). "history/search-history.json", "historial/historial de búsquedas.json" and "geschiedenis/zoekgeschiedenis.json" are the same file.
+- Folders or files that are renamed or reorganised between versions of the platform's export (for example "Profile" and "Profile And Settings").
+- Differences in separators, capital letters or spaces.
+
+Two files are different when they hold another kind of data, even if their names share a word: a watch history is not a search history, comments are not likes.
+
+# Steps
+1. Read the name of the file first, then the folders. Use the fields of the file as well: the same file has fields that correspond, although the field names may be translated.
+2. Check the numbered candidates. They were selected because their names look similar, so the right one may not be among them.
+3. Choose the candidate that holds the same kind of data. If none does, choose 0. Do not guess because a name looks similar.
+
+# Candidates
+{CANDIDATES}
+
+# Output format
+Return only valid JSON, with no text before or after it:
+{"choice": <number of the candidate, or 0 if none holds the same data>, "rationale": "<one or two sentences: what makes the files the same data, or why none fits>"}
+
+# Examples
+Each example has candidates of its own, which are shown with it.
+
+Candidates:
+1. Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json  [fields: header, title, titleUrl, time]
+2. Takeout/YouTube y YouTube Music/historial/historial-de-búsquedas.json  [fields: header, title, titleUrl, time]
+File to match: Takeout/YouTube en YouTube Music/geschiedenis/zoekgeschiedenis.json  [fields: header, title, titleUrl, time]
+Output: {"choice": 2, "rationale": "Zoekgeschiedenis is Dutch for search history, the Spanish historial de búsquedas; the watch history (1) is another kind of data although it has the same fields."}
+
+Candidates:
+1. Profile/Profile Info/Profile Info/Bio  [fields: Bio]
+2. Profile/Profile Info/Profile Info/Birth Date  [fields: Birth Date]
+File to match: Profile And Settings/Profile Info/Profile Info/Bio  [fields: Bio]
+Output: {"choice": 1, "rationale": "The folder Profile And Settings is a renamed Profile, and both files hold the bio."}
+
+Candidates:
+1. preferences/settings/use_cross-app_messaging.json  [fields: Time Upgraded]
+File to match: user_data_tiktok.json/Tiktok Live/Go Live Settings  [fields: SettingsMap]
+Output: {"choice": 0, "rationale": "This is a TikTok export file, not an Instagram file, and no candidate holds the same data."}
+
+# File to match
+{QUERY}
+
+"""
+
+
+def path_field2026():
+
+    return """
+
+Reasoning: medium
+
+# Role
+You are an expert on Digital Data Packages (DDPs): the raw data exports that platforms give users on request. The DDPs you will see come from X, Facebook, Instagram, YouTube and TikTok. An export is a set of files, each with fields. The export of one platform is built differently for different people.
+
+A file of a DDP has already been matched to a file of a catalogue of known files of the same platform. Your task is to decide whether a field of that file is the same field as one of the candidate fields of the catalogue file.
+
+# What "the same field" means
+Two fields are the same when they hold the same piece of information in the same kind of record. They can look different because the names are translated in the exports of people with another language setting (for example English, Spanish, Dutch, Catalan), or because of differences in separators, capital letters or spaces. Fields are different when they hold other information, even if the names share a word: "timestamp" is not "last_modified_timestamp", "ip_address" is not "user_agent". A nested field path ("attachments/data/media/creation_timestamp") must correspond level by level.
+
+# Steps
+1. Read the field from the end: the last name matters most, then the names above it.
+2. Check the numbered candidates, which were selected because their names look similar. The right one may not be among them.
+3. Choose the candidate that is the same field. If none is, choose 0: the catalogue may simply not have this field. Do not guess because a name looks similar.
+
+# Candidates (fields of the catalogue file)
+{CANDIDATES}
+
+# Output format
+Return only valid JSON, with no text before or after it:
+{"choice": <number of the candidate, or 0 if none is the same field>, "rationale": "<one or two sentences: what makes the fields the same, or why none fits>"}
+
+# Examples
+Each example has candidates of its own, which are shown with it.
+
+Candidates:
+1. session/ip_address
+2. session/user_agent
+Field to match: sessie/ip-adres
+Output: {"choice": 1, "rationale": "Sessie is Dutch for session and ip-adres is the IP address."}
+
+Candidates:
+1. session/ip_address
+2. session/user_agent
+Field to match: session/datr_cookie
+Output: {"choice": 0, "rationale": "Neither the IP address nor the user agent is a cookie; the catalogue file has no such field."}
+
+# Field to match
+{QUERY}
+
+"""

@@ -42,4 +42,8 @@ def validate_match_record(rec, catalogue_set):
         problems.append("rationale missing or empty")
     if rec.get("method") == "exact" and match != rec.get("path"):
         problems.append("exact match must be the path itself")
+    if rec.get("method") == "file_na" and match != NA:
+        problems.append("a path of a file without a match must be NA")
+    if rec.get("method") not in (None, "exact", "clean", "llm", "file_na"):
+        problems.append(f"unknown method {rec.get('method')!r}")
     return problems
