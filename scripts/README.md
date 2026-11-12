@@ -22,7 +22,7 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 | `0_ingest/0.03` merge_structures | `merge_csv` | CPU | Merge into `005_merged_structures` |
 | `0_ingest/0.04` sample_for_inference | `sample` | CPU | Sample for inference |
 | `0_ingest/0.05` sample_annotation | `annotation_sample` | CPU | Sample for annotation |
-| `1_path_standardisation/1.02` run_path_standardisation | `path_std-<platform>`, `path_std` | GPU (parallel) | **Path standardisation** |
+| `1_path_standardisation/1.02` run_path_standardisation | `path_std-run SPLIT=smoke\|test\|validation`, `path_std-check`, `path_std-<platform>`, `path_std` | GPU (parallel) | **Path standardisation**: does the path hold the same data as a path in the catalogue (largest donation)? Prompt `path_std2026` |
 | `1_path_standardisation/1.01.01` validate_test_id_standardisation | `id_std_val` | CPU | Validate the id-standardisation test run |
 | `1_path_standardisation/1.01.02` visualisation_validation_id_standardisation | `id_std_viz` | CPU | Plots for the above |
 | `2_taxonomy/2.00` select_smoke_sample | `smoke-select` | CPU | 5 mutually dissimilar paths per platform (embeddings), not in the annotation sample |

@@ -156,6 +156,20 @@ the pytest result, a summary of the output (top-1 labels, confidence), the judge
 paths it did not mark correct, and, if the human evaluation exists, accuracy per platform, recall per label and a
 confusion matrix. Parts that have not been run yet are marked as such, so the report can be built at any stage.
 
+## Annotation interface
+
+```bash
+make annotation-run                 # 2.01 with kmetty2026_simple (five labels) on test + validation, no YouTube: ONE GPU job
+make inference-check SPLIT=test DATA_TAX=kmetty2026_simple      # optional: pytest (also for validation)
+make annotation-interface           # 2.09
+```
+
+2.09 writes `annotation/annotation_interface.html`: one page for the participants with the test and validation
+paths of all platforms except YouTube, in random order. Each path shows the model's five labels (shuffled)
+and "None of the above", which opens the table of all 15 labels. It stops when predictions are missing
+(`make annotation-interface ALLOW_MISSING=1` builds anyway; those paths show the full table only). The participant
+enters a name and downloads `annotations_<name>_<date>.csv`.
+
 ## Example paths for the annotation instructions
 
 ```bash
@@ -186,6 +200,7 @@ their own examples.
 | `2.06_rnv_evaluate_human_annotations.py` | `eval-human` | Accuracy against human labels, kmetty2026 (CPU) |
 | `2.07_rnv_build_report.py` | `report` | HTML report per phase (CPU) |
 | `2.08_rnv_annotation_examples.py` | `examples-pool`, `examples` | Example paths per platform and category (CPU) |
+| `2.09_rnv_build_annotation_interface.py` | `annotation-interface` | HTML annotation interface from test + validation and the model output (CPU) |
 
 2.04 and 2.05 belong to the earlier Verduyn active/passive scheme and are not part of the flow above. They
 expect their own annotation files and results, which no longer exist in `ddd_annotation`.

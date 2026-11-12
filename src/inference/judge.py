@@ -1,7 +1,7 @@
 """LLM judge for the taxonomy (scripts/2_taxonomy/2.02_rnv_run_judge.py).
 
 The judge is a different model from the one that produced the taxonomy output. It sees the same taxonomy, the path and the
-taxonomy model's three predictions, and says whether the top prediction is correct.
+taxonomy model's ranked predictions, and says whether the top prediction is correct.
 """
 
 from src.inference.taxonomy import extract_json_dict
@@ -15,7 +15,7 @@ _TEMPLATE = """Reasoning: medium
 
 # Role
 You are an independent reviewer of a classification of Digital Data Package (DDP) paths. Another model
-classified the path below into the DDP topology and gave three ranked labels. Decide whether its top label
+classified the path below into the DDP topology and gave ranked labels. Decide whether its top label
 is correct, using only the topology definitions and decision rules below.
 
 {TAXONOMY}

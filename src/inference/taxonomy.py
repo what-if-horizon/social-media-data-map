@@ -57,19 +57,22 @@ def extract_json_dict(raw):
     return None
 
 
-def validate_record(rec, labels):
+def validate_record(rec, labels, n=None):
     """Problems with one taxonomy record from scripts/2_taxonomy/2.01; empty list = valid.
 
-    Valid means: exactly three predictions, distinct labels from the taxonomy, confidences between
+    Valid means: exactly n predictions (default config.N_PREDICTIONS: 3, or 5 for kmetty2026_simple), distinct labels from the taxonomy, confidences between
     0 and 100 that sum to 100 in descending order, and a non-empty rationale.
     """
+    if n is None:
+        from src import config
+        n = config.N_PREDICTIONS
     if not isinstance(rec, dict):
         return ["record is not an object"]
     preds = rec.get("predictions")
     if preds is None:
         return [f"no valid prediction ({rec.get('error', 'predictions missing')})"]
-    if not isinstance(preds, list) or len(preds) != 3:
-        return [f"expected 3 predictions, got {len(preds) if isinstance(preds, list) else type(preds).__name__}"]
+    if not isinstance(preds, list) or len(preds) != n:
+        return [f"expected {n} predictions, got {len(preds) if isinstance(preds, list) else type(preds).__name__}"]
 
     problems = []
     names = [x.get("label") if isinstance(x, dict) else None for x in preds]
@@ -77,7 +80,7 @@ def validate_record(rec, labels):
     for name in names:
         if name not in labels:
             problems.append(f"unknown label {name!r}")
-    if len(set(names)) != 3:
+    if len(set(names)) != n:
         problems.append("labels are not distinct")
     if not all(isinstance(c, (int, float)) and not isinstance(c, bool) and 0 <= c <= 100 for c in scores):
         problems.append(f"confidences must be numbers in [0, 100], got {scores}")

@@ -19,6 +19,8 @@ def pytest_addoption(parser):
                      help="<ANNOTATION_ROOT>/sample, holding smoke/, test/ and validation/")
     parser.addoption("--merged-dir", default=os.environ.get("MERGED_DIR"),
                      help="Merged structures (<ROOT_DIR>/ddd_processed/00_ingest/005_merged_structures) the samples must come from")
+    parser.addoption("--ref-dir", default=os.environ.get("REF_DIR"),
+                     help="Catalogue of paths (largest donation): <platform>/*.csv with a final_path column")
     parser.addoption("--results-json", default=None, help="Write the outcome of every test to this file")
 
 
@@ -33,6 +35,14 @@ def inference_dir(request):
 @pytest.fixture(scope="session")
 def input_dir(request):
     return request.config.getoption("--input-dir")
+
+
+@pytest.fixture(scope="session")
+def ref_dir(request):
+    value = request.config.getoption("--ref-dir")
+    if not value:
+        pytest.skip("--ref-dir not given")
+    return value
 
 
 @pytest.fixture(scope="session")

@@ -57,6 +57,8 @@ DATA_TAX = os.getenv("DATA_TAX", "kmetty2026")              # key in PROMPTS in 
 # Existing storage folder name for the output. kmetty2026 keeps the original folder; another prompt gets its own,
 # so that outputs of different prompts are never mixed.
 INFERENCE_SUBDIR = os.getenv("INFERENCE_SUBDIR") or "02_path_classification" + ("" if DATA_TAX == "kmetty2026" else f"_{DATA_TAX}")
+# Number of ranked labels the prompt asks for (and validate_record expects)
+N_PREDICTIONS = {"kmetty2026": 3, "kmetty2026_simple": 5}.get(DATA_TAX, 3)
 COUNTRIES = os.getenv("COUNTRIES", "ES_NL")                 # tag in output file names
 MODEL_CONFIG = os.getenv("MODEL_CONFIG", "")                # configs/<file>.yaml of the taxonomy model
 MODEL_CONFIG_JUDGE = os.getenv("MODEL_CONFIG_JUDGE", "")    # configs/<file>.yaml of the judge
@@ -67,6 +69,10 @@ SMOKE_K = int(os.getenv("SMOKE_K", 5))                      # paths per platform
 SMOKE_MAX_SIM = float(os.getenv("SMOKE_MAX_SIM", 0.8))      # all pairs must have cosine similarity below this
 SMOKE_POOL = int(os.getenv("SMOKE_POOL", 2000))             # candidates drawn per platform
 SEED = int(os.getenv("SEED", 42))
+
+# ---- Path standardisation (1_path_standardisation) ----
+PATH_STD = os.getenv("PATH_STD", "path_std2026")             # key in PROMPTS in 1.02
+REF_DIR = os.getenv("REF_DIR") or _join(ROOT_DIR, DATA_DIR, "00_ingest", "004_largest_donation")   # catalogue: largest donation per platform
 TEST_N = int(os.getenv("TEST_N", 20))                     # paths per platform in the test set (2.03)
 VALIDATION_N = int(os.getenv("VALIDATION_N", 80))          # paths per platform in the validation set (2.03)
 

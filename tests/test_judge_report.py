@@ -16,13 +16,13 @@ def rec(path="a/b.json", labels=("Login data", "Connection / device telemetry", 
 
 
 def test_validate_record():
-    assert validate_record(rec(), LABELS) == []
-    assert validate_record(rec(scores=(50, 30, 30)), LABELS)               # sums to 110
-    assert validate_record(rec(scores=(10, 20, 70)), LABELS)               # not descending
-    assert validate_record(rec(labels=("Login data", "Login data", "Network (ego ties)")), LABELS)
-    assert validate_record(rec(labels=("Nope", "Login data", "Network (ego ties)")), LABELS)
-    assert validate_record(rec(rationale=""), LABELS)
-    assert validate_record({"path": "x", "predictions": None, "error": "invalid output"}, LABELS)
+    assert validate_record(rec(), LABELS, n=3) == []
+    assert validate_record(rec(scores=(50, 30, 30)), LABELS, n=3)               # sums to 110
+    assert validate_record(rec(scores=(10, 20, 70)), LABELS, n=3)               # not descending
+    assert validate_record(rec(labels=("Login data", "Login data", "Network (ego ties)")), LABELS, n=3)
+    assert validate_record(rec(labels=("Nope", "Login data", "Network (ego ties)")), LABELS, n=3)
+    assert validate_record(rec(rationale=""), LABELS, n=3)
+    assert validate_record({"path": "x", "predictions": None, "error": "invalid output"}, LABELS, n=3)
 
 
 def test_judge_prompt_uses_the_same_taxonomy():

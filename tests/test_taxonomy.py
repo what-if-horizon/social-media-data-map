@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
 
 class TestSimplePrompt(unittest.TestCase):
-    """kmetty2026_simple differs from kmetty2026 only in the topology (the definitions) and the decision rules."""
+    """kmetty2026_simple differs from kmetty2026 in the topology (the definitions), the decision rules and in asking for five labels."""
 
     def setUp(self):
         from src.inference.taxonomy import label_list
@@ -113,8 +113,9 @@ class TestSimplePrompt(unittest.TestCase):
 
     @staticmethod
     def around_topology(text):
-        """Everything except the topology and the decision rules."""
-        return text[:text.index("# DDP topology")], text[text.index("# Confidence scoring"):]
+        """Role and steps (with 'five' read as 'three'), and the part from the path on."""
+        head = text[:text.index("# DDP topology")].replace("five", "three")
+        return head, text[text.index("# Path to classify"):]
 
     def test_same_labels_in_the_same_order(self):
         self.assertEqual(self.label_list(self.base), self.label_list(self.simple))
@@ -123,6 +124,15 @@ class TestSimplePrompt(unittest.TestCase):
 
     def test_everything_but_topology_and_decision_rules_is_identical(self):
         self.assertEqual(self.around_topology(self.base), self.around_topology(self.simple))
+
+    def test_asks_for_five_valid_examples(self):
+        import json, re
+        from src.inference.taxonomy import validate_record
+        self.assertIn("exactly five different labels", self.simple)
+        examples = [json.loads(m.group(1)) for m in re.finditer(r"^Output: (.*)$", self.simple, re.M)]
+        self.assertEqual(len(examples), 5)
+        for rec in examples:
+            self.assertEqual(validate_record(rec, valid_labels(self.simple), n=5), [])
 
     def test_definitions_differ(self):
         self.assertNotEqual(self.base, self.simple)
