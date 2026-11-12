@@ -49,7 +49,7 @@ export LD_LIBRARY_PATH="$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
 #--------------------------------------------------
 
 # Delete leftovers from crashed runs
-rm -f "$OUTPUT_FOLDER"/*.partial "$OUTPUT_FOLDER"/*/*.partial
+rm -f "$OUTPUT_FOLDER"/*.partial "$OUTPUT_FOLDER"/*/*.partial "$OUTPUT_FOLDER"/*/*/*.partial
 
 # Output name for an input file; same rule as output_name() in src/inference/parallel.py,
 # which the python scripts use to write the file.
@@ -57,7 +57,9 @@ rm -f "$OUTPUT_FOLDER"/*.partial "$OUTPUT_FOLDER"/*/*.partial
 #
 # INPUT_GLOB is relative to SOURCE_FOLDER. With a sub-folder level (INPUT_GLOB='*/*.csv', as the smoke run
 # uses to do all platforms in one job) the files are <platform>/<file> and their output goes to
-# OUTPUT_FOLDER/<platform>/.
+# OUTPUT_FOLDER/<platform>/. INPUT_GLOB can hold several patterns separated by ":" (no spaces, because the value
+# travels through sbatch --export); with two levels (INPUT_GLOB='test/facebook/*.csv:validation/facebook/*.csv') the
+# output goes to OUTPUT_FOLDER/<split>/<platform>/.
 output_name() {   # $1 = platform, $2 = input file name
     local stem="${2%.*}"
     local name="$OUTPUT_PATTERN"
@@ -69,8 +71,10 @@ output_name() {   # $1 = platform, $2 = input file name
 
 shopt -s nullglob   # no input files -> empty loop, not the literal pattern
 files=()
-for file_path in "$SOURCE_FOLDER"/${INPUT_GLOB:-*.csv}; do
-    rel_path=${file_path#"$SOURCE_FOLDER"/}            # file or <platform>/file
+IFS=':' read -ra patterns <<< "${INPUT_GLOB:-*.csv}"
+for pattern in "${patterns[@]}"; do
+  for file_path in "$SOURCE_FOLDER"/$pattern; do
+    rel_path=${file_path#"$SOURCE_FOLDER"/}            # file, <platform>/file or <split>/<platform>/file
     rel_dir=$(dirname "$rel_path")
     if [[ "$rel_dir" == "." ]]; then
         platform=$(basename "$SOURCE_FOLDER"); out_dir="$OUTPUT_FOLDER"
@@ -80,6 +84,7 @@ for file_path in "$SOURCE_FOLDER"/${INPUT_GLOB:-*.csv}; do
     if [[ ! -f "$out_dir/$(output_name "$platform" "$(basename "$rel_path")")" ]]; then
         files+=("$rel_path")
     fi
+  done
 done
 echo "Pending files: ${#files[@]}"
 
@@ -99,8 +104,9 @@ done
 
 for ((i=0; i<SLURM_NNODES; i++)); do
     if [[ -n "${node_files[i]}" ]]; then
-        srun --export=ALL --exclusive -N1 -n1 --gres=gpu:${GPUS_PER_NODE:-4} \
-            launchers/parallel_worker.sh "$i" ${node_files[i]} &
+        # --gpus-per-node like the sbatch line in the Makefile: srun refuses it together with --gres
+        srun --export=ALL --exclusive -N1 -n1 --gpus-per-node=${GPUS_PER_NODE:-4} \
+            bash launchers/parallel_worker.sh "$i" ${node_files[i]} &
     fi
 done
 
@@ -112,5 +118,9 @@ status=0
 for pid in $(jobs -p); do
     wait "$pid" || status=1
 done
-echo "All nodes finished."
+if (( status == 0 )); then
+    echo "All nodes finished."
+else
+    echo "At least one node failed, see the .err file and $JOB_LOG_DIR" >&2
+fi
 exit $status

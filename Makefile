@@ -8,7 +8,7 @@ export
 .PHONY: help
 help:  ## List the targets
 	@grep -hE '^[a-zA-Z0-9_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-24s %s\n", $$1, $$2}'
-	@echo "  <job>-<platform>         Per platform: taxonomy-, path_std-, taxonomy-run- (facebook|instagram|tiktok|youtube|x)"
+	@echo "  <job>-<platform>         Per platform: taxonomy-, path_std-, taxonomy-run-, path_std-run- (facebook|instagram|tiktok|youtube|x)"
 	@echo "  CPU jobs: override CPU_TIME, CPU_CPUS, CPU_PARTITION, or LOCAL=1 to run in this shell"
 
 
@@ -95,6 +95,9 @@ sample: ## Sample for inference
 annotation_sample: ## Sample for annotation
 	$(call CPU,scripts/0_ingest/0.05_rnv_sample_annotation.py)
 
+clean_paths: ## Add clean_path (no wrapper folders, no part numbers) to the merged structures and the catalogue
+	$(call CPU,scripts/0_ingest/0.06_rnv_clean_paths.py)
+
 
 #----------------------------------------------------------------------------------
 # LLM JOBS (parallel_llm.sh: vLLM servers on N nodes, one job per platform)
@@ -115,15 +118,20 @@ COUNTRIES    := ES_NL
 LAUNCHER     := launchers/parallel_llm.sh
 SOURCE_ROOT  := $(ROOT_DIR)/$(DATA_DIR)/00_ingest/005_merged_structures
 REF_DIR      := $(ROOT_DIR)/$(DATA_DIR)/00_ingest/004_largest_donation
+# Method of the path standardisation (1.02): path_shortlist2026 (shortlists, needs `make clean_paths` first) or
+# path_std2026 (whole catalogue in the prompt). Outputs of the two go to different folders.
+PATH_STD     := path_shortlist2026
 ANNOTATION_ROOT := $(ROOT_DIR)/ddd_annotation
 # smoke | test | validation
 SPLIT        ?= validation
 SAMPLE_ROOT  := $(ANNOTATION_ROOT)/sample
 # Folder names under the data root / ANNOTATION_ROOT. These are existing storage folders; to rename them, mv the
 # folders on /projects and change them here (the scripts read INFERENCE_SUBDIR from the environment).
-INFERENCE_SUBDIR := 02_path_classification
+# A prompt other than kmetty2026 gets its own folder (02_path_classification_<DATA_TAX>), so outputs are never mixed.
+INFERENCE_SUBDIR := 02_path_classification$(if $(filter-out kmetty2026,$(DATA_TAX)),_$(DATA_TAX))
 TAXONOMY_OUT := $(ROOT_DIR)/$(DATA_DIR)/$(INFERENCE_SUBDIR)/021_classified_paths
 INFERENCE_DIR := $(ANNOTATION_ROOT)/inference/$(INFERENCE_SUBDIR)/$(SPLIT)
+STD_DIR      := $(ANNOTATION_ROOT)/inference/04_path_std/$(PATH_STD)/$(SPLIT)
 JUDGE_DIR    := $(ANNOTATION_ROOT)/inference/03_judge/$(SPLIT)
 REPORT_DIR   := results/02_taxonomy/reports
 # The judge must be a different model than MODEL_CONFIG
@@ -167,6 +175,19 @@ path_std_TIME_youtube    := 00:30:00
 path_std_NODES_x         := 1
 path_std_TIME_x          := 00:30:00
 
+# Path standardisation of the test and validation sample (100 paths per platform; most of the time is reading
+# the catalogue once per server). SPLIT=smoke is one job, see smoke_NODES/smoke_TIME below.
+path_std_run_NODES_facebook  := 1
+path_std_run_TIME_facebook   := 00:30:00
+path_std_run_NODES_instagram := 1
+path_std_run_TIME_instagram  := 00:30:00
+path_std_run_NODES_tiktok    := 1
+path_std_run_TIME_tiktok     := 00:30:00
+path_std_run_NODES_youtube   := 1
+path_std_run_TIME_youtube    := 00:30:00
+path_std_run_NODES_x         := 1
+path_std_run_TIME_x          := 00:30:00
+
 # Taxonomy of the annotation sample (small)
 taxonomy_run_NODES_facebook  := 1
 taxonomy_run_TIME_facebook   := 00:15:00
@@ -203,7 +224,20 @@ path_std_ARGS = MODULE_PATH=scripts/1_path_standardisation/1.02_rnv_run_path_sta
 	SOURCE_FOLDER=$(SOURCE_ROOT)/@P@ \
 	OUTPUT_FOLDER=$(ROOT_DIR)/$(DATA_DIR)/01_path_standardisation/011_classified_paths/@P@ \
 	OUTPUT_PATTERN='{platform}_{n}_std_ids_$(COUNTRIES)_$(MODEL_NAME).json' \
-	EXTRA_EXPORT=',REF_DIR=$(REF_DIR)'
+	EXTRA_EXPORT=',REF_DIR=$(REF_DIR),PATH_STD=$(PATH_STD)'
+
+path_std_run_ARGS = MODULE_PATH=scripts/1_path_standardisation/1.02_rnv_run_path_standardisation.py \
+	SOURCE_FOLDER=$(SAMPLE_ROOT)/$(SPLIT)/@P@ \
+	OUTPUT_FOLDER=$(STD_DIR)/@P@ \
+	OUTPUT_PATTERN='{platform}_{n}_std_ids_$(PATH_STD)_$(COUNTRIES)_$(MODEL_NAME).json' \
+	EXTRA_EXPORT=',REF_DIR=$(REF_DIR),PATH_STD=$(PATH_STD)'
+
+path_std_run_smoke_ARGS = MODULE_PATH=scripts/1_path_standardisation/1.02_rnv_run_path_standardisation.py \
+	INPUT_GLOB='*/*.csv' \
+	SOURCE_FOLDER=$(SAMPLE_ROOT)/$(SPLIT) \
+	OUTPUT_FOLDER=$(STD_DIR) \
+	OUTPUT_PATTERN='{platform}_{n}_std_ids_$(PATH_STD)_$(COUNTRIES)_$(MODEL_NAME).json' \
+	EXTRA_EXPORT=',REF_DIR=$(REF_DIR),PATH_STD=$(PATH_STD)'
 
 taxonomy_run_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
 	SOURCE_FOLDER=$(ANNOTATION_ROOT)/sample/$(SPLIT)/@P@ \
@@ -222,9 +256,12 @@ judge_ARGS = MODULE_PATH=scripts/2_taxonomy/2.02_rnv_run_judge.py \
 # the output still goes to <platform>/ sub-folders). Starting the vLLM servers takes longer than the work.
 smoke_NODES := 1
 smoke_TIME  := 00:15:00
+# SPLIT=pool (the paths the model labels for the annotation examples, 2.08) is also one job: ~500 paths per platform
+pool_NODES  := 1
+pool_TIME   := 00:30:00
 taxonomy_run_smoke_ARGS = MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
 	INPUT_GLOB='*/*.csv' \
-	SOURCE_FOLDER=$(SAMPLE_ROOT)/smoke \
+	SOURCE_FOLDER=$(SAMPLE_ROOT)/$(SPLIT) \
 	OUTPUT_FOLDER=$(INFERENCE_DIR) \
 	OUTPUT_PATTERN='{platform}_{n}_class_ids_$(DATA_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
 	EXTRA_EXPORT=',DATA_TAX=$(DATA_TAX)'
@@ -265,18 +302,30 @@ $(1)-$(3):
 endef
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy,taxonomy,$(p))))
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,path_std,path_std,$(p))))
+$(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,path_std-run,path_std_run,$(p))))
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,taxonomy-run,taxonomy_run,$(p))))
 $(foreach p,$(PLATFORMS),$(eval $(call LLM_RULE,judge,judge,$(p))))
 
-.PHONY: taxonomy path_std taxonomy-run
+.PHONY: taxonomy path_std taxonomy-run path_std-run path_std-check
 taxonomy: $(addprefix taxonomy-,$(PLATFORMS)) ## Submit the taxonomy for all platforms
 path_std: $(addprefix path_std-,$(PLATFORMS)) ## Submit path standardisation (1.02) for all platforms
 ifeq ($(SPLIT),smoke)
+path_std-run:
+	@$(MAKE) --no-print-directory llm-run JOB=path_std-run SUB=$(SPLIT) NODES=$(or $(NODES),$($(SPLIT)_NODES)) TIME=$(or $(TIME),$($(SPLIT)_TIME)) $(path_std_run_smoke_ARGS)
+else
+path_std-run: $(addprefix path_std-run-,$(PLATFORMS)) ## Path standardisation of a sample (SPLIT=smoke|test|validation; smoke = one job)
+endif
+
+path_std-check: ## pytest on the path standardisation output (SPLIT=...)
+	@mkdir -p $(REPORT_DIR)
+	$(PYTHON) -m pytest tests/test_path_std_output.py -v --inference-dir=$(STD_DIR) --input-dir=$(SAMPLE_ROOT)/$(SPLIT) --ref-dir=$(REF_DIR) --results-json=$(REPORT_DIR)/$(SPLIT)_path_std_pytest.json
+
+ifneq ($(filter smoke pool,$(SPLIT)),)
 # one job for all platforms
 taxonomy-run:
-	@$(MAKE) --no-print-directory llm-run JOB=taxonomy-run SUB=smoke NODES=$(or $(NODES),$(smoke_NODES)) TIME=$(or $(TIME),$(smoke_TIME)) $(taxonomy_run_smoke_ARGS)
+	@$(MAKE) --no-print-directory llm-run JOB=taxonomy-run SUB=$(SPLIT) NODES=$(or $(NODES),$($(SPLIT)_NODES)) TIME=$(or $(TIME),$($(SPLIT)_TIME)) $(taxonomy_run_smoke_ARGS)
 else
-taxonomy-run: $(addprefix taxonomy-run-,$(PLATFORMS)) ## Run the taxonomy on a sample (SPLIT=smoke|test|validation; smoke = one job)
+taxonomy-run: $(addprefix taxonomy-run-,$(PLATFORMS)) ## Run the taxonomy on a sample (SPLIT=smoke|pool|test|validation; smoke and pool = one job)
 endif
 
 .PHONY: judge judge-check-model
@@ -351,6 +400,58 @@ id_std_viz: ## Visualise id standardisation validation
 
 taxonomy-sample: ## Sample the test and validation sets from the merged structures (without the smoke sample)
 	$(call CPU,scripts/2_taxonomy/2.03_rnv_sample_test_validation.py)
+
+# The model's predictions for the annotation interface: prompt kmetty2026_simple (five labels), test + validation, no
+# YouTube, in ONE job (400 paths; starting the servers takes longer than the work). Output is saved per split and
+# platform: <ANNOTATION_ROOT>/inference/02_path_classification_kmetty2026_simple/<split>/<platform>/
+ANNOTATION_PLATFORMS := facebook instagram tiktok x
+ANNOTATION_TAX       := kmetty2026_simple
+ANNOTATION_GLOB      := $(subst $(eval ) ,:,$(foreach s,test validation,$(foreach p,$(ANNOTATION_PLATFORMS),$(s)/$(p)/*.csv)))
+.PHONY: annotation-run
+annotation-run: ## Run the taxonomy (kmetty2026_simple, 5 labels) on test + validation for the annotation interface, one GPU job
+	@$(MAKE) --no-print-directory llm-run JOB=annotation-run SUB=all NODES=$(or $(NODES),1) TIME=$(or $(TIME),00:30:00) \
+		MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
+		INPUT_GLOB='$(ANNOTATION_GLOB)' \
+		SOURCE_FOLDER=$(SAMPLE_ROOT) \
+		OUTPUT_FOLDER=$(ANNOTATION_ROOT)/inference/02_path_classification_$(ANNOTATION_TAX) \
+		OUTPUT_PATTERN='{platform}_{n}_class_ids_$(ANNOTATION_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
+		EXTRA_EXPORT=',DATA_TAX=$(ANNOTATION_TAX)'
+
+.PHONY: annotation-interface-smoke
+annotation-interface-smoke: ## Test version of the interface from the smoke sample (20 paths) -> annotation/annotation_interface_smoke.html
+	PYTHONPATH=. $(PYTHON) scripts/2_taxonomy/2.09_rnv_build_annotation_interface.py --smoke
+
+# Paths of annotation-run without a valid prediction (2.10): prepare (CPU, seconds) -> annotation-retry (one GPU job) -> merge.
+.PHONY: annotation-retry-prepare annotation-retry annotation-retry-merge
+annotation-retry-prepare: ## Collect the failed paths of annotation-run into sample_retry/
+	PYTHONPATH=. $(PYTHON) scripts/2_taxonomy/2.10_rnv_retry_failed_annotation.py prepare
+
+annotation-retry: ## Re-run the failed paths (one GPU job; run annotation-retry-prepare first)
+	@test -d $(ANNOTATION_ROOT)/sample_retry || (echo "ERROR: run make annotation-retry-prepare first" && exit 1)
+	@$(MAKE) --no-print-directory llm-run JOB=annotation-retry SUB=all NODES=$(or $(NODES),1) TIME=$(or $(TIME),00:20:00) \
+		MODULE_PATH=scripts/2_taxonomy/2.01_rnv_run_taxonomy.py \
+		INPUT_GLOB='$(ANNOTATION_GLOB)' \
+		SOURCE_FOLDER=$(ANNOTATION_ROOT)/sample_retry \
+		OUTPUT_FOLDER=$(ANNOTATION_ROOT)/inference/02_path_classification_$(ANNOTATION_TAX)_retry \
+		OUTPUT_PATTERN='{platform}_{n}_class_ids_$(ANNOTATION_TAX)_$(COUNTRIES)_$(MODEL_NAME).json' \
+		EXTRA_EXPORT=',DATA_TAX=$(ANNOTATION_TAX)'
+
+annotation-retry-merge: ## Merge the valid retry answers into the annotation-run output
+	PYTHONPATH=. $(PYTHON) scripts/2_taxonomy/2.10_rnv_retry_failed_annotation.py merge
+
+# Annotation interface for the participants (2.09): needs taxonomy-sample and annotation-run.
+.PHONY: annotation-interface
+annotation-interface: ## Build annotation/annotation_interface.html from the test + validation samples and the model output (ALLOW_MISSING=1 to build without predictions)
+	$(call CPU,scripts/2_taxonomy/2.09_rnv_build_annotation_interface.py,$(if $(ALLOW_MISSING),--allow-missing))
+
+# Example paths per platform and category for the annotation instructions (2.08):
+#   make examples-pool  ->  make taxonomy-run SPLIT=pool  ->  make examples
+.PHONY: examples-pool examples
+examples-pool: ## Draw ~500 random paths per platform for the model to label (annotation examples)
+	$(call CPU,scripts/2_taxonomy/2.08_rnv_annotation_examples.py,pool)
+
+examples: ## Pick 3 random example paths per platform and category from the labelled pool
+	$(call CPU,scripts/2_taxonomy/2.08_rnv_annotation_examples.py,examples)
 
 taxonomy-accuracy: ## Validate the taxonomy test run
 	$(call CPU,scripts/2_taxonomy/2.04_rnv_test_validate_taxonomy.py)

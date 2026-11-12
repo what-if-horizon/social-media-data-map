@@ -50,12 +50,15 @@ MERGED_STRUCTURES_DIR = _join(ROOT_DIR, DATA_DIR, "00_ingest", "005_merged_struc
 
 # ---- Taxonomy (2_taxonomy) ----
 ANNOTATION_ROOT = os.getenv("ANNOTATION_ROOT") or _join(ROOT_DIR, "ddd_annotation")
-# Existing storage folder name for the taxonomy output (under ANNOTATION_ROOT/inference/)
-INFERENCE_SUBDIR = os.getenv("INFERENCE_SUBDIR", "02_path_classification")
 REPORT_DIR = os.getenv("REPORT_DIR") or str(PROJ_ROOT / "results" / "02_taxonomy" / "reports")
 RESULTS_DIR = str(PROJ_ROOT / "results" / "02_taxonomy")
 
 DATA_TAX = os.getenv("DATA_TAX", "kmetty2026")              # key in PROMPTS in 2.01 and 2.02
+# Existing storage folder name for the output. kmetty2026 keeps the original folder; another prompt gets its own,
+# so that outputs of different prompts are never mixed.
+INFERENCE_SUBDIR = os.getenv("INFERENCE_SUBDIR") or "02_path_classification" + ("" if DATA_TAX == "kmetty2026" else f"_{DATA_TAX}")
+# Number of ranked labels the prompt asks for (and validate_record expects)
+N_PREDICTIONS = {"kmetty2026": 3, "kmetty2026_simple": 5}.get(DATA_TAX, 3)
 COUNTRIES = os.getenv("COUNTRIES", "ES_NL")                 # tag in output file names
 MODEL_CONFIG = os.getenv("MODEL_CONFIG", "")                # configs/<file>.yaml of the taxonomy model
 MODEL_CONFIG_JUDGE = os.getenv("MODEL_CONFIG_JUDGE", "")    # configs/<file>.yaml of the judge
@@ -66,8 +69,21 @@ SMOKE_K = int(os.getenv("SMOKE_K", 5))                      # paths per platform
 SMOKE_MAX_SIM = float(os.getenv("SMOKE_MAX_SIM", 0.8))      # all pairs must have cosine similarity below this
 SMOKE_POOL = int(os.getenv("SMOKE_POOL", 2000))             # candidates drawn per platform
 SEED = int(os.getenv("SEED", 42))
+
+# ---- Path standardisation (1_path_standardisation) ----
+PATH_STD = os.getenv("PATH_STD", "path_shortlist2026")       # method in 1.02: path_shortlist2026 | path_std2026 (whole catalogue)
+SHORTLIST_K = int(os.getenv("SHORTLIST_K", 15))              # candidates the model sees per file / field (path_shortlist2026)
+# Multilingual sentence-transformers model for the shortlists (1.02); needs to be on disk, compute nodes have no internet
+PATH_EMBEDDING_MODEL = os.getenv("PATH_EMBEDDING_MODEL") or _join(MODEL_DIR, "sentence-transformers", "paraphrase-multilingual-MiniLM-L12-v2")
+REF_DIR = os.getenv("REF_DIR") or _join(ROOT_DIR, DATA_DIR, "00_ingest", "004_largest_donation")   # catalogue: largest donation per platform
+# Output of the path cleaning (0.06): the merged structures and the catalogue with a clean_path column next to final_path
+CLEANED_STRUCTURES_DIR = _join(ROOT_DIR, DATA_DIR, "00_ingest", "006_cleaned_structures")
+CLEANED_CATALOGUE_DIR = _join(ROOT_DIR, DATA_DIR, "00_ingest", "006_cleaned_largest_donation")
 TEST_N = int(os.getenv("TEST_N", 20))                     # paths per platform in the test set (2.03)
 VALIDATION_N = int(os.getenv("VALIDATION_N", 80))          # paths per platform in the validation set (2.03)
+
+EXAMPLES_POOL_N = int(os.getenv("EXAMPLES_POOL_N", 500))   # paths per platform the model labels for the examples (2.08)
+EXAMPLES_K = int(os.getenv("EXAMPLES_K", 3))                # example paths per platform and category (2.08)
 
 PLATFORMS = ["facebook", "instagram", "tiktok", "youtube", "x"]
 

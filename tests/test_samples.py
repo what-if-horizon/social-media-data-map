@@ -13,7 +13,7 @@ import pytest
 from src.inference.similarity import max_pairwise
 
 K = int(os.environ.get("SMOKE_K", 5))
-SPLITS = ["smoke", "test", "validation"]
+SPLITS = ["smoke", "test", "validation", "examples"]
 
 
 def paths_in(root, split, platform):
@@ -70,7 +70,8 @@ def test_split_has_unique_paths(sample_root, platform, split):
     assert len(paths) == n_rows(sample_root, split, platform)
 
 
-@pytest.mark.parametrize("a,b", [("smoke", "test"), ("smoke", "validation"), ("test", "validation")])
+@pytest.mark.parametrize("a,b", [("smoke", "test"), ("smoke", "validation"), ("test", "validation"),
+                                  ("examples", "smoke"), ("examples", "test"), ("examples", "validation")])
 def test_samples_are_disjoint(sample_root, platform, a, b):
     pa, pb = paths_in(sample_root, a, platform), paths_in(sample_root, b, platform)
     if not pa or not pb:

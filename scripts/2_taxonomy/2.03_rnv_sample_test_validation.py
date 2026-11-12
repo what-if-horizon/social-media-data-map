@@ -5,7 +5,7 @@ Draw the test and validation sets, and an annotation sheet for each.
 
 Per platform, TEST_N + VALIDATION_N (20 + 80) unique paths are sampled at random from the merged structures
 (<ROOT_DIR>/<DATA_DIR>/00_ingest/005_merged_structures, i.e. ddd_processed), after removing the smoke
-sample (2.00), so test, validation and smoke never share a path. Writes, per platform and split:
+sample (2.00) and the annotation examples (2.08), so these never share a path. Writes, per platform and split:
 
   <ANNOTATION_ROOT>/sample/<split>/<platform>/<platform>_<split>.csv                        column final_path
   <ANNOTATION_ROOT>/annotation/<split>/<platform>/<platform>_<split>_to_annotate.xlsx      final_path + empty label column
@@ -42,6 +42,8 @@ def main():
     for platform in config.PLATFORMS:
         merged = read_paths(os.path.join(config.MERGED_STRUCTURES_DIR, platform, "*.csv"))
         smoke = read_paths(os.path.join(config.sample_dir("smoke"), platform, "*.csv"))
+        # annotation examples (2.08) are shown to the annotators, so they must not be annotated themselves
+        smoke |= read_paths(os.path.join(config.sample_dir("examples"), platform, "*.csv"))
         if not smoke:
             print(f"[WARNING] {platform}: no smoke sample found, run 2.00 first")
         candidates = sorted(merged - smoke)

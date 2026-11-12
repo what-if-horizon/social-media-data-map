@@ -1,0 +1,66 @@
+{
+  "created": "2026-11-11T13:50:33",
+  "exit_status": 0,
+  "tests": [
+    {
+      "nodeid": "tests/test_inference_output.py::test_there_are_outputs",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_every_input_platform_has_output",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_records_are_valid[facebook/facebook_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_records_are_valid[instagram/instagram_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_records_are_valid[tiktok/tiktok_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_records_are_valid[x/x_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_records_are_valid[youtube/youtube_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_every_input_path_has_a_record[facebook/facebook_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_every_input_path_has_a_record[instagram/instagram_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_every_input_path_has_a_record[tiktok/tiktok_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_every_input_path_has_a_record[x/x_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "nodeid": "tests/test_inference_output.py::test_every_input_path_has_a_record[youtube/youtube_5_class_ids_kmetty2026_ES_NL_gpt-oss-20b_tp1x4tp.json]",
+      "outcome": "passed",
+      "message": ""
+    }
+  ]
+}

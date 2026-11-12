@@ -15,11 +15,20 @@ import requests
 # Global log directory
 #--------------------------------------------------------------------
 
-# Directory where vLLM stdout/stderr logs are stored
-LOG_DIR = "logs"
+# Directory where vLLM stdout/stderr logs are stored. The parallel launcher sets VLLM_LOG_DIR
+# per node (launchers/parallel_worker.sh); otherwise it is ./logs.
+LOG_DIR = os.environ.get("VLLM_LOG_DIR", "logs")
+
+# File that is created when all servers are ready. The parallel launcher waits for it.
+READY_FILE = os.environ.get("SERVERS_READY_FILE", os.path.join("logs", "servers_ready"))
 
 # Create directory if it does not exist
 os.makedirs(LOG_DIR, exist_ok=True)
+
+
+def log_name(cfg):
+    """Log file name of a server. Servers of the same model need different names, so use the id when there is one."""
+    return f"{cfg.get('id') or cfg['name'].replace('/', '_')}.log"
 
 
 #--------------------------------------------------------------------
@@ -51,7 +60,7 @@ def launch_model(cfg, model_dir, max_model_len, gpu_memory_utilization):
 
     # Log filename
     # "/" replaced because it cannot appear in filenames
-    log_file = Path(LOG_DIR) / f"{name.replace('/', '_')}.log"
+    log_file = Path(LOG_DIR) / log_name(cfg)
 
     # Copy current environment
     env = os.environ.copy()
@@ -149,18 +158,22 @@ def server_ready(port):
 # wait_for_servers()
 #--------------------------------------------------------------------
 
-def wait_for_servers(config, interval=5):
+def wait_for_servers(config, processes=(), interval=5):
 
     print("Waiting for vLLM servers to start...")
 
-    # Expected logfiles for all models
-    logfiles = [
-        Path(LOG_DIR) / f"{m['name'].replace('/', '_')}.log"
-        for m in config["models"]
-    ]
-
     # Poll until all servers are ready
     while True:
+
+        # A server that exited will never become ready: stop instead of waiting forever
+        for proc in processes:
+            if proc.poll() is not None:
+                print(f"A vLLM server exited with code {proc.returncode} before it was ready, see {LOG_DIR}/*.log",
+                      flush=True)
+                for other in processes:
+                    if other.poll() is None:
+                        other.terminate()
+                raise SystemExit(1)
 
         """
         
@@ -179,7 +192,7 @@ def wait_for_servers(config, interval=5):
         if ready:
             print("All vLLM servers are ready.")
 
-            Path("logs/servers_ready").touch()
+            Path(READY_FILE).touch()
             return
 
         # Wait before checking again
@@ -209,7 +222,10 @@ def main():
         config = yaml.safe_load(f)
 
     # Global settings from YAML
-    model_dir = config["model_dir"]
+    # model_dir in the YAML, or MODEL_DIR from .env (the *_tp1x4 configs do not set it)
+    model_dir = config.get("model_dir") or os.environ.get("MODEL_DIR")
+    if not model_dir:
+        raise SystemExit("model_dir is not set in the YAML and MODEL_DIR is not set in the environment (.env)")
     max_model_len = config["max_model_len"]
     gpu_memory_utilization = config["gpu_memory_utilization"]
 
@@ -245,7 +261,7 @@ def main():
     # Wait until all servers are ready
     #--------------------------------------------------------
 
-    wait_for_servers(config)
+    wait_for_servers(config, processes)
     
     
 

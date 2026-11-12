@@ -33,10 +33,13 @@ def prepare_prompt(data_1, template,  data_2 = None, data_3 = None, data_4 = Non
 # run_llm()                              
 #--------------------------------------------------------
 # ---> Function to easyly make a call
-def run_llm(prompt: str, agent) -> str:
+def run_llm(prompt: str, agent, **overrides) -> str:
+    """One request. Defaults are deterministic (temperature 0, seed 42); `overrides` replace any of them,
+    e.g. max_tokens, temperature or seed for a retry."""
     try:
         messages = [{"role": "user", "content": prompt}]
-        out = agent.generate(messages, temperature=0.0, seed=42, top_p=1.0)
+        params = {"temperature": 0.0, "seed": 42, "top_p": 1.0, **overrides}
+        out = agent.generate(messages, **params)
         return out[0]
     except Exception as e:
         return json.dumps({"error": str(e), "raw_text": prompt[:400]})

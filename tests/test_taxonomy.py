@@ -101,3 +101,67 @@ class TestRunBucketLayout(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestSimplePrompt(unittest.TestCase):
+    """kmetty2026_simple differs from kmetty2026 in the topology (the definitions), the decision rules and in asking for five labels."""
+
+    def setUp(self):
+        from src.inference.taxonomy import label_list
+        self.base, self.simple = prompts.kmetty2026(), prompts.kmetty2026_simple()
+        self.label_list = label_list
+
+    @staticmethod
+    def around_topology(text):
+        """Role and steps (with 'five' read as 'three'), and the part from the path on."""
+        head = text[:text.index("# DDP topology")].replace("five", "three")
+        return head, text[text.index("# Path to classify"):]
+
+    def test_same_labels_in_the_same_order(self):
+        self.assertEqual(self.label_list(self.base), self.label_list(self.simple))
+        self.assertEqual(len(self.label_list(self.simple)), 15)
+        self.assertEqual(valid_labels(self.base), valid_labels(self.simple))
+
+    def test_everything_but_topology_and_decision_rules_is_identical(self):
+        self.assertEqual(self.around_topology(self.base), self.around_topology(self.simple))
+
+    def test_platform_is_given_to_the_model(self):
+        self.assertIn("# Platform\n{PLATFORM}", self.simple)
+        self.assertNotIn("{PLATFORM}", build_prompt(self.simple, "a/b.json", "TikTok"))
+        self.assertIn("# Platform\nTikTok\n\n# Path to classify\na/b.json", build_prompt(self.simple, "a/b.json", "TikTok"))
+        self.assertIn("# Platform\n{PLATFORM}", self.base)   # both prompts tell the model the platform
+        self.assertIn("Platform: TikTok\nInput: TikTok/", self.base)
+
+    def test_platform_name(self):
+        from src.inference.taxonomy import platform_name
+        self.assertEqual([platform_name(x) for x in ("tiktok", "x", "facebook", "youtube", "other")],
+                         ["TikTok", "X", "Facebook", "YouTube", "other"])
+
+    def test_asks_for_five_valid_examples(self):
+        import json, re
+        from src.inference.taxonomy import validate_record
+        self.assertIn("exactly five different labels", self.simple)
+        examples = [json.loads(m.group(1)) for m in re.finditer(r"^Output: (.*)$", self.simple, re.M)]
+        self.assertEqual(len(examples), 5)
+        for rec in examples:
+            self.assertEqual(validate_record(rec, valid_labels(self.simple), n=5), [])
+
+    def test_definitions_differ(self):
+        self.assertNotEqual(self.base, self.simple)
+        self.assertIn("the platform itself concludes", self.simple)
+        self.assertNotIn("the platform itself concludes", self.base)
+
+    def test_decision_rules_are_the_simplified_ones(self):
+        rules = lambda t: t[t.index("# Decision rules"):t.index("# Confidence scoring")]
+        self.assertIn("mention the other option in your rationale", rules(self.simple))
+        self.assertIn("give the other as the second option", rules(self.base))
+        self.assertNotIn("give the other as the second option", rules(self.simple))
+        for pair in ("Network (ego ties) vs. Ratings and interests", "Passive consumption and exposure vs. Human-machine dialogue",
+                     "Semantically specified vs. semantically unspecified"):
+            self.assertIn(pair, rules(self.simple))
+
+    def test_path_placeholder_and_parent_headings_kept(self):
+        self.assertTrue(build_prompt(self.simple, "a/b.json").rstrip().endswith("a/b.json"))
+        for heading in ("## Service-provider-related data", "## User-related data: Semantically specified",
+                        "## User-related data: Semantically unspecified"):
+            self.assertIn(heading, self.simple)

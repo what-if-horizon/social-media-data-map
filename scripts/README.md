@@ -22,7 +22,8 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 | `0_ingest/0.03` merge_structures | `merge_csv` | CPU | Merge into `005_merged_structures` |
 | `0_ingest/0.04` sample_for_inference | `sample` | CPU | Sample for inference |
 | `0_ingest/0.05` sample_annotation | `annotation_sample` | CPU | Sample for annotation |
-| `1_path_standardisation/1.02` run_path_standardisation | `path_std-<platform>`, `path_std` | GPU (parallel) | **Path standardisation** |
+| `0_ingest/0.06` clean_paths | `clean_paths` | CPU | `clean_path` column (no wrapper folders, no part numbers) for the merged structures and the catalogue |
+| `1_path_standardisation/1.02` run_path_standardisation | `path_std-run SPLIT=smoke\|test\|validation`, `path_std-check`, `path_std-<platform>`, `path_std` | GPU (parallel) | **Path standardisation**: does the path hold the same data as a path in the catalogue (largest donation)? Shortlists of files and fields, then the model decides (needs `clean_paths`) |
 | `1_path_standardisation/1.01.01` validate_test_id_standardisation | `id_std_val` | CPU | Validate the id-standardisation test run |
 | `1_path_standardisation/1.01.02` visualisation_validation_id_standardisation | `id_std_viz` | CPU | Plots for the above |
 | `2_taxonomy/2.00` select_smoke_sample | `smoke-select` | CPU | 5 mutually dissimilar paths per platform (embeddings), not in the annotation sample |
@@ -33,6 +34,7 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 | `2_taxonomy/2.05` visualisation_results_taxonomy | `taxonomy-viz` | CPU | Plots for the above (verduyn2020) |
 | `2_taxonomy/2.06` evaluate_human_annotations | `eval-human` | CPU | Accuracy of the kmetty2026 taxonomy against human annotations |
 | `2_taxonomy/2.07` build_report | `report` | CPU | HTML report per phase |
+| `2_taxonomy/2.08` annotation_examples | `examples-pool`, `examples` | CPU | 3 example paths per platform and category, for the annotation instructions |
 
 `src/ingest/*_json_to_csv.py` (`flatten_dd`, `flatten_dd_<fb|ig|tt|x|yt>`) also run on the CPU launcher.
 

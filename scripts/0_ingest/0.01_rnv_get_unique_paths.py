@@ -9,6 +9,9 @@ import shutil
 import os
 from tqdm import tqdm
 
+# PYTHONPATH is the repo root (set by the launcher)
+from src.ingest.cleanPaths import is_metadata_path
+
 input_dir = os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/002_individual_flattened_structures')
 output_dir = os.path.join(DATA_ROOT, 'ddd_processed/00_ingest/003_individual_flattened_structures_unique')
 
@@ -68,6 +71,8 @@ def combine_list(df, platform):
 
 
 def clean_paths(df, platform):
+    # metadata of the export itself (X: data/manifest.js), not data of the user: leave it out from here on
+    df = df[~df["final_path"].map(lambda p: is_metadata_path(platform, p))].copy()
     df["final_path"] = df["final_path"].str.replace(r'/\d{5,}(?=/)', '/$NUMBER', regex=True)
     df["final_path"] = df["final_path"].str.replace(r'/\d+\.json(?=/)','/$NUMBER.json',regex=True)
 

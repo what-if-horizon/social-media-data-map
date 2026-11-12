@@ -1,7 +1,7 @@
 """LLM judge for the taxonomy (scripts/2_taxonomy/2.02_rnv_run_judge.py).
 
 The judge is a different model from the one that produced the taxonomy output. It sees the same taxonomy, the path and the
-taxonomy model's three predictions, and says whether the top prediction is correct.
+taxonomy model's ranked predictions, and says whether the top prediction is correct.
 """
 
 from src.inference.taxonomy import extract_json_dict
@@ -15,8 +15,9 @@ _TEMPLATE = """Reasoning: medium
 
 # Role
 You are an independent reviewer of a classification of Digital Data Package (DDP) paths. Another model
-classified the path below into the DDP topology and gave three ranked labels. Decide whether its top label
-is correct, using only the topology definitions and decision rules below.
+classified the path below into the DDP topology and gave ranked labels. Decide whether its top label
+is correct, using only the topology definitions and decision rules below. You are told which platform the data comes
+from; the same path can mean different things on different platforms.
 
 {TAXONOMY}
 
@@ -28,6 +29,9 @@ is correct, using only the topology definitions and decision rules below.
 # Output format
 Return only valid JSON, with no text before or after it:
 {"verdict": "correct" | "plausible" | "incorrect", "judge_label": "<the label you consider best; one of the 15 numbered labels>", "rationale": "<one or two sentences>"}
+
+# Platform
+{PLATFORM}
 
 # Path
 {PATH}
@@ -44,7 +48,7 @@ def taxonomy_section(taxonomy_prompt: str) -> str:
     return taxonomy_prompt[start:end].strip()
 
 
-def build_judge_prompt(taxonomy_prompt: str, record: dict) -> str:
+def build_judge_prompt(taxonomy_prompt: str, record: dict, platform: str = None) -> str:
     preds = record.get("predictions")
     if preds:
         lines = [f'{i}. "{p.get("label")}" ({p.get("confidence")})' for i, p in enumerate(preds, 1)]
@@ -53,6 +57,7 @@ def build_judge_prompt(taxonomy_prompt: str, record: dict) -> str:
         shown = "The classifier produced no valid output. Classify the path yourself."
     # Plain replace: the template and the topology contain JSON braces, so str.format is not usable
     return (_TEMPLATE.replace("{TAXONOMY}", taxonomy_section(taxonomy_prompt))
+                     .replace("{PLATFORM}", platform or "unknown")
                      .replace("{PATH}", str(record["path"]))
                      .replace("{PREDICTIONS}", shown))
 
