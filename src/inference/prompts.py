@@ -115,7 +115,7 @@ Output: {"path": "X/data/ip-audit.js", "predictions": [{"label": "Login data", "
 # ---------------------------------------------------------------------------------------------
 # kmetty2026_simple: the same prompt with the simplified definitions of the annotation
 # instructions (annotation/12112026_annotation_instructions_DDP_topology.md). Only the topology
-# (the parent and label definitions) differs; role, steps, decision rules, confidence scoring,
+# (the parent and label definitions) and the decision rules differ; role, steps, confidence scoring,
 # output format and examples are those of kmetty2026.
 # ---------------------------------------------------------------------------------------------
 
@@ -179,8 +179,20 @@ Definition: Data where the platform only provides an empty container (a text fie
 """
 
 
+_DECISION_RULES_SIMPLE = """# Decision rules (apply when categories seem to overlap)
+- Network (ego ties) vs. Ratings and interests: the boundary between network data and interest data is blurry. When a user follows an organization or subscribes to a specific YouTube channel, the action generates a database trace that can technically be interpreted as a network connection. However, from an analytical standpoint, these traces function primarily as clear statements of lifestyle, consumer habits, and cultural tastes. Therefore:
+  - Use Network (ego ties) strictly for bidirectional or unidirectional interpersonal connections.
+  - Use Ratings and interests for content curation and media consumption properties, including following organizations and subscribing to channels.
+  - If a file can contain both (e.g., a following list with both people and organizations), choose the label that fits what the file mainly records and mention the other option in your rationale.
+- Passive consumption and exposure vs. Human-machine dialogue: passive consumption records what a user was exposed to; human-machine dialogue records what a user actively asks or formulates.
+- Semantically specified vs. semantically unspecified: fields with pre-structured data definitions belong to the specified side; free text and media whose content is left entirely to the user belong to the unspecified side.
+
+"""
+
+
 def kmetty2026_simple():
     base = kmetty2026()
     start = base.index("# DDP topology")
-    end = base.index("# Decision rules")
-    return base[:start] + _TOPOLOGY_SIMPLE + base[end:]
+    rules = base.index("# Decision rules")
+    scoring = base.index("# Confidence scoring")
+    return base[:start] + _TOPOLOGY_SIMPLE + _DECISION_RULES_SIMPLE + base[scoring:]

@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
 
 class TestSimplePrompt(unittest.TestCase):
-    """kmetty2026_simple differs from kmetty2026 only in the topology (the definitions)."""
+    """kmetty2026_simple differs from kmetty2026 only in the topology (the definitions) and the decision rules."""
 
     def setUp(self):
         from src.inference.taxonomy import label_list
@@ -113,20 +113,30 @@ class TestSimplePrompt(unittest.TestCase):
 
     @staticmethod
     def around_topology(text):
-        return text[:text.index("# DDP topology")], text[text.index("# Decision rules"):]
+        """Everything except the topology and the decision rules."""
+        return text[:text.index("# DDP topology")], text[text.index("# Confidence scoring"):]
 
     def test_same_labels_in_the_same_order(self):
         self.assertEqual(self.label_list(self.base), self.label_list(self.simple))
         self.assertEqual(len(self.label_list(self.simple)), 15)
         self.assertEqual(valid_labels(self.base), valid_labels(self.simple))
 
-    def test_everything_but_the_topology_is_identical(self):
+    def test_everything_but_topology_and_decision_rules_is_identical(self):
         self.assertEqual(self.around_topology(self.base), self.around_topology(self.simple))
 
     def test_definitions_differ(self):
         self.assertNotEqual(self.base, self.simple)
         self.assertIn("the platform itself concludes", self.simple)
         self.assertNotIn("the platform itself concludes", self.base)
+
+    def test_decision_rules_are_the_simplified_ones(self):
+        rules = lambda t: t[t.index("# Decision rules"):t.index("# Confidence scoring")]
+        self.assertIn("mention the other option in your rationale", rules(self.simple))
+        self.assertIn("give the other as the second option", rules(self.base))
+        self.assertNotIn("give the other as the second option", rules(self.simple))
+        for pair in ("Network (ego ties) vs. Ratings and interests", "Passive consumption and exposure vs. Human-machine dialogue",
+                     "Semantically specified vs. semantically unspecified"):
+            self.assertIn(pair, rules(self.simple))
 
     def test_path_placeholder_and_parent_headings_kept(self):
         self.assertTrue(build_prompt(self.simple, "a/b.json").rstrip().endswith("a/b.json"))
