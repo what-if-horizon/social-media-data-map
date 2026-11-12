@@ -27,7 +27,7 @@ CONCURRENCY = 100
 
 # The taxonomy prompt the outputs were produced with (its topology is what the judge applies)
 DATA_TAX = config.DATA_TAX
-PROMPTS = {"kmetty2026": p.kmetty2026}
+PROMPTS = {"kmetty2026": p.kmetty2026, "kmetty2026_simple": p.kmetty2026_simple}
 if DATA_TAX not in PROMPTS:
     raise SystemExit(f"Unknown DATA_TAX '{DATA_TAX}', expected one of {list(PROMPTS)}")
 

@@ -110,3 +110,77 @@ Output: {"path": "X/data/ip-audit.js", "predictions": [{"label": "Login data", "
 {PATH}
 
 """
+
+
+# ---------------------------------------------------------------------------------------------
+# kmetty2026_simple: the same prompt with the simplified definitions of the annotation
+# instructions (annotation/12112026_annotation_instructions_DDP_topology.md). Only the topology
+# (the parent and label definitions) differs; role, steps, decision rules, confidence scoring,
+# output format and examples are those of kmetty2026.
+# ---------------------------------------------------------------------------------------------
+
+_TOPOLOGY_SIMPLE = """# DDP topology
+Only the 15 numbered labels below are valid answers. Use the label string exactly as written. The parent categories are given to help you understand the structure; never use them as a label.
+
+## Service-provider-related data
+Definition: Data the platform records automatically about how its systems are used. These are technical and analytical records, not things the user chose to share.
+
+1. "Login data"
+   Definition: Data the platform needs to recognise the user, let them into their account securely and protect their identity. Examples: usernames, email addresses and timestamps of when the account was accessed.
+
+2. "Connection / device telemetry"
+   Definition: Technical details the platform records automatically about the devices and connections used to reach it. Examples: device type, operating system, hardware, camera model, synced devices, browser information and IP addresses.
+
+3. "Application / third-party links"
+   Definition: Records of outside apps or services that are connected to the user's account, and the permissions they were given. Examples: Facebook's "Third party application access" file and TikTok's "User Third Platform Information" file.
+
+4. "Algorithmic and inferred profiles, usage and screen-time metrics"
+   Definition: What the platform itself concludes or measures about the user, rather than what the user stated. Examples: interest categories the platform assigned to the user, screen-time logs and usage metrics such as time spent on Facebook or TikTok.
+
+## User-related data: Semantically specified
+Definition: Data about the user stored in fixed, predefined fields, so each value has a set meaning (for example a birthdate field or a list of followers). This sets it apart from free text and media, where the user decides what the content is.
+
+5. "Mandatory profile fields"
+   Definition: Basic identity details the platform requires when someone creates an account. Examples: legal name, account ID, registration date, date of birth and gender.
+
+6. "Extended profile (settings)"
+   Definition: Optional settings and choices the user made in predefined fields. Examples: account settings, notification preferences, education history the user listed and registries of personal assets.
+
+7. "Network (ego ties)"
+   Definition: Connections between the user and other people on the platform. Examples: friend lists, follower and following lists, and connection tables. See the decision rules for the boundary with Ratings and interests.
+
+8. "Ratings and interests"
+   Definition: Traces that show what content the user chooses and what they like, and so mainly express their lifestyle, consumer habits and cultural taste. Examples: following an organization or subscribing to a YouTube channel. See the decision rules for the boundary with Network (ego ties).
+
+9. "Contextual tags and mentions"
+   Definition: Tags and mentions attached to existing content that say who or what it relates to. Examples: photo and post tags on Facebook and Instagram, user mentions in comments on LinkedIn and @username mentions in tweets.
+
+10. "Location and GPS traces"
+    Definition: Ongoing records of where the user's device was located, such as location tracking a smartphone records in the background.
+
+11. "Passive consumption and exposure"
+    Definition: Records of the content the platform showed the user on their screen. The user saw this content; they did not create it. Examples: YouTube watch history and TikTok recommended video feeds.
+
+## User-related data: Semantically unspecified
+Definition: Data where the platform only provides an empty container (a text field, a JSON string or an HTML block) and the user decides what goes in it. You need to read, watch or listen to it to know what it means. It covers both text and media: photos, videos and voice notes.
+
+12. "Profile free text / bio"
+    Definition: Free text the user wrote about themselves on their profile, such as a bio. The structured profile fields belong under Mandatory profile fields or Extended profile; only the free text belongs here. Because these fields have no limits, they often hold personal details such as religion, political views, job or private circumstances, often mixed with names or details that identify the user or people close to them.
+
+13. "Private communication"
+    Definition: Messages and media sent to one person or to a closed group. Examples: direct messages, group chats, voice notes and shared media on Facebook Messenger, Instagram, X, TikTok, LinkedIn and WhatsApp.
+
+14. "One-to-many communication"
+    Definition: Free text and media the user shares with a broad audience. Examples: public status updates, posts, shared links, stories and, most of all, comments.
+
+15. "Human-machine dialogue"
+    Definition: What the user typed to a system in their own words: search queries and conversations with AI chatbots such as ChatGPT and Meta AI. Unlike Passive consumption and exposure, which records what the user was shown, this records what the user actively asked or wrote.
+
+"""
+
+
+def kmetty2026_simple():
+    base = kmetty2026()
+    start = base.index("# DDP topology")
+    end = base.index("# Decision rules")
+    return base[:start] + _TOPOLOGY_SIMPLE + base[end:]

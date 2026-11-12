@@ -101,3 +101,35 @@ class TestRunBucketLayout(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestSimplePrompt(unittest.TestCase):
+    """kmetty2026_simple differs from kmetty2026 only in the topology (the definitions)."""
+
+    def setUp(self):
+        from src.inference.taxonomy import label_list
+        self.base, self.simple = prompts.kmetty2026(), prompts.kmetty2026_simple()
+        self.label_list = label_list
+
+    @staticmethod
+    def around_topology(text):
+        return text[:text.index("# DDP topology")], text[text.index("# Decision rules"):]
+
+    def test_same_labels_in_the_same_order(self):
+        self.assertEqual(self.label_list(self.base), self.label_list(self.simple))
+        self.assertEqual(len(self.label_list(self.simple)), 15)
+        self.assertEqual(valid_labels(self.base), valid_labels(self.simple))
+
+    def test_everything_but_the_topology_is_identical(self):
+        self.assertEqual(self.around_topology(self.base), self.around_topology(self.simple))
+
+    def test_definitions_differ(self):
+        self.assertNotEqual(self.base, self.simple)
+        self.assertIn("the platform itself concludes", self.simple)
+        self.assertNotIn("the platform itself concludes", self.base)
+
+    def test_path_placeholder_and_parent_headings_kept(self):
+        self.assertTrue(build_prompt(self.simple, "a/b.json").rstrip().endswith("a/b.json"))
+        for heading in ("## Service-provider-related data", "## User-related data: Semantically specified",
+                        "## User-related data: Semantically unspecified"):
+            self.assertIn(heading, self.simple)

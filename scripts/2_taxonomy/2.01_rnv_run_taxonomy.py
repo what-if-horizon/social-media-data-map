@@ -38,7 +38,7 @@ DATA_TAX = config.DATA_TAX
 CONCURRENCY = 100
 
 # Prompt per taxonomy name (DATA_TAX); the name goes into the output file name
-PROMPTS = {"kmetty2026": p.kmetty2026}
+PROMPTS = {"kmetty2026": p.kmetty2026, "kmetty2026_simple": p.kmetty2026_simple}
 if DATA_TAX not in PROMPTS:
     raise SystemExit(f"Unknown DATA_TAX '{DATA_TAX}', expected one of {list(PROMPTS)}")
 

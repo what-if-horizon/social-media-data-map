@@ -121,7 +121,8 @@ SPLIT        ?= validation
 SAMPLE_ROOT  := $(ANNOTATION_ROOT)/sample
 # Folder names under the data root / ANNOTATION_ROOT. These are existing storage folders; to rename them, mv the
 # folders on /projects and change them here (the scripts read INFERENCE_SUBDIR from the environment).
-INFERENCE_SUBDIR := 02_path_classification
+# A prompt other than kmetty2026 gets its own folder (02_path_classification_<DATA_TAX>), so outputs are never mixed.
+INFERENCE_SUBDIR := 02_path_classification$(if $(filter-out kmetty2026,$(DATA_TAX)),_$(DATA_TAX))
 TAXONOMY_OUT := $(ROOT_DIR)/$(DATA_DIR)/$(INFERENCE_SUBDIR)/021_classified_paths
 INFERENCE_DIR := $(ANNOTATION_ROOT)/inference/$(INFERENCE_SUBDIR)/$(SPLIT)
 JUDGE_DIR    := $(ANNOTATION_ROOT)/inference/03_judge/$(SPLIT)

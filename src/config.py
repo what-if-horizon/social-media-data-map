@@ -50,12 +50,13 @@ MERGED_STRUCTURES_DIR = _join(ROOT_DIR, DATA_DIR, "00_ingest", "005_merged_struc
 
 # ---- Taxonomy (2_taxonomy) ----
 ANNOTATION_ROOT = os.getenv("ANNOTATION_ROOT") or _join(ROOT_DIR, "ddd_annotation")
-# Existing storage folder name for the taxonomy output (under ANNOTATION_ROOT/inference/)
-INFERENCE_SUBDIR = os.getenv("INFERENCE_SUBDIR", "02_path_classification")
 REPORT_DIR = os.getenv("REPORT_DIR") or str(PROJ_ROOT / "results" / "02_taxonomy" / "reports")
 RESULTS_DIR = str(PROJ_ROOT / "results" / "02_taxonomy")
 
 DATA_TAX = os.getenv("DATA_TAX", "kmetty2026")              # key in PROMPTS in 2.01 and 2.02
+# Existing storage folder name for the output. kmetty2026 keeps the original folder; another prompt gets its own,
+# so that outputs of different prompts are never mixed.
+INFERENCE_SUBDIR = os.getenv("INFERENCE_SUBDIR") or "02_path_classification" + ("" if DATA_TAX == "kmetty2026" else f"_{DATA_TAX}")
 COUNTRIES = os.getenv("COUNTRIES", "ES_NL")                 # tag in output file names
 MODEL_CONFIG = os.getenv("MODEL_CONFIG", "")                # configs/<file>.yaml of the taxonomy model
 MODEL_CONFIG_JUDGE = os.getenv("MODEL_CONFIG_JUDGE", "")    # configs/<file>.yaml of the judge
