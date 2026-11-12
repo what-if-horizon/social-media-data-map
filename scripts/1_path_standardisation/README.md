@@ -30,6 +30,12 @@ It does not translate anything and does not change case, so it cannot merge two 
 On the current data, 1,061 of the 4,455 Instagram paths that are not in the catalogue are found after cleaning (24%),
 36 of 1,669 for Facebook, 19 of 234 for TikTok, none for YouTube and X (their differences are language).
 
+**Metadata files are left out earlier, in ingest step 0.01.** Some files only describe the export itself, not the
+user's data (X: `data/manifest.js` lists the archive, the account id, the generation date and the files). `0.01` drops
+their paths (`METADATA_FILES` and `is_metadata_path` in `src/ingest/cleanPaths.py`), so they never reach the merged
+structures, the catalogue or the samples. This only takes effect when the ingest is run again from `0.01`; the merged
+structures and the samples that exist now are not changed by it.
+
 ### 2. Matching (`1.02`, method `path_shortlist2026`, the default)
 
 1. **exact**: the path is in the catalogue.
@@ -75,8 +81,17 @@ default `$MODEL_DIR/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
 - Files that sit in the wrong platform folder (Instagram data holds Facebook and TikTok files, Facebook data holds
   YouTube files). They come out as `NA` against the catalogue of the folder they are in.
 
-| Script | What it does |
+## Files
+
+| File | What it does |
 |---|---|
+| `../0_ingest/0.01_rnv_get_unique_paths.py` | Also drops metadata files of the export (see above) |
 | `../0_ingest/0.06_rnv_clean_paths.py` | Cleaning of the paths (ingest, CPU) |
 | `1.02_rnv_run_path_standardisation.py` | The model matches paths to the catalogue (GPU, parallel launcher) |
 | `1.01.01`, `1.01.02` | Validation and plots of the earlier id-standardisation test run (older prompt) |
+| `src/ingest/cleanPaths.py` | The cleaning rules, `match_key` and `split_unit` (file and field of a path) |
+| `src/inference/pathshortlist.py` | The steps exact, clean, file and field, with the model and the embedder passed in |
+| `src/inference/retrieval.py` | The embedder (CPU) and the shortlists |
+| `src/inference/pathmatch.py` | Prompt filling, parsing and validation for the whole-catalogue method and the output check |
+| `src/inference/prompts.py` | `path_file2026`, `path_field2026` (shortlists) and `path_std2026` (whole catalogue) |
+| `tests/test_clean_paths.py`, `test_path_shortlist.py`, `test_path_std.py`, `test_path_std_output.py` | Unit tests, and the check of the output |
