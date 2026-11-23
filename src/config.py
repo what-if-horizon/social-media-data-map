@@ -47,6 +47,7 @@ INSIGHTS_DATA_DIR = _join(ROOT_DIR, DATA_DIR, "insights")
 DOWNLOADS_DATA_DIR = _join(ROOT_DIR, DATA_DIR, "downloads")
 
 MERGED_STRUCTURES_DIR = _join(ROOT_DIR, DATA_DIR, "00_ingest", "005_merged_structures")
+META_POLICY_DIR = str(PROJ_ROOT / "data" / "meta_policy")  # Meta Privacy Policy scrape (0.08), in the repo
 
 # ---- Taxonomy (2_taxonomy) ----
 ANNOTATION_ROOT = os.getenv("ANNOTATION_ROOT") or _join(ROOT_DIR, "ddd_annotation")

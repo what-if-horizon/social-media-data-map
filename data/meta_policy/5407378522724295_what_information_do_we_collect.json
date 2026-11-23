@@ -1,0 +1,2406 @@
+{
+  "policy_url": "https://www.facebook.com/privacy/policy/version/5407378522724295/",
+  "version": "5407378522724295",
+  "section": "What information do we collect?",
+  "scraped_at": "2026-11-23T13:24:18+00:00",
+  "max_depth": 5,
+  "section_blocks": [
+    {
+      "type": "heading",
+      "inline": [
+        {
+          "text": "What information do we collect?"
+        }
+      ],
+      "level": 2
+    },
+    {
+      "type": "p",
+      "inline": [
+        {
+          "text": "The information we collect and process about you depends on how you use our Products. For example, we collect different information if you sell furniture on Marketplace than if you post a reel on Instagram. When you use our Products, we collect some information about you "
+        },
+        {
+          "text": "even if you don't have an account",
+          "popup": "1.ex.41-InformationWeCollectIf"
+        },
+        {
+          "text": "."
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "inline": [
+        {
+          "text": "Here's the information we collect:"
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "inline": [
+        {
+          "text": "Your activity and information you provide",
+          "popup": "1.subpage.1-YourActivityAndInformation"
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "inline": [
+        {
+          "text": "Friends, followers and other connections",
+          "popup": "1.subpage.2-FriendsFollowersAndOther"
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "inline": [
+        {
+          "text": "App, browser and device information",
+          "popup": "1.subpage.3-AppBrowserAndDevice"
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "inline": [
+        {
+          "text": "Information from Partners, vendors and third parties",
+          "popup": "1.subpage.4-InformationFromPartnersVendors"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "inline": [
+        {
+          "text": "What if you don’t let us collect certain information?"
+        }
+      ],
+      "level": 3
+    },
+    {
+      "type": "p",
+      "inline": [
+        {
+          "text": "Some information is required for our Products to work. Other information is optional, but without it, the quality of your experience might be affected."
+        }
+      ]
+    },
+    {
+      "type": "p",
+      "inline": [
+        {
+          "text": "Learn more",
+          "popup": "1.ex.43-WhatHappensIfYou"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "inline": [
+        {
+          "text": "Take control in Privacy Center"
+        }
+      ],
+      "level": 3
+    },
+    {
+      "type": "p",
+      "inline": [
+        {
+          "text": "Manage the information we collect about you",
+          "href": "https://www.facebook.com/privacy/guide/collection/"
+        }
+      ]
+    }
+  ],
+  "popups": [
+    {
+      "id": "1.ex.41-InformationWeCollectIf",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.41-InformationWeCollectIf",
+      "depth": 1,
+      "opened_from": null,
+      "title": "Information we collect if you use our Products but don’t have an account",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Information we collect if you use our Products but don’t have an account"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, we collect:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Browser and app logs of your visits to public content, like Facebook Pages, videos and "
+            },
+            {
+              "text": "rooms",
+              "href": "https://www.facebook.com/help/211931886925431/"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Basic information about devices that downloaded our apps, like device model and OS"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We also receive information using cookies and similar technologies, like the Meta Pixel or Social Plugins, when you visit other websites and apps that use Meta Products. Read our "
+            },
+            {
+              "text": "Cookies Policy",
+              "href": "https://www.facebook.com/policies/cookies"
+            },
+            {
+              "text": " to learn more."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Examples of why we collect information"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Security of our Products"
+            }
+          ],
+          "level": 4
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, if we see someone without an account trying to load too many pages, they could be trying to "
+            },
+            {
+              "text": "scrape",
+              "href": "https://www.facebook.com/help/463983701520800/?helpref=search"
+            },
+            {
+              "text": " our site in violation of our terms. Then we can take action to prevent it."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Safety and integrity"
+            }
+          ],
+          "level": 4
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, if someone without an account joins a room and shares a harmful video, we can take action according to our Community Standards. We can remove content that violates our terms and policies, or share information with law enforcement when we believe there is a genuine risk of death or imminent bodily harm."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Performance"
+            }
+          ],
+          "level": 4
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, we use information we have about people who use our Products, even if they don’t have an account, to measure how fast our pages load in different countries. This helps us identify and fix issues with local networks."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.subpage.1-YourActivityAndInformation",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?subpage=1.subpage.1-YourActivityAndInformation",
+      "depth": 1,
+      "opened_from": null,
+      "title": "Your activity and information you provide",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Your activity and information you provide"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "On our Products, you can send messages, take photos and videos, buy or sell things and much more. We call all of the things you can do on our Products \"activity.\" We collect your activity across our Products and "
+            },
+            {
+              "text": "information you provide",
+              "popup": "1.ex.3-InformationYouProvideFor"
+            },
+            {
+              "text": ", such as:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Content you create, like posts, comments or "
+            },
+            {
+              "text": "audio",
+              "popup": "1.ex.6-AudioContentYouCreate"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Content you provide through our camera feature or your camera roll settings, or through our voice-enabled features. "
+            },
+            {
+              "text": "Learn more",
+              "popup": "1.story.3-WhatWeCollectFrom"
+            },
+            {
+              "text": " about what we collect from these features, and how we use information from the camera for masks, filters, avatars and effects."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Messages you send and receive, including their content, subject to "
+            },
+            {
+              "text": "applicable law",
+              "href": "https://about.fb.com/news/2020/12/changes-to-facebook-messaging-services-in-europe/"
+            },
+            {
+              "text": ". We can't see the content of "
+            },
+            {
+              "text": "end-to-end encrypted",
+              "href": "https://www.facebook.com/help/messenger-app/786613221989782"
+            },
+            {
+              "text": " messages unless users report them to us for review. "
+            },
+            {
+              "text": "Learn more",
+              "href": "http://www.messenger.com/privacy"
+            },
+            {
+              "text": "."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Metadata",
+              "popup": "1.ex.9-MetadataAboutContentOr"
+            },
+            {
+              "text": " about content and messages, subject to applicable law"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Types of content you view or interact with, and how you interact with it"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Apps and features you use, and what actions you take in them. "
+            },
+            {
+              "text": "See examples",
+              "popup": "1.ex.12-AppsAndFeaturesYou"
+            },
+            {
+              "text": "."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Purchases or other transactions you make, including credit card information. "
+            },
+            {
+              "text": "Learn more",
+              "popup": "1.ex.15-PurchasesOrOtherTransactions"
+            },
+            {
+              "text": "."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Hashtags you use"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "The time, frequency and duration of your activities on our Products"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Views of and interactions with a Facebook Page and its content, to provide the Page admin with aggregated information about how people use their Page and its content. Meta is jointly responsible with Page admins. "
+            },
+            {
+              "text": "Learn more",
+              "href": "https://www.facebook.com/legal/terms/information_about_page_insights_data"
+            },
+            {
+              "text": " about the joint processing for Page Insights."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Information with special protections"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "You might choose to provide information about your religious views, your sexual orientation, political views, health, racial or ethnic origin, philosophical beliefs or trade union membership. These types of information have special protections under the laws of your country."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.subpage.2-FriendsFollowersAndOther",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?subpage=1.subpage.2-FriendsFollowersAndOther",
+      "depth": 1,
+      "opened_from": null,
+      "title": "Friends, followers and other connections",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Friends, followers and other connections"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Information we collect about your friends, followers and other connections"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We collect information about friends, followers, groups, accounts, Facebook Pages and other users and communities you’re connected to and interact with. This includes how you interact with them across our Products and which ones you interact with the most."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Information we collect about contacts"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We also collect your contacts’ information, such as their name and email address or phone number, if you choose to upload or import it from a device, like by syncing an address book."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "If you don’t use Meta Products, or use them without an account, your information might still be collected. "
+            },
+            {
+              "text": "Learn more",
+              "href": "https://www.facebook.com/help/637205020878504"
+            },
+            {
+              "text": " about how Meta uses contact information uploaded by account holders."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Learn how to upload and delete contacts on "
+            },
+            {
+              "text": "Facebook",
+              "href": "https://www.facebook.com/help/561688620598358?helpref=related"
+            },
+            {
+              "text": " and "
+            },
+            {
+              "text": "Messenger",
+              "href": "https://www.facebook.com/help/messenger-app/838237596230667"
+            },
+            {
+              "text": ", or how to connect your device's contact list on "
+            },
+            {
+              "text": "Instagram",
+              "href": "https://help.instagram.com/195069860617299?helpref=related"
+            },
+            {
+              "text": "."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Information we collect or infer about you based on others’ activity"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We collect information about you based on others' activity. "
+            },
+            {
+              "text": "See some examples",
+              "popup": "1.ex.20-WhenWeCollectInformation"
+            },
+            {
+              "text": "."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We also infer things about you based on others' activity. For example:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "We may suggest a friend to you through Facebook's People You May Know feature if you both appear on a contact list that someone uploads."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "We take into account whether your friends belong to a group when we suggest you join it."
+            }
+          ],
+          "depth": 0
+        }
+      ]
+    },
+    {
+      "id": "1.subpage.3-AppBrowserAndDevice",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?subpage=1.subpage.3-AppBrowserAndDevice",
+      "depth": 1,
+      "opened_from": null,
+      "title": "App, browser and device information",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "App, browser and device information"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We collect and receive information from and about the different "
+            },
+            {
+              "text": "devices",
+              "popup": "1.ex.22-DevicesTheseDevicesInclude"
+            },
+            {
+              "text": " you use and how you use them."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Device information we collect and receive includes:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "The device and software you’re using, and other device characteristics. "
+            },
+            {
+              "text": "See examples",
+              "popup": "1.ex.24-WhatDeviceYoure"
+            },
+            {
+              "text": "."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "What you’re doing on your device, like whether our app is in the foreground or if your mouse is moving (which can help tell humans from bots)"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Identifiers that tell your device apart from other users’, including Family Device IDs. "
+            },
+            {
+              "text": "See examples",
+              "popup": "1.ex.26-IdentifiersThatTellYour"
+            },
+            {
+              "text": "."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Signals from your device. "
+            },
+            {
+              "text": "See examples",
+              "popup": "1.ex.32-DeviceSignalsDeviceSignals"
+            },
+            {
+              "text": "."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Information you’ve shared with us through device settings, like GPS location, camera access, photos and "
+            },
+            {
+              "text": "related metadata",
+              "popup": "1.ex.34-RelatedMetadataForExample"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Information about the network you connect your device to, including your IP address. "
+            },
+            {
+              "text": "See more examples",
+              "popup": "1.ex.28-InformationAboutTheNetwork"
+            },
+            {
+              "text": "."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Information about our Products’ performance on your device. "
+            },
+            {
+              "text": "Learn more",
+              "popup": "1.ex.30-InformationAboutOurProducts"
+            },
+            {
+              "text": "."
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Information from cookies and similar technologies. "
+            },
+            {
+              "text": "Learn more.",
+              "popup": "1.ex.17-CookiesCookiesAreSmall"
+            }
+          ],
+          "depth": 0
+        }
+      ]
+    },
+    {
+      "id": "1.subpage.4-InformationFromPartnersVendors",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?subpage=1.subpage.4-InformationFromPartnersVendors",
+      "depth": 1,
+      "opened_from": null,
+      "title": "Information from Partners, vendors and third parties",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Information from Partners, vendors and third parties"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "What kinds of information do we collect or receive?"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We collect and receive information from "
+            },
+            {
+              "text": "Partners",
+              "popup": "1.ex.37-OurPartnersBusinessesAnd"
+            },
+            {
+              "text": ", "
+            },
+            {
+              "text": "measurement vendors",
+              "popup": "4.subpage.10-MeasurementAndMarketingVendors"
+            },
+            {
+              "text": " and "
+            },
+            {
+              "text": "third parties",
+              "popup": "1.ex.40-ThirdPartiesWeGet"
+            },
+            {
+              "text": " about a variety of your information and activities on and off our Products."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Here are some examples of information we receive about you:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Your device information"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Websites you visit and cookie data, like through Social Plugins or the Meta Pixel"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Apps you use"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Games you play"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Purchases and transactions you make"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "The ads you see and how you interact with them"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "How you use our Partners’ products and services, online or in person"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Partners also share information like your email address, "
+            },
+            {
+              "text": "cookies",
+              "popup": "1.ex.17-CookiesCookiesAreSmall"
+            },
+            {
+              "text": " and advertising device ID with us. This helps us match your activities with your account, if you have one."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We receive this information whether or not you’re logged in or have an account on our Products. "
+            },
+            {
+              "text": "Learn more",
+              "href": "https://www.facebook.com/help/245334736592773"
+            },
+            {
+              "text": " about how we connect information from Partners to your account."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Partners also share with us their communications with you if they instruct us to provide services to their business, like helping them manage their communications. To learn how a business processes or shares your information, read their privacy policy or contact them directly."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Take control"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Off-Facebook activity",
+              "href": "https://www.facebook.com/off_facebook_activity/"
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Cookie settings",
+              "popup": "1.subpage.4-InformationFromPartnersVendors"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "How do we collect or receive this information from partners?"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Partners use our "
+            },
+            {
+              "text": "Business Tools",
+              "href": "https://www.facebook.com/help/331509497253087/"
+            },
+            {
+              "text": ", integrations and Meta Audience Network technologies to share information with us."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "These Partners collect your information when you visit their site or app or use their services, or through other businesses or organizations they work with. We require Partners to have the right to collect, use and share your information before giving it to us."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We process certain information we receive from Partners as a joint controller with them. "
+            },
+            {
+              "text": "Learn more",
+              "href": "https://www.facebook.com/legal/controller_addendum"
+            },
+            {
+              "text": " about our arrangements with these Partners."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.43-WhatHappensIfYou",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.43-WhatHappensIfYou",
+      "depth": 1,
+      "opened_from": null,
+      "title": "What happens if you don’t let us collect certain information",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "What happens if you don’t let us collect certain information"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, if you don’t provide an email address or phone number, we won’t be able to create an account for you to use our Products."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Or you can choose not to add Facebook friends, but then your Facebook Feed won’t show friends’ photos and status updates."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.3-InformationYouProvideFor",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.3-InformationYouProvideFor",
+      "depth": 2,
+      "opened_from": "1.subpage.1-YourActivityAndInformation",
+      "title": "Information you provide",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Information you provide"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, when you create a Facebook account, you must provide some information, like a password and your email address or phone number. You might choose to add other details to your account, like a profile photo or payment information."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We also collect information you provide when you:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Create your avatar"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Fill out a form"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Contact us"
+            }
+          ],
+          "depth": 0
+        }
+      ]
+    },
+    {
+      "id": "1.ex.6-AudioContentYouCreate",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.6-AudioContentYouCreate",
+      "depth": 2,
+      "opened_from": "1.subpage.1-YourActivityAndInformation",
+      "title": "Audio content you create",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Audio content you create"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "You can create audio content, like if you're a host or speaker in a Live Audio Room. Live Audio can be listened to by anyone in the audience for the broadcast."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.story.3-WhatWeCollectFrom",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.story.3-WhatWeCollectFrom",
+      "depth": 2,
+      "opened_from": "1.subpage.1-YourActivityAndInformation",
+      "title": "What we collect from our camera feature",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "What we collect from our camera feature"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "José likes using Instagram’s Camera feature to take pictures of his friends. We collect information about how José uses the Camera feature, including what he sees through the camera lens on his device while he’s using the feature. This helps us do things like suggest masks and filters that he might like."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "How filters, effects, masks and avatars work"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "If you use our camera or allow access to photos and videos, on certain Meta Products you can add filters, effects, masks or avatars. Some of these features process parts of faces or bodies within the camera frame, photo or video. Then they can do things like fit a mask correctly over the eyes, nose and mouth. The information we use for this process is used to create the feature. It’s not used to identify you."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "What we collect from voice-enabled features"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Ren tells Meta’s voice-enabled Assistant to take a photo on Ray-Ban Stories. A visual indicator shows that Assistant is activated and listening for Ren’s command. We collect this voice interaction, which includes any background sound that occurs when Ren says the command. Collecting Ren’s voice interactions lets us provide and, depending on Ren’s settings, improve the Assistant feature."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.9-MetadataAboutContentOr",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.9-MetadataAboutContentOr",
+      "depth": 2,
+      "opened_from": "1.subpage.1-YourActivityAndInformation",
+      "title": "Metadata about content or messages",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Metadata about content or messages"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Metadata is:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Information about the content itself, like the location where a photo was taken or the date a file was created"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Information about the message itself, like the type of message or the date and time it was sent"
+            }
+          ],
+          "depth": 0
+        }
+      ]
+    },
+    {
+      "id": "1.ex.12-AppsAndFeaturesYou",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.12-AppsAndFeaturesYou",
+      "depth": 2,
+      "opened_from": "1.subpage.1-YourActivityAndInformation",
+      "title": "Apps and features you use, and how you use them",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Apps and features you use, and how you use them"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, we log:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "What apps, posts, videos, ads, games, Shops and other content you view or interact with on our Products"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "When you use "
+            },
+            {
+              "text": "Social Plugins",
+              "href": "https://developers.facebook.com/products/social-plugins/"
+            },
+            {
+              "text": ", "
+            },
+            {
+              "text": "Facebook Login",
+              "href": "https://developers.facebook.com/products/facebook-login/"
+            },
+            {
+              "text": " or autofill"
+            }
+          ],
+          "depth": 0
+        }
+      ]
+    },
+    {
+      "id": "1.ex.15-PurchasesOrOtherTransactions",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.15-PurchasesOrOtherTransactions",
+      "depth": 2,
+      "opened_from": "1.subpage.1-YourActivityAndInformation",
+      "title": "Purchases or other transactions",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Purchases or other transactions"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We collect information when you use our Products to buy or sell things or make other financial transactions."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Some examples are:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Purchases within an online game"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Donations to a friend’s fundraiser"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Purchases in Marketplace, Shops or groups"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Money transfers to friends and family (where available)"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "What we collect from transactions"
+            }
+          ],
+          "level": 4
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "When you buy things or make other payments in Marketplace, Shops or groups, we collect information about your purchase or other financial transactions, like:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Credit or debit card number and other card information"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Billing, shipping and contact details"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Items you bought and how many"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Other account and authentication information"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Why we collect this information"
+            }
+          ],
+          "level": 4
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "One reason we store this information is to allow you to access and view your payment and transaction history."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "And you can use it the next time you shop to give you easier, faster shopping experiences."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "More in the Privacy Policy"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "How do we use your information?",
+              "href": "https://www.facebook.com/privacy/policy/version/5407378522724295/?section_id=2-HowDoWeUse"
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "How do we respond to legal requests, comply with applicable law and prevent harm?",
+              "href": "https://www.facebook.com/privacy/policy/version/5407378522724295/?section_id=10-HowDoWeRespond"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.20-WhenWeCollectInformation",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.20-WhenWeCollectInformation",
+      "depth": 2,
+      "opened_from": "1.subpage.2-FriendsFollowersAndOther",
+      "title": "When we collect information based on others’ activity",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "When we collect information based on others’ activity"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, we collect information about you on Meta Products when others:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Share or comment on a photo you’re tagged in"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Send you a message"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Invite you to join a conversation"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Upload their address book that has your contact information in it"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Invite you to play a game"
+            }
+          ],
+          "depth": 0
+        }
+      ]
+    },
+    {
+      "id": "1.ex.22-DevicesTheseDevicesInclude",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.22-DevicesTheseDevicesInclude",
+      "depth": 2,
+      "opened_from": "1.subpage.3-AppBrowserAndDevice",
+      "title": "Devices",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Devices"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "These devices include computers, phones, hardware, connected TVs, Portal devices and other web-connected devices."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.24-WhatDeviceYoure",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.24-WhatDeviceYoure",
+      "depth": 2,
+      "opened_from": "1.subpage.3-AppBrowserAndDevice",
+      "title": "What device you’re using, and other device characteristics",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "What device you’re using, and other device characteristics"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We collect device information like:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "The type of device"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Details about its operating system"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Details about its hardware and software"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Battery level"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Signal strength"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Available storage"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Browser type"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "App and file names and types"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Plugins"
+            }
+          ],
+          "depth": 0
+        }
+      ]
+    },
+    {
+      "id": "1.ex.26-IdentifiersThatTellYour",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.26-IdentifiersThatTellYour",
+      "depth": 2,
+      "opened_from": "1.subpage.3-AppBrowserAndDevice",
+      "title": "Identifiers that tell your device apart from other users’",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Identifiers that tell your device apart from other users’"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Identifiers we collect include device IDs, mobile advertiser ID or IDs from games, apps or accounts you use. We also collect Family Device IDs or other identifiers unique to "
+            },
+            {
+              "text": "Meta Company Products",
+              "href": "https://www.facebook.com/help/195227921252400?ref=dp"
+            },
+            {
+              "text": " associated with the same device or account."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.32-DeviceSignalsDeviceSignals",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.32-DeviceSignalsDeviceSignals",
+      "depth": 2,
+      "opened_from": "1.subpage.3-AppBrowserAndDevice",
+      "title": "Device signals",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Device signals"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Device signals include GPS, Bluetooth signals, nearby Wi-Fi access points, beacons and cell towers."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.34-RelatedMetadataForExample",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.34-RelatedMetadataForExample",
+      "depth": 2,
+      "opened_from": "1.subpage.3-AppBrowserAndDevice",
+      "title": "Related metadata",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Related metadata"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, if you give us permission to access your device’s camera roll, we collect metadata. This metadata is from and about your photos and videos and includes the date and time they were made. We use this to do things like remind you when you have new photos to upload."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.28-InformationAboutTheNetwork",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.28-InformationAboutTheNetwork",
+      "depth": 2,
+      "opened_from": "1.subpage.3-AppBrowserAndDevice",
+      "title": "Information about the network you connect your device to",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Information about the network you connect your device to"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Information about your network includes:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "The name of your mobile operator or internet service provider (ISP)"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Language"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Time zone"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Mobile phone number"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "IP address"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Connection speed"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Information about other devices that are nearby or on your network"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Wi-Fi hotspots you connect to using our Products"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "One reason we collect this information is to make your experience better. For example, if we know that your phone and TV are connected to the same network, we can help you use your phone to control a video stream on your TV."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "More in the Privacy Policy"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "How do we use your information?",
+              "href": "https://www.facebook.com/privacy/policy/version/5407378522724295/?section_id=2-HowDoWeUse"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.30-InformationAboutOurProducts",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.30-InformationAboutOurProducts",
+      "depth": 2,
+      "opened_from": "1.subpage.3-AppBrowserAndDevice",
+      "title": "Information about our Products’ performance on your device",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Information about our Products’ performance on your device"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We collect device information to prevent, diagnose, troubleshoot and fix errors and bugs. This includes how long the app was running, what model of device you were using and other performance and diagnostic information."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.17-CookiesCookiesAreSmall",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.17-CookiesCookiesAreSmall",
+      "depth": 2,
+      "opened_from": "1.subpage.3-AppBrowserAndDevice",
+      "title": "Cookies",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Cookies"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Cookies are small pieces of text used to store information on web browsers. We use cookies and similar technologies, including data that we store on your web browser or device, identifiers associated with your device and other software, Social Plugins and the Meta Pixel. They help us provide, protect and improve our Products, such as by personalizing content, tailoring and measuring ads and providing a safer experience."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We collect information from cookies stored on your device, including cookie IDs and settings. Read our cookie policies:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Facebook Cookies Policy",
+              "href": "https://www.facebook.com/policies/cookies/"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Instagram Cookies Policy",
+              "href": "https://www.instagram.com/legal/cookies/"
+            }
+          ],
+          "depth": 0
+        }
+      ]
+    },
+    {
+      "id": "1.ex.37-OurPartnersBusinessesAnd",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.37-OurPartnersBusinessesAnd",
+      "depth": 2,
+      "opened_from": "1.subpage.4-InformationFromPartnersVendors",
+      "title": "Our Partners",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Our Partners"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Businesses and people can use our Products to advertise, market or support their products and services. When they use our Products, we call them our Partners."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Our Products include our Business Tools and other technologies that allow businesses to advertise or support their products and services, or to understand and measure how people are using their services and how well their ads are working. For example, they might put one of our Business Tools, the Meta Pixel, on their website. Or they might use Meta Audience Network tools to monetize their apps by showing ads from businesses that advertise on Facebook."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Our Products also include technologies where you can make a connection to our Partners through our Products. For example, you might log into their app or website using Facebook Login. Or you might play their game on Facebook, which we call an integration because you can play without leaving our app. We call the Partners who use these integrated tools our Integrated Partners."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Here are some examples of our Partners:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Advertisers"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Companies that measure how well ads are doing and provide reports"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Businesses and people that use our Products to sell or offer goods and services"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Publishers (like a website or app) and their business partners"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "App developers"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Game developers"
+            }
+          ],
+          "depth": 0
+        }
+      ]
+    },
+    {
+      "id": "4.subpage.10-MeasurementAndMarketingVendors",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?subpage=4.subpage.10-MeasurementAndMarketingVendors",
+      "depth": 2,
+      "opened_from": "1.subpage.4-InformationFromPartnersVendors",
+      "title": "Measurement and marketing vendors",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Measurement and marketing vendors"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Measurement and marketing vendors are businesses that provide marketing-related support to Meta and its advertisers. For example, they purchase ads on our behalf, provide market research and measure the effectiveness of our campaigns. Such vendors also support our Partners' advertising."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Measurement vendors"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We don’t create every measurement and analytics report ourselves."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We work with measurement vendors who create reports that help our Partners, like advertisers, understand how their content and ads are performing, who is engaging with them and whether people took an action after seeing their ad."
+            }
+          ]
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We share information (like whether people saw an ad or engaged with it) with our measurement vendors, who aggregate it to provide their reports. "
+            },
+            {
+              "text": "See an example",
+              "popup": "4.ex.12-HowMeasurementVendorsUse"
+            },
+            {
+              "text": "."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Marketing vendors"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "We share information about you with companies that help market our Company and Products, measure the effectiveness of our own marketing campaigns and perform advertising research. For example, we share your device identifier or other identifiers with advertising vendors to help us serve you ads most relevant to your interests. "
+            },
+            {
+              "text": "Learn more",
+              "popup": "4.ex.16-HowVendorsSupportOur"
+            },
+            {
+              "text": " about how vendors support our marketing and advertising efforts."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1.ex.40-ThirdPartiesWeGet",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=1.ex.40-ThirdPartiesWeGet",
+      "depth": 2,
+      "opened_from": "1.subpage.4-InformationFromPartnersVendors",
+      "title": "Third parties we get information from",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Third parties we get information from"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "Other organizations and bodies share information with Meta but don’t use our Products. We refer to them as third parties. We collect and receive information from these third parties, including:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Publicly available sources, like academic papers and public forums"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Industry peers, such as other online platforms and technology companies"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Marketing and advertising vendors and data providers, who have the rights to provide us with your information"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Law enforcement"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Government authorities"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Professional and non-profit groups, like "
+            },
+            {
+              "text": "NGOs",
+              "href": "https://about.fb.com/news/2017/07/global-internet-forum-to-counter-terrorism-to-hold-first-meeting-in-san-francisco/"
+            },
+            {
+              "text": ", and charities"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Academic and research institutions, like universities, non-profit research groups and think tanks"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "Third-party public sources"
+            }
+          ],
+          "level": 4
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, we get datasets from publicly available sources, research institutions and professional and non-profit groups. We use these datasets to:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Detect and stop "
+            },
+            {
+              "text": "scraping",
+              "href": "https://www.facebook.com/help/463983701520800/?helpref=search"
+            },
+            {
+              "text": " in violation of our terms"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Take other actions to promote the safety, security and integrity of our Products, our users, the public and our personnel and property"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Improve our AI technologies, such as translations"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Support AI research, like computer vision and natural language processing technologies"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Engage with research survey respondents who choose to participate in additional conversations"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "More in the Privacy Policy"
+            }
+          ],
+          "level": 3
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "How do we use your information?",
+              "href": "https://www.facebook.com/privacy/policy/version/5407378522724295/?section_id=2-HowDoWeUse"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4.ex.12-HowMeasurementVendorsUse",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=4.ex.12-HowMeasurementVendorsUse",
+      "depth": 3,
+      "opened_from": "4.subpage.10-MeasurementAndMarketingVendors",
+      "title": "How measurement vendors use information to make reports",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "How measurement vendors use information to make reports"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, an advertiser might ask a measurement vendor to help figure out the impact its ads on Facebook have had on sales. The measurement vendor compares information from us about clicks on the advertiser’s Facebook ads with information from the advertiser about product purchases. Then the measurement vendor creates and provides aggregated reports that show the advertiser how its ads are performing."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4.ex.16-HowVendorsSupportOur",
+      "url": "https://www.facebook.com/privacy/policy/version/5407378522724295/?annotations[0]=4.ex.16-HowVendorsSupportOur",
+      "depth": 3,
+      "opened_from": "4.subpage.10-MeasurementAndMarketingVendors",
+      "title": "How vendors support our marketing and advertising efforts",
+      "blocks": [
+        {
+          "type": "heading",
+          "inline": [
+            {
+              "text": "How vendors support our marketing and advertising efforts"
+            }
+          ],
+          "level": 2
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "For example, vendors:"
+            }
+          ]
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Serve our advertisements across the Internet, including on mobile, desktop and connected television devices"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Track and categorize your online and mobile app activity"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "li",
+          "inline": [
+            {
+              "text": "Provide us information about your interests and community and advertising interactions"
+            }
+          ],
+          "depth": 0
+        },
+        {
+          "type": "p",
+          "inline": [
+            {
+              "text": "These vendors help us understand who might find our advertising most relevant to their interests, and which of our Products might interest you. This information can be used to personalize which of our ads are shown to you. Vendors also use this information to measure response to our marketing efforts and the effectiveness of our advertising."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

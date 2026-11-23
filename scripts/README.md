@@ -24,6 +24,7 @@ File names are `<stage>.<step>[.<substep>]_rnv_<name>.py`.
 | `0_ingest/0.05` sample_annotation | `annotation_sample` | CPU | Sample for annotation |
 | `0_ingest/0.06` clean_paths | `clean_paths` | CPU | `clean_path` column (no wrapper folders, no part numbers) for the merged structures and the catalogue |
 | `0_ingest/0.07` visualise_clean_steps | `clean_steps` | CPU | HTML (`results/00_ingest/clean_steps.html`): how many paths each cleaning step explains (exact, wrapper folders, part numbers, case and separators) and how many are left unexplained |
+| `0_ingest/0.08` scrape_meta_policy | `meta_policy` (`ARGS="--section '...'"`) | local | Scrape a section of the Meta Privacy Policy (default: "What information do we collect?", version 5407378522724295) with all nested pop-ups (Playwright) to `data/meta_policy/` as `.txt` (Markdown-style), `.html` (clean page) and `.json` (blocks) |
 | `1_path_standardisation/1.02` run_path_standardisation | `path_std-run SPLIT=smoke\|test\|validation`, `path_std-check`, `path_std-<platform>`, `path_std` | GPU (parallel) | **Path standardisation**: does the path hold the same data as a path in the catalogue (largest donation)? Shortlists of files and fields, then the model decides (needs `clean_paths`) |
 | `1_path_standardisation/1.01.01` validate_test_id_standardisation | `id_std_val` | CPU | Validate the id-standardisation test run |
 | `1_path_standardisation/1.01.02` visualisation_validation_id_standardisation | `id_std_viz` | CPU | Plots for the above |

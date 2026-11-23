@@ -101,6 +101,10 @@ clean_paths: ## Add clean_path (no wrapper folders, no part numbers) to the merg
 clean_steps: ## HTML: paths explained and left unexplained after each cleaning step (needs no clean_paths)
 	$(call CPU,scripts/0_ingest/0.07_rnv_visualise_clean_steps.py)
 
+# Local only (internet and a browser; not via sbatch). Setup: pip install playwright && playwright install chromium
+meta_policy: ## Scrape the Meta Privacy Policy section 'What information do we collect?' + pop-ups to data/meta_policy/
+	python -I scripts/0_ingest/0.08_rnv_scrape_meta_policy.py $(ARGS)
+
 
 #----------------------------------------------------------------------------------
 # LLM JOBS (parallel_llm.sh: vLLM servers on N nodes, one job per platform)
