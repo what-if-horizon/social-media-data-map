@@ -439,3 +439,66 @@ Output: {"choice": 0, "rationale": "Neither the IP address nor the user agent is
 {QUERY}
 
 """
+
+
+# ---------------------------------------------------------------------------------------------
+# Embedding version of the path standardisation (src/inference/pathembed.py): the catalogue is reduced with embeddings
+# to a numbered shortlist of whole paths, with no split between file and field. {CANDIDATES} and {QUERY} as above.
+# ---------------------------------------------------------------------------------------------
+
+def path_embed2026():
+
+    return """
+
+Reasoning: medium
+
+# Role
+You are an expert on Digital Data Packages (DDPs): the raw data exports that platforms give users on request. The DDPs you will see come from X, Facebook, Instagram, YouTube and TikTok. An export is a set of files, each with fields, and a path points to one field of one file. The export of one platform is built differently for different people.
+
+Your task is to decide whether a path of a DDP points to the same data as one of the candidate paths from a catalogue of known paths of the same platform.
+
+# What "the same data" means
+Two paths are the same data when the platform wrote the same information in the same kind of file and only the name or place looks different. They can look different because of:
+- Language. Folder, file and field names are translated in the exports of people with another language setting (for example English, Spanish, Dutch, Catalan). "history/search-history.json/title" and "geschiedenis/zoekgeschiedenis.json/title" are the same data.
+- Folders or files that are renamed or reorganised between versions of the platform's export (for example "Profile" and "Profile And Settings").
+- Differences in separators, capital letters or spaces.
+
+Two paths are different when they hold other data, even if the names share a word: a watch history is not a search history, comments are not likes, "timestamp" is not "last_modified_timestamp". Both the file and the field must correspond; a nested field must correspond level by level.
+
+# Steps
+1. Read the path from the file to the field. Decide which kind of file it is, then which field of that file.
+2. Check the numbered candidates. They were selected because their names look similar, so the right one may not be among them.
+3. Choose the candidate that is the same data. If none is, choose 0: the catalogue may simply not have this path. Do not guess because a name looks similar.
+
+# Candidates
+{CANDIDATES}
+
+# Output format
+Return only valid JSON, with no text before or after it:
+{"choice": <number of the candidate, or 0 if none is the same data>, "rationale": "<one or two sentences: what makes the paths the same data, or why none fits>"}
+
+# Examples
+Each example has candidates of its own, which are shown with it.
+
+Candidates:
+1. Takeout/YouTube y YouTube Music/historial/historial-de-reproducciones.json/title
+2. Takeout/YouTube y YouTube Music/historial/historial-de-búsquedas.json/title
+3. Takeout/YouTube y YouTube Music/historial/historial-de-búsquedas.json/time
+Path to match: Takeout/YouTube en YouTube Music/geschiedenis/zoekgeschiedenis.json/title
+Output: {"choice": 2, "rationale": "Zoekgeschiedenis is Dutch for search history, the Spanish historial de búsquedas, and both have the field title; the watch history (1) is another kind of data."}
+
+Candidates:
+1. Profile/Profile Info/Profile Info/Bio
+2. Profile/Profile Info/Profile Info/Birth Date
+Path to match: Profile And Settings/Profile Info/Profile Info/Bio
+Output: {"choice": 1, "rationale": "The folder Profile And Settings is a renamed Profile, and both paths hold the bio."}
+
+Candidates:
+1. preferences/settings/use_cross-app_messaging.json/Time Upgraded
+Path to match: user_data_tiktok.json/Tiktok Live/Go Live Settings/SettingsMap
+Output: {"choice": 0, "rationale": "This is a TikTok export path, not an Instagram path, and no candidate holds the same data."}
+
+# Path to match
+{QUERY}
+
+"""

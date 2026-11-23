@@ -157,3 +157,34 @@ def test_top_k_and_embed_text():
     assert top_k(np.zeros((1, 4)), np.zeros((0, 1)), 3) == [[]]
     assert embed_text(f"{Y}/historial/historial-de-búsquedas.json") == "historial / historial de búsquedas"
     assert embed_text("a/b/c/d", last=3) == "b / c / d"
+
+
+# -- path_embed2026: shortlist of whole paths, no split between file and field ---------------------------------------
+
+class TestEmbedMatcher:
+    def make(self, model, k=3):
+        from src.inference.pathembed import EmbedMatcher
+        cat = Catalogue(CATALOGUE, [clean_path(p) for p in CATALOGUE])
+        return EmbedMatcher(cat, fake_embedder, model, prompts.path_embed2026(), k=k, workers=2)
+
+    def test_exact_and_clean_need_no_model(self):
+        model = FakeModel(lambda kind, q, c: 1)
+        recs, failed = self.make(model).match([CATALOGUE[0]])
+        assert model.calls == [] and failed == []
+        assert recs[0]["method"] == "exact" and recs[0]["match"] == CATALOGUE[0]
+
+    def test_model_chooses_from_whole_paths(self):
+        model = FakeModel(lambda kind, q, c: next(i for i, x in enumerate(c, 1) if "reproducciones" in x and x.endswith("title")))
+        path = f"{Y}/historial/reproducciones.json/title"
+        recs, failed = self.make(model).match([path])
+        assert failed == [] and len(model.calls) == 1
+        assert recs[0]["match"] == CATALOGUE[0] and recs[0]["method"] == "llm"
+        assert recs[0]["shortlist"] == model.calls[0][2] and len(recs[0]["shortlist"]) <= 3
+
+    def test_none_is_na(self):
+        recs, _ = self.make(FakeModel(lambda kind, q, c: 0)).match([f"{Y}/otro/ajustes.json/zzz"])
+        assert recs[0]["match"] == NA and recs[0]["method"] == "llm"
+
+    def test_invalid_answer_goes_to_failed(self):
+        recs, failed = self.make(FakeModel(lambda kind, q, c: "no json"), k=3).match([f"{Y}/otro/ajustes.json/zzz"])
+        assert recs == [] and failed[0]["path"].endswith("zzz")
