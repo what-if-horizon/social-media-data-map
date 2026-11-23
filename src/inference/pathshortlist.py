@@ -6,9 +6,10 @@ cheaper than the next:
 1. exact:   the path is in the catalogue.
 2. clean:   after removing wrapper folders and part numbers (src/ingest/cleanPaths.py, ingest step 0.06) the path is the
             same as a catalogue path.
-3. file:    the paths that are left are grouped by file. For every file the model chooses among a shortlist of the
-            catalogue files whose names are most similar (multilingual embeddings), or says that none is the same file.
-            Paths of a file without a match are NA.
+3. file:    the paths that are left are grouped by the file they come from. File names may have changed, so the name
+            alone is not trusted. For every file the model chooses among a shortlist of the catalogue files whose names
+            are most similar (multilingual embeddings), shown with some of their field names so that a renamed file can
+            be recognised by its content, or says that none is the same file. Paths of a file without a match are NA.
 4. field:   in a matched file a field is matched to the fields of the catalogue file, directly if the name is the same,
             otherwise by the model, again from a shortlist.
 
@@ -72,11 +73,13 @@ class Catalogue:
         self.raw_set = set(raw_paths)
         self.by_key = {}      # match_key(clean path) -> catalogue path
         self.units = {}       # match_key(file) -> {"unit": file, "fields": {match_key(field): (field, catalogue path)}}
+        self.entries = []     # [(catalogue path, its clean path)], one per match key, in catalogue order
         for raw, clean in zip(raw_paths, clean_paths):
             key = match_key(clean)
             if key in self.by_key:
                 continue
             self.by_key[key] = raw
+            self.entries.append((raw, clean))
             unit, field = split_unit(clean)
             entry = self.units.setdefault(match_key(unit), {"unit": unit, "fields": {}})
             entry["fields"].setdefault(match_key(field), (field, raw))
@@ -90,6 +93,7 @@ class ShortlistMatcher:
         self.k, self.workers, self.retries = k, workers, retries
         self._unit_emb = None
         self._field_emb = {}
+        self._file_shown = {}                              # development: unit key -> shortlist shown to the model
 
     # -- model -------------------------------------------------------------------------------------------------
 
@@ -132,16 +136,12 @@ class ShortlistMatcher:
         (from the ingest step); paths missing from it are cleaned here."""
         clean_of = clean_of or {}
         records, failed, groups = {}, [], defaultdict(list)
+        self._file_shown = {}
 
         for path in paths:
-            if path in self.cat.raw_set:
-                records[path] = _rec(path, path, "The path is in the catalogue.", "exact", path)
-                continue
-            clean = clean_of.get(path) or clean_path(path)
-            raw = self.cat.by_key.get(match_key(clean))
-            if raw is not None:
-                records[path] = _rec(path, raw, "The path is the same as this catalogue path after removing wrapper "
-                                                "folders and part numbers.", "clean", raw)
+            rec, clean = self._without_model(path, clean_of)
+            if rec is not None:
+                records[path] = rec
                 continue
             unit, field = split_unit(clean)
             groups[match_key(unit)].append((path, unit, field))
@@ -157,27 +157,43 @@ class ShortlistMatcher:
             if cat_key is None:
                 for p, _, _ in items:
                     records[p] = _rec(p, NA, why, "file_na", NA)
+                    self._add_file_shortlist(records[p], ukey)
                 continue
             entry = self.cat.units[cat_key]
             for p, unit, field in items:
                 known = self._field_without_model(p, field, entry, why)
                 if known is not None:
                     records[p] = known
+                    self._add_file_shortlist(known, ukey)
                 else:
-                    needs_model[cat_key].append((p, unit, field, why))
+                    needs_model[cat_key].append((p, unit, field, why, ukey))
 
         jobs, job_paths = [], []
         for cat_key, items in needs_model.items():
-            for (p, unit, field, why), candidates in zip(items, self._field_candidates(cat_key, [i[2] for i in items])):
+            for (p, unit, field, why, ukey), candidates in zip(items, self._field_candidates(cat_key, [i[2] for i in items])):
                 jobs.append(self._field_job(p, unit, field, cat_key, candidates))
-                job_paths.append(p)
-        for p, rec in zip(job_paths, self._map(jobs)):
+                job_paths.append((p, ukey, candidates))
+        for (p, ukey, candidates), rec in zip(job_paths, self._map(jobs)):
             if rec is None:
                 failed.append({"path": p, "error": "invalid output (field match)"})
             else:
+                self._add_file_shortlist(rec, ukey)
+                rec["field_shortlist"] = candidates        # development: the fields shown to the model
                 records[p] = rec
 
         return [records[p] for p in paths if p in records], failed
+
+    def _without_model(self, path, clean_of):
+        """(finished record, clean path): the record is None unless the path is in the catalogue as it is (exact) or
+        after cleaning (clean)."""
+        if path in self.cat.raw_set:
+            return _rec(path, path, "The path is in the catalogue.", "exact", path), None
+        clean = clean_of.get(path) or clean_path(path)
+        raw = self.cat.by_key.get(match_key(clean))
+        if raw is not None:
+            return _rec(path, raw, "The path is the same as this catalogue path after removing wrapper folders and "
+                                   "part numbers.", "clean", raw), clean
+        return None, clean
 
     def _match_files(self, groups):
         """Decide, for each file of the input (unit key), which catalogue file it is, or none."""
@@ -195,6 +211,7 @@ class ShortlistMatcher:
                 cand_keys = [self.cat.unit_keys[i] for i in shortlist]
                 candidates = [self.cat.units[c]["unit"] + fields_hint(f for f, _ in self.cat.units[c]["fields"].values())
                               for c in cand_keys]
+                self._file_shown[ukey] = candidates
                 unit = groups[ukey][0][1]
                 query = unit + fields_hint(field for _, _, field in groups[ukey])
                 jobs.append(self._file_job(candidates, cand_keys, query))
@@ -205,6 +222,11 @@ class ShortlistMatcher:
         for ukey, result in zip(job_keys, self._map(jobs)):
             decisions[ukey] = result
         return decisions
+
+    def _add_file_shortlist(self, rec, ukey):
+        """Development: add the catalogue files that were shown to the model for this file (when it was asked)."""
+        if ukey in self._file_shown:
+            rec["file_shortlist"] = self._file_shown[ukey]
 
     def _file_job(self, candidates, cand_keys, query):
         def run():

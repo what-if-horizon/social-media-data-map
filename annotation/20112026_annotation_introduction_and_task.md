@@ -41,8 +41,7 @@ For each category, ask yourself:
 
 1. **Is the definition clear?** Which word or sentence is vague, or can be read in two ways?
 2. **Does it overlap with another category?** Can you think of a field that would fit this category and another one? Which two?
-3. **Is something missing?** Can you think of a kind of information a platform stores that fits none of the categories, or only badly?
-4. **Is the example convincing?** Would you have chosen the same category for the example path? The examples are first proposals and nobody has checked them yet. Tell me if one is not a good example.
+4. **Is the example convincing?** Would you have chosen the same category for the example path? Tell me if one is not a good example.
 5. **Do we need an extra decision rule?** The codebook already has rules for the pairs that are easy to confuse (for instance *Network* versus *Ratings and interests*). Which other pairs would you want a rule for? How would you word it?
 
 You can think of paths from your own knowledge of the platforms. You do not need real data to raise a doubt.
@@ -51,11 +50,11 @@ You can think of paths from your own knowledge of the platforms. You do not need
 
 Write your doubts in a short note or in a copy of this table, and email it to Nienke Visscher (nienke.visscher@bsc.es) **before the introductory session**. One row per doubt, and you can add rows.
 
-| Category (number) | What is unclear, overlapping or missing | Example path (if you have one) | Your suggestion for a rule or change |
-| --- | --- | --- | --- |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| Category (number) | What is unclear, overlapping or missing | Your suggestion for a rule or change |
+| --- | --- | --- |
+|  |  |  |  
+|  |  |  |  
+|  |  |  |  
 
 If you have doubts about the overarching categories or about the way the task works, write those down as well.
 

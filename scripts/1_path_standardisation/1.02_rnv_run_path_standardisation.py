@@ -4,10 +4,12 @@ Path standardisation: does a path point to the same data as a path in the catalo
 The catalogue of a platform is its largest donation. For every input path the result is the catalogue path that holds
 the same data, or "NA". Two methods, chosen with PATH_STD (config / Makefile):
 
-  path_shortlist2026 (default)  src/inference/pathshortlist.py. The paths are cleaned in the ingest step (0.06, `make
+  path_embed2026 (default)  src/inference/pathembed.py. The paths are cleaned in the ingest step (0.06, `make
                     clean_paths`: no wrapper folders, no part numbers). Exact and clean matches need no model. For the
-                    rest the model matches files and then fields, each time from a numbered shortlist of candidates
-                    chosen with multilingual embeddings (PATH_EMBEDDING_MODEL, SHORTLIST_K).
+                    rest the model chooses among the SHORTLIST_K catalogue paths most similar to the path, chosen with
+                    multilingual embeddings (PATH_EMBEDDING_MODEL), or none (prompt path_embed2026).
+  path_shortlist2026  src/inference/pathshortlist.py. As path_embed2026, but the model matches files and then fields,
+                    each time from a numbered shortlist of candidates.
   path_std2026      The whole catalogue is put in the prompt (prompt path_std2026 in src/inference/prompts.py). Kept
                     to compare with the shortlist method.
 
@@ -17,6 +19,7 @@ Runs as one process per vLLM server, started by launchers/parallel_worker.sh:
 Each input CSV (`final_path` column) is processed against the one server given by --agent_id; output is one JSON per
 input CSV, named by OUTPUT_PATTERN (set by the Makefile). Output records:
   {"path", "match" (catalogue path or NA), "rationale", "method"}   (the shortlist method adds "file_match")
+  Development (shortlist method): "file_shortlist" and "field_shortlist" hold the candidates as shown to the model.
   method: exact | clean | llm | file_na  (path_std2026: exact | llm)
 A path without a valid answer after three tries goes to a sibling "_failed" file. tests/test_path_std_output.py checks
 the output.
@@ -35,6 +38,7 @@ from src.inference import parallel
 from src.inference import prompts as p
 from src.inference import utils as u
 from src.inference.pathmatch import NA, build_path_prompt, catalogue_text, parse_match
+from src.inference.pathembed import EmbedMatcher
 from src.inference.pathshortlist import Catalogue, ShortlistMatcher
 from src.inference.retrieval import Embedder
 
@@ -43,7 +47,7 @@ MAX_RETRIES = 3
 CONCURRENCY = 100
 
 PATH_STD = config.PATH_STD
-METHODS = ("path_shortlist2026", "path_std2026")
+METHODS = ("path_shortlist2026", "path_embed2026", "path_std2026")
 if PATH_STD not in METHODS:
     raise SystemExit(f"Unknown PATH_STD '{PATH_STD}', expected one of {list(METHODS)}")
 
@@ -80,6 +84,7 @@ def load_clean_map(platform):
 
 
 def make_shortlist_process_file(agent):
+    embed_paths = PATH_STD == "path_embed2026"   # whole paths in one step, no split between file and field
     embedder = Embedder(config.require("PATH_EMBEDDING_MODEL"))
     ask = lambda prompt: u.run_llm(prompt, agent)
     matchers = {}   # per platform: catalogue and its embeddings are built once per process
@@ -88,10 +93,14 @@ def make_shortlist_process_file(agent):
         platform = os.path.basename(os.path.dirname(source_file))
         if platform not in matchers:
             raw, clean = load_cleaned_catalogue(platform)
-            matchers[platform] = (ShortlistMatcher(Catalogue(raw, clean), embedder, ask, p.path_file2026(),
-                                                   p.path_field2026(), k=config.SHORTLIST_K, workers=CONCURRENCY,
-                                                   retries=MAX_RETRIES),
-                                  load_clean_map(platform))
+            catalogue = Catalogue(raw, clean)
+            if embed_paths:
+                matcher = EmbedMatcher(catalogue, embedder, ask, p.path_embed2026(), k=config.SHORTLIST_K,
+                                       workers=CONCURRENCY, retries=MAX_RETRIES)
+            else:
+                matcher = ShortlistMatcher(catalogue, embedder, ask, p.path_file2026(), p.path_field2026(),
+                                           k=config.SHORTLIST_K, workers=CONCURRENCY, retries=MAX_RETRIES)
+            matchers[platform] = (matcher, load_clean_map(platform))
         matcher, clean_of = matchers[platform]
 
         paths = pd.read_csv(source_file, dtype=str)[COL_PATH].dropna().drop_duplicates().tolist()
@@ -163,7 +172,9 @@ def make_full_catalogue_process_file(agent):
 
 
 def make_process_file(agent):
-    return make_shortlist_process_file(agent) if PATH_STD == "path_shortlist2026" else make_full_catalogue_process_file(agent)
+    if PATH_STD in ("path_shortlist2026", "path_embed2026"):
+        return make_shortlist_process_file(agent)
+    return make_full_catalogue_process_file(agent)
 
 
 if __name__ == "__main__":

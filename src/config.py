@@ -71,8 +71,8 @@ SMOKE_POOL = int(os.getenv("SMOKE_POOL", 2000))             # candidates drawn p
 SEED = int(os.getenv("SEED", 42))
 
 # ---- Path standardisation (1_path_standardisation) ----
-PATH_STD = os.getenv("PATH_STD", "path_shortlist2026")       # method in 1.02: path_shortlist2026 | path_std2026 (whole catalogue)
-SHORTLIST_K = int(os.getenv("SHORTLIST_K", 15))              # candidates the model sees per file / field (path_shortlist2026)
+PATH_STD = os.getenv("PATH_STD", "path_embed2026")           # method in 1.02: path_embed2026 (shortlist of whole paths) | path_shortlist2026 (files, then fields) | path_std2026 (whole catalogue)
+SHORTLIST_K = int(os.getenv("SHORTLIST_K", 15))              # candidates the model sees per path (path_embed2026) or per file / field (path_shortlist2026)
 # Multilingual sentence-transformers model for the shortlists (1.02); needs to be on disk, compute nodes have no internet
 PATH_EMBEDDING_MODEL = os.getenv("PATH_EMBEDDING_MODEL") or _join(MODEL_DIR, "sentence-transformers", "paraphrase-multilingual-MiniLM-L12-v2")
 REF_DIR = os.getenv("REF_DIR") or _join(ROOT_DIR, DATA_DIR, "00_ingest", "004_largest_donation")   # catalogue: largest donation per platform

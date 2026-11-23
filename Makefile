@@ -98,6 +98,9 @@ annotation_sample: ## Sample for annotation
 clean_paths: ## Add clean_path (no wrapper folders, no part numbers) to the merged structures and the catalogue
 	$(call CPU,scripts/0_ingest/0.06_rnv_clean_paths.py)
 
+clean_steps: ## HTML: paths explained and left unexplained after each cleaning step (needs no clean_paths)
+	$(call CPU,scripts/0_ingest/0.07_rnv_visualise_clean_steps.py)
+
 
 #----------------------------------------------------------------------------------
 # LLM JOBS (parallel_llm.sh: vLLM servers on N nodes, one job per platform)
@@ -118,9 +121,10 @@ COUNTRIES    := ES_NL
 LAUNCHER     := launchers/parallel_llm.sh
 SOURCE_ROOT  := $(ROOT_DIR)/$(DATA_DIR)/00_ingest/005_merged_structures
 REF_DIR      := $(ROOT_DIR)/$(DATA_DIR)/00_ingest/004_largest_donation
-# Method of the path standardisation (1.02): path_shortlist2026 (shortlists, needs `make clean_paths` first) or
-# path_std2026 (whole catalogue in the prompt). Outputs of the two go to different folders.
-PATH_STD     := path_shortlist2026
+# Method of the path standardisation (1.02): path_embed2026 (shortlist of whole paths), path_shortlist2026 (shortlists of
+# files, then fields; both need `make clean_paths` first) or path_std2026 (whole catalogue in the prompt). Outputs of the
+# methods go to different folders.
+PATH_STD     := path_embed2026
 ANNOTATION_ROOT := $(ROOT_DIR)/ddd_annotation
 # smoke | test | validation
 SPLIT        ?= validation

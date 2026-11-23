@@ -36,22 +36,30 @@ their paths (`METADATA_FILES` and `is_metadata_path` in `src/ingest/cleanPaths.p
 structures, the catalogue or the samples. This only takes effect when the ingest is run again from `0.01`; the merged
 structures and the samples that exist now are not changed by it.
 
-### 2. Matching (`1.02`, method `path_shortlist2026`, the default)
+### 2. Matching (`1.02`, method `path_embed2026`, the default)
 
 1. **exact**: the path is in the catalogue.
 2. **clean**: the clean path is the same as a clean catalogue path (case, spaces, `_` and `-` do not matter).
-3. **file**: the remaining paths are grouped by file. For each file the model gets a numbered shortlist of the
-   `SHORTLIST_K` (15) catalogue files with the most similar names (multilingual embeddings,
-   `paraphrase-multilingual-MiniLM-L12-v2`, on the CPU), each with some of its field names, and answers with a number or
-   0 for none (prompt `path_file2026`). If none, every path of the file is `NA` (`file_na`).
-4. **field**: in a matched file, a field with the same name is matched directly; otherwise the model chooses among the
-   fields of the catalogue file (a shortlist of at most `SHORTLIST_K` if the file has more; prompt `path_field2026`).
+3. **embed**: for the other paths the catalogue is reduced with multilingual embeddings
+   (`paraphrase-multilingual-MiniLM-L12-v2`, on the CPU) to the `SHORTLIST_K` (15) whole catalogue paths most similar to
+   the path (the last four parts of the path, so the file and the field). File and field names may have changed between
+   versions of the data download, so the model decides: it gets the numbered shortlist and answers with a number, or 0
+   for none, which gives `NA` (prompt `path_embed2026`).
 
 The model answers with a number, so it can never return a path that is not in the catalogue. The prompts are a few
-hundred tokens, against about 30,000 for the whole Facebook or Instagram catalogue in `path_std2026`.
+hundred tokens, against about 30,000 for the whole Facebook or Instagram catalogue in `path_std2026`. Records have
+`method` `exact`, `clean` or `llm`, and `shortlist` with the candidates shown (`src/inference/pathembed.py`).
 
-The earlier method, with the whole catalogue in the prompt, stays available to compare: `make path_std-run SPLIT=smoke
-PATH_STD=path_std2026`. The outputs of the two go to different folders.
+A variant with a split between file and field is `PATH_STD=path_shortlist2026` (`src/inference/pathshortlist.py`).
+Exact and clean are the same. Then the remaining paths are grouped by the file they come from and the model chooses the
+catalogue file from a shortlist of the `SHORTLIST_K` files with the most similar names, each with some of its field
+names, so a renamed file can be recognised by its content (prompt `path_file2026`); if none, every path of the file is
+`NA` (`file_na`). In a matched file, a field with the same name is matched directly; otherwise the model chooses among
+the fields of the catalogue file (a shortlist of at most `SHORTLIST_K`; prompt `path_field2026`).
+
+The earlier method, with the whole catalogue in the prompt, stays available to compare (the outputs of the methods go
+to different folders): `make path_std-run SPLIT=smoke
+PATH_STD=path_std2026`.
 
 ## Output
 
@@ -61,6 +69,9 @@ One JSON per input CSV in `<ANNOTATION_ROOT>/inference/04_path_std/<PATH_STD>/<s
 ```json
 {"path": "...", "match": "<catalogue path or NA>", "rationale": "...", "method": "exact|clean|llm|file_na", "file_match": "<catalogue file or NA>"}
 ```
+
+During development, records of the file/field method also hold `file_shortlist` (the catalogue files, with
+field names, as shown to the model) and, if a field was matched by the model, `field_shortlist` (the fields shown).
 
 Paths without a valid answer after three tries go to a `*_failed.json` next to the output. `path_std-check` runs
 `tests/test_path_std_output.py`: every record has a match that is `NA` or in the catalogue, a rationale, no path failed,

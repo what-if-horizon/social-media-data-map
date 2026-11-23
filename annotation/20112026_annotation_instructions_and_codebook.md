@@ -1,8 +1,5 @@
 # Annotation instructions and codebook: DDP topology
 
-Copied from the annotation interface (`annotation/annotation_interface.html`), so this is the text the annotators see.
-The longer version of the instructions is `12112026_annotation_instructions_DDP_topology.md`.
-
 ## The task
 
 You will classify paths to data entries in Digital Data Packages (DDPs) from four platforms: X, Facebook, Instagram and TikTok. A language model annotates the same paths, so your labels can be compared with the model's.
